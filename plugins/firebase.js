@@ -1,6 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDAl93n3jcjJ07mvDg0CdWiICd3xzfUoKA",
@@ -13,10 +11,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
 
 export default ({}, inject) => {
-    inject('auth', auth);
-    inject('db', db);
+    inject('app', app);
 }
