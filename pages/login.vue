@@ -20,7 +20,7 @@ export default {
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
           // ログイン
-          location.href = 'http://localhost:3000/index_test';
+          location.href = 'http://localhost:3000/taskadmin';
         })
         .catch((error) => {
           // ログイン失敗
