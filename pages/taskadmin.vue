@@ -30,40 +30,74 @@
                   <h1>追加用ポップアップだよ～ん</h1>
                   <p>追加をするならさっさと追加しろ</p>
                 </div>
-                <div id="closeAddTask" class="closeModal">
+                <div @click="closeAddPopup()" id="closeAddTask" class="closeModal">
                   ×
                 </div>
               </div>
             </section>
             <!--追加ポップアップここまで-->
 
-            <!-- phpで繰り返す -->
-            <div @click="openEditPopup()" class="border my-3" id="openEditTask">
-              <h4 class="task-title">課題をやる</h4>
-              <span class="task-content">期限</span>
-              <span class="task-content">優先度</span>
-            </div>
-            <div class="border my-3">
-              <h4 class="task-title">飲み物を飲む</h4>
-            </div>
+            <!-- id属性が必要か検討！！！！！！！！！！！！！！！！！！ -->
 
-            <!--編集ポップアップここから-->
-            <section id="editTask" class="modalArea">
-              <div @click="closeEditPopup()" id="editTaskBg" class="modalBg"></div>
-              <div class="modalWrapper">
-                <div class="editContents">
-                  <h1>編集用ポップアップです</h1>
-                  <p>編集をしたいならさっさと編集しろ</p>
-                </div>
-                <div @click="closeEditPopup()" id="closeEditTask" class="closeModal">
-                  ×
-                </div>
+            <!-- タスク表示ここから -->
+            <section v-for="task in tasks" :key="task.tid">
+              <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                v-bind:class="changeBorderColor(task.priority)" id="openEditTask">
+                <h4 class="task-title">{{ task.name }}</h4>
+                <span class="task-content">期限：　{{ task.deadline }}</span>
+                <span class="task-content">優先度：　{{ priorityToStr(task.priority) }}</span>
               </div>
+
+              <!--編集ポップアップ内容ここから-->
+              <section id="editTask" class="modalArea">
+                <div @click="closeEditPopup()" id="editTaskBg" class="modalBg"></div>
+                <div class="modalWrapper">
+                  <div class="editContents">
+                    <h1>タスクの編集</h1>
+                    <p>タスク名</p>
+                    <p>
+                      <input type=”text” name=”name” v-model="name" class="editInput">
+                    </p>
+                    <p>メモ</p>
+                    <p>
+                      <textarea name="memo" v-model="memo" class="editInput"></textarea>
+                    </p>
+                    <p>優先度</p>
+                    <p>
+                      <select name="priority" v-model="priority" class="editInput">
+                        <option value="0">低</option>
+                        <option value="1" selected>中</option>
+                        <option value="2">高</option>
+                      </select>
+                    </p>
+                    <p>期限</p>
+                    <p>
+                      <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
+                    </p>
+                    <p>
+                      <button @click="updateData(task.tid)" class="btn btn-warning">保存</button>
+                      <button @click="deleteData(task.tid)" class="btn btn-danger">削除</button>
+                    </p>
+                    </div>
+                  <div @click="closeEditPopup()" id="closeEditTask" class="closeModal">
+                    ☓
+                  </div>
+                </div>
+              </section>
+              <!--編集ポップアップここまで-->
             </section>
-            <!--編集ポップアップここまで-->
+            <!-- タスク表示ここまで -->
 
           </div>
         </div>
+
+        <div class="col-4">
+          <div class="m-2 p-3 border">
+            <h2 class="my-4">遊び要素</h2>
+          </div>
+        </div>
+      </div>
+    </div>
 
         <div class="col-4">
           <div class="m-2 p-3 border">
@@ -73,13 +107,9 @@
         </div>
       </div>
     </div>
-
-
-
+    
     <!-- Footer -->
     <footer class="text-center text-lg-start bg-light text-muted mt-4">
-
-
       <!-- Section: Links  -->
       <section class="border-top">
         <div class="container mt-5">
@@ -130,9 +160,12 @@
 </template>
 
 <script>
+import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   head() {
     return {
+      title: "タスク管理画面",
       script: [
         {
           type: "text/javascript",
@@ -143,34 +176,112 @@ export default {
   },
   data() {
     return {
+      uid: "",
+      tasks: [],
+      name: "",
+      memo: "",
+      priority: 1,
+      deadline: "",
+      taskid: "",
     }
   },
   mounted() {
+    this.checkLogin();
   },
   methods: {
+    // ログインの確認
+    checkLogin() {
+      const auth = getAuth(this.$app);
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.uid = user.uid;
+          this.getTasks();
+        } else {
+          location.href = 'http://localhost:3000/login';
+        }
+      });
+    },
+    // 複数データの取得
+    async getTasks() {
+      const db = getFirestore(this.$app);
+      const q = query(collection(db, "task"), where("uid", "==", this.uid));
+      const querySnapshot = await getDocs(q);
+      this.tasks = [];
+      querySnapshot.forEach((doc) => {
+        const task = doc.data();
+        task["tid"] = doc.id;
+        this.tasks.push(task);
+      });
+    },
+    // データの上書き（編集ポップアップ用）
+    async updateData(taskid) {
+      const db = getFirestore(this.$app);
+      await updateDoc(doc(db, "task", taskid), {  // 変数にセットされているデータを登録
+        deadline: this.deadline,
+        memo: this.memo,
+        name: this.name,
+        priority: Number(this.priority),
+        uid: this.uid,
+      });
+      this.getTasks();
+      this.closeEditPopup();
+    },
+    // データの削除（編集ポップアップ用）
+    async deleteData(taskid) {
+      const db = getFirestore(this.$app);
+      await deleteDoc(doc(db, "task", taskid));
+      this.getTasks();
+      this.closeEditPopup();
+    },
+    // 追加ポップアップを開く
     openAddPopup() {
       $('#addTask').fadeIn();
     },
+    // 追加ポップアップを閉じる
     closeAddPopup() {
       $('#addTask').fadeOut();
     },
-    openEditPopup() {
+    // 編集ポップアップを開く
+    openEditPopup(name, memo, priority, deadline, taskid) {
+      this.name = name;
+      this.memo = memo;
+      this.priority = priority;
+      this.deadline = deadline;
+      this.taskid = taskid;
       $('#editTask').fadeIn();
     },
+    // 編集ポップアップを閉じる
     closeEditPopup() {
       $('#editTask').fadeOut();
+      this.name = "";
+      this.memo = "";
+      this.priority = 1;
+      this.deadline = "";
+      this.taskid = "";
+    },
+    // タスクの枠の色
+    changeBorderColor(priority) {
+      if (priority == 2) {
+        return "border border-danger my-3";
+      } else if (priority == 1) {
+        return "border border-warning my-3";
+      } else {
+        return "border my-3";
+      };
+    },
+    // priorityを文字に変換
+    priorityToStr(priority) {
+      if (priority == 2) {
+        return "高";
+      } else if (priority == 1) {
+        return "中";
+      } else {
+        return "低";
+      };
     },
   }
 }
 </script>
-
-
-
-
-
-
-
-
 
 <style>
 #ToDo {
@@ -244,6 +355,13 @@ export default {
   cursor: pointer;
 }
 
+/* 編集ポップアップ内 */
+.editContents {
+  padding: 2em;
+}
+.editInput {
+  border: 1px solid gray;
+}
 
 /* 以下ボタンスタイル */
 button {

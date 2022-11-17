@@ -3,7 +3,7 @@ export default {
   head: {
     title: 'crearen',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'ja'
     },
     meta: [
       { charset: 'utf-8' },

@@ -66,7 +66,7 @@ export default {
     // ログインの保持のデフォルトを調べる、永久ログインでもいいかも
     checkLogin() {
       const auth = getAuth(this.$app);
-      onAuthStateChanged(auth, async (user) => {
+      onAuthStateChanged(auth, (user) => {
         // ログイン中
         if (user) {
           this.uid = user.uid;
