@@ -5,7 +5,7 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="./index.html"> <img style="width: 9em;" id="logo" src="~/assets/logo/logo.png"></a>
+      <NuxtLink class="navbar-brand" to="/"> <img style="width: 9em;" src="~/assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -95,17 +95,21 @@
           <div class="m-2 p-3 border">
             <h2 class="my-4">遊び要素</h2>
           </div>
-
         </div>
       </div>
     </div>
 
+        <div class="col-4">
+          <div class="m-2 p-3 border">
+            <h2 class="my-4">遊び要素</h2>
+          </div>
 
-
+        </div>
+      </div>
+    </div>
+    
     <!-- Footer -->
     <footer class="text-center text-lg-start bg-light text-muted mt-4">
-
-
       <!-- Section: Links  -->
       <section class="border-top">
         <div class="container mt-5">
@@ -124,7 +128,7 @@
             <div class="col-3 mx-auto mb-4">
               <!-- Links -->
               <h6 class="fw-bold mb-4">
-                <a href="#">利用規約・プライバシーポリシー</a>
+                <NuxtLink to="/terms" target="_blank" rel="noopener noreferrer">利用規約・プライバシーポリシー</NuxtLink>
               </h6>
             </div>
             <!-- Grid column -->
@@ -133,7 +137,7 @@
             <div class="col-3 mx-auto mb-4">
               <!-- Links -->
               <h6 class="fw-bold mb-4">
-                <a href="#">ヘルプ</a>
+                <NuxtLink to="/help" target="_blank" rel="noopener noreferrer">ヘルプ</NuxtLink>
               </h6>
             </div>
             <!-- Grid column -->
@@ -146,11 +150,12 @@
 
       <!-- Copyright -->
       <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-        © 2021 Copyright:
+        © 2022 Copyright:
         <a class="text-reset fw-bold" href="#">卒業制作を頑張る会</a>
       </div>
       <!-- Copyright -->
     </footer>
+    <!-- Footer -->
   </div>
 </template>
 

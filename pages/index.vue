@@ -5,16 +5,17 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="./index.html"> <img style="width: 9em;" src="~/assets/logo/logo.png"></a>
+      <NuxtLink class="navbar-brand" to="/"> <img style="width: 9em;" src="~/assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a href="./manual.html" target="_blank" rel="noopener noreferrer"><button type="button"
-                class="btn btn-dark">使い方</button></a>
+            <NuxtLink to="/manual" target="_blank" rel="noopener noreferrer"><button type="button"
+                class="btn btn-dark">使い方</button></NuxtLink>
           </li>
         </ul>
       </div>
     </nav>
+    <NuxtLink to="index.vue"></NuxtLink>
 
     <div style="text-align: center; width: 100%;">
       <img src="~/assets/top/犬.jpg" alt="犬">
@@ -66,7 +67,7 @@
             <div class="col-3 mx-auto mb-4">
               <!-- Links -->
               <h6 class="fw-bold mb-4">
-                <a href="./terms.html" target="_blank" rel="noopener noreferrer">利用規約・プライバシーポリシー</a>
+                <NuxtLink to="/terms" target="_blank" rel="noopener noreferrer">利用規約・プライバシーポリシー</NuxtLink>
               </h6>
             </div>
             <!-- Grid column -->
@@ -75,7 +76,7 @@
             <div class="col-3 mx-auto mb-4">
               <!-- Links -->
               <h6 class="fw-bold mb-4">
-                <a href="./help.html" target="_blank" rel="noopener noreferrer">ヘルプ</a>
+                <NuxtLink to="/help" target="_blank" rel="noopener noreferrer">ヘルプ</NuxtLink>
               </h6>
             </div>
             <!-- Grid column -->
@@ -88,7 +89,7 @@
 
       <!-- Copyright -->
       <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-        © 2021 Copyright:
+        © 2022 Copyright:
         <a class="text-reset fw-bold" href="#">卒業制作を頑張る会</a>
       </div>
       <!-- Copyright -->
