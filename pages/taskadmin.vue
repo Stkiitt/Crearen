@@ -5,11 +5,14 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NuxtLink class="navbar-brand" to="/"> <img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
             <button type="button" class="btn btn-dark">使い方</button>
+          </li>
+          <li class="nav-item ml-3">
+            <button @click="logout()" type="button" class="btn btn-dark">ログアウト</button>
           </li>
         </ul>
       </div>
@@ -21,16 +24,16 @@
         <div class="col-8">
           <div class="m-2 p-3 border">
             <h2 class="my-4" id="ToDo">ToDo</h2>
-            <button @click="openAddPopup()" id="openAddTask" class="button-add">＋追加</button>
+            <button @click="openAddPopup()" class="button-add">＋追加</button>
             <!--追加ポップアップここから-->
             <section id="addTask" class="modalArea">
-              <div @click="closeAddPopup()" id="addTaskBg" class="modalBg"></div>
+              <div @click="closeAddPopup()" class="modalBg"></div>
               <div class="modalWrapper">
                 <div class="addContents">
                   <h1>追加用ポップアップだよ～ん</h1>
                   <p>追加をするならさっさと追加しろ</p>
                 </div>
-                <div @click="closeAddPopup()" id="closeAddTask" class="closeModal">
+                <div @click="closeAddPopup()" class="closeModal">
                   ×
                 </div>
               </div>
@@ -39,18 +42,19 @@
 
             <!-- id属性が必要か検討！！！！！！！！！！！！！！！！！！ -->
 
-            <!-- タスク表示ここから -->
+            <!-- 繰り返しここから -->
             <section v-for="task in tasks" :key="task.tid">
-              <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
-                v-bind:class="changeBorderColor(task.priority)" id="openEditTask">
+            <!-- タスク表示ここから -->
+              <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)" v-bind:class="changeBorderColor(task.priority)" class="cursorPointer">
                 <h4 class="task-title">{{ task.name }}</h4>
                 <span class="task-content">期限：　{{ task.deadline }}</span>
                 <span class="task-content">優先度：　{{ priorityToStr(task.priority) }}</span>
               </div>
+            <!-- タスク表示ここまで -->
 
               <!--編集ポップアップ内容ここから-->
               <section id="editTask" class="modalArea">
-                <div @click="closeEditPopup()" id="editTaskBg" class="modalBg"></div>
+                <div @click="closeEditPopup()" class="modalBg"></div>
                 <div class="modalWrapper">
                   <div class="editContents">
                     <h1>タスクの編集</h1>
@@ -65,9 +69,9 @@
                     <p>優先度</p>
                     <p>
                       <select name="priority" v-model="priority" class="editInput">
-                        <option value="0">低</option>
-                        <option value="1" selected>中</option>
                         <option value="2">高</option>
+                        <option value="1" selected>中</option>
+                        <option value="0">低</option>
                       </select>
                     </p>
                     <p>期限</p>
@@ -79,14 +83,14 @@
                       <button @click="deleteData(task.tid)" class="btn btn-danger">削除</button>
                     </p>
                     </div>
-                  <div @click="closeEditPopup()" id="closeEditTask" class="closeModal">
+                  <div @click="closeEditPopup()" class="closeModal">
                     ☓
                   </div>
                 </div>
               </section>
               <!--編集ポップアップここまで-->
             </section>
-            <!-- タスク表示ここまで -->
+            <!-- 繰り返しここまで -->
 
           </div>
         </div>
@@ -152,7 +156,7 @@
 
 <script>
 import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   head() {
     return {
@@ -190,6 +194,15 @@ export default {
         } else {
           location.href = 'http://localhost:3000/login';
         }
+      });
+    },
+    // ログアウト
+    logout() {
+      const auth = getAuth(this.$app);
+      signOut(auth).then(() => {
+        location.href = 'http://localhost:3000/login';
+      }).catch((error) => {
+        console.log(error);
       });
     },
     // 複数データの取得
@@ -314,7 +327,7 @@ export default {
   line-height: 4em;
 }
 
-#openEditTask {
+.cursorPointer {
   cursor: pointer
 }
 
