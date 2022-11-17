@@ -32,11 +32,10 @@
           <div class="m-2 p-3 border">
             <h2 class="my-4">ログイン</h2>
             <label for="exampleInputEmail1">メールアドレス</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-              placeholder="Enter email">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" v-model="email">
             <label for="exampleInputPassword1">パスワード</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="PassWord">
-            <button type="submit" class="btn btn-primary mt-3">ログイン</button>
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="PassWord" v-model="password">
+            <button @click="login()" class="btn btn-primary mt-3">ログイン</button>
             <p class="mt-3"><a href="#">パスワードを忘れた</a></p>
             <p><NuxtLink to="/signup" target="_blank" rel="noopener noreferrer">新規登録</NuxtLink></p>
           </div>
@@ -112,9 +111,12 @@
 </template>
 
 <script>
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
   data() {
     return {
+      email: "",
+      password: "",
       swiperOption: {
         autoplay: {
           delay: 2500,
@@ -128,6 +130,20 @@ export default {
   mounted() {
   },
   methods: {
+    login(){
+      const auth = getAuth(this.$app);
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then(() => {
+          // ログイン
+          location.href = 'http://localhost:3000/taskadmin';
+        })
+        .catch((error) => {
+          // ログイン失敗
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorCode+","+errorMessage);
+        });
+    },
   }
 }
 </script>
