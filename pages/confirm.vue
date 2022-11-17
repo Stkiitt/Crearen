@@ -2,7 +2,7 @@
   <div>
     <div>
       <div class="text-center">
-        <NuxtLink class="navbar-brand" to="/"> <img style="width: 9em;" src="~/assets/logo/logo.png"></NuxtLink>
+        <NuxtLink class="navbar-brand" to="/"> <img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
       </div>
 
       <div class="container mt-5">
@@ -39,5 +39,15 @@ export default {
 </script>
 
 <style>
+#logo{
+  width: 9em;
+}
 
+#confirmBtn{
+    color: white;
+}
+
+#backBtn{
+    color: white;
+}
 </style>

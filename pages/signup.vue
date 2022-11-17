@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="text-center">
-      <NuxtLink class="navbar-brand" to="/"> <img style="width: 9em;" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"> <img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
     </div>
 
     <div class="container mt-5">
@@ -27,7 +27,7 @@
         <p class="mt-2 text-center"><a class="ml-5" href="./terms.html" target="_blank">利用規約</a>に同意しました。<input
             type="checkbox"></p>
 
-        <p class="text-center"><a type="button" class="btn btn-success" style="color: white;">確認画面へ進む</a></p>
+        <p class="text-center"><a type="button" class="btn btn-success" id="confirmBtn">確認画面へ進む</a></p>
 
       </div>
 
@@ -65,5 +65,11 @@ export default {
 </script>
 
 <style>
+#logo{
+  width: 9em;
+}
 
+#confirmBtn{
+  color: white;
+}
 </style>
