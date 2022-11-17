@@ -79,8 +79,8 @@
                       <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
                     </p>
                     <p>
-                      <button @click="updateData(task.tid)" class="btn btn-warning">保存</button>
-                      <button @click="deleteData(task.tid)" class="btn btn-danger">削除</button>
+                      <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
+                      <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
                     </p>
                     </div>
                   <div @click="closeEditPopup()" class="closeModal">
@@ -192,7 +192,7 @@ export default {
           this.uid = user.uid;
           this.getTasks();
         } else {
-          location.href = 'http://localhost:3000/login';
+          location.href = 'http://localhost:3000';
         }
       });
     },
@@ -200,7 +200,7 @@ export default {
     logout() {
       const auth = getAuth(this.$app);
       signOut(auth).then(() => {
-        location.href = 'http://localhost:3000/login';
+        location.href = 'http://localhost:3000';
       }).catch((error) => {
         console.log(error);
       });
