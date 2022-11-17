@@ -5,7 +5,7 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NuxtLink class="navbar-brand" to="/"><img style="width: 9em;" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -102,7 +102,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Footer -->
     <footer class="text-center text-lg-start bg-light text-muted mt-4">
       <!-- Section: Links  -->
@@ -144,7 +144,7 @@
       <!-- Section: Links  -->
 
       <!-- Copyright -->
-      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+      <div class="text-center p-4" id="copyright">
         © 2022 Copyright:
         <a class="text-reset fw-bold" href="#">卒業制作を頑張る会</a>
       </div>
@@ -288,6 +288,14 @@ export default {
 </script>
 
 <style>
+#logo{
+  width: 9em;
+}
+
+#copyright{
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 #ToDo {
   display: inline;
 }

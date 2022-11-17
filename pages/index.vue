@@ -5,7 +5,7 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NuxtLink class="navbar-brand" to="/"> <img style="width: 9em;" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"> <img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -17,7 +17,7 @@
     </nav>
     <NuxtLink to="index.vue"></NuxtLink>
 
-    <div style="text-align: center; width: 100%;">
+    <div id="image">
       <img src="~/assets/top/犬.jpg" alt="犬">
     </div>
 
@@ -35,10 +35,10 @@
             <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
               placeholder="Enter email">
             <label for="exampleInputPassword1">パスワード</label>
-            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            <input type="password" class="form-control" id="exampleInputPassword1" placeholder="PassWord">
             <button type="submit" class="btn btn-primary mt-3">ログイン</button>
             <p class="mt-3"><a href="#">パスワードを忘れた</a></p>
-            <p><a href="./signup.html" target="_blank" rel="noopener noreferrer">新規登録</a></p>
+            <p><NuxtLink to="/signup" target="_blank" rel="noopener noreferrer">新規登録</NuxtLink></p>
           </div>
 
         </div>
@@ -88,7 +88,7 @@
       <!-- Section: Links  -->
 
       <!-- Copyright -->
-      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+      <div id="copyright" class="text-center p-4">
         © 2022 Copyright:
         <a class="text-reset fw-bold" href="#">卒業制作を頑張る会</a>
       </div>
@@ -136,5 +136,18 @@ export default {
 .splide__slide img {
   width: 100%;
   height: auto;
+}
+
+#logo{
+  width: 9em;
+}
+
+#image{
+  text-align: center; 
+  width: 100%;
+}
+
+#copyright{
+  background-color: rgba(0, 0, 0, 0.05);
 }
 </style>
