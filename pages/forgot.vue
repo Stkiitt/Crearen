@@ -18,7 +18,7 @@
 
         <p></p>
 
-        <p class="text-center"><a type="button" class="btn btn-success" id="nextBtn">次へ進む</a></p>
+        <p class="text-center"><a type="button" class="btn btn-success" id="nextBtn">送信</a></p>
 
       </div>
 
