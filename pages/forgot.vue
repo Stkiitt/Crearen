@@ -14,11 +14,11 @@
         </div>
 
         <label for="email" class="ml-5">メールアドレス</label>
-        <input type="email" class="form-control mx-auto col-10" id="email" placeholder="example@xxx.xx">
+        <input type="email" v-model="email" class="form-control mx-auto col-10" id="email" placeholder="example@xxx.xx">
 
         <p></p>
 
-        <p class="text-center"><a type="button" class="btn btn-success" id="nextBtn">送信</a></p>
+        <p class="text-center"><button @click="resetPassEmail()" class="btn btn-success" id="nextBtn">送信</button></p>
 
       </div>
 
@@ -27,14 +27,31 @@
 </template>
 
 <script>
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 export default {
   data() {
     return {
+      email: "",
     }
   },
   mounted() {
   },
   methods: {
+    // パスワードリセットメールを送るメソッド
+    resetPassEmail() {
+      const auth = getAuth(this.$app);
+      sendPasswordResetEmail(auth, this.email)
+        .then(() => {
+          // Password reset email sent!
+          alert('パスワード再設定メールを送りました')
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert(errorMessage);
+        });
+        this.email = "";
+    }
   }
 }
 </script>
@@ -44,7 +61,7 @@ export default {
   width: 9em;
 }
 
-#nextBtn{
+#nextBtn {
   color: white;
 }
 
