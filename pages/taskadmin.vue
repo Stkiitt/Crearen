@@ -34,15 +34,15 @@
                   <h1>タスクの追加</h1>
                     <p>タスク名</p>
                     <p>
-                      <input type=”text” name=”name” v-model="name" class="addInput">
+                      <input type="text" v-model="name" class="addInput">
                     </p>
                     <p>メモ</p>
                     <p>
-                      <textarea name="memo" v-model="memo" class="addInput"></textarea>
+                      <textarea v-model="memo" class="addInput"></textarea>
                     </p>
                     <p>優先度</p>
                     <p>
-                      <select name="priority" v-model="priority" class="addInput">
+                      <select v-model="priority" class="addInput">
                         <option value="2">高</option>
                         <option value="1" selected>中</option>
                         <option value="0">低</option>
@@ -50,20 +50,18 @@
                     </p>
                     <p>期限</p>
                     <p>
-                      <input type="date" name=”deadline” v-model="deadline" class="addInput">
+                      <input type="date" v-model="deadline" class="addInput">
                     </p>
                     <p>
                       <button @click="addData()" class="btn btn-success">保存</button>
                     </p>
                 </div>
                 <div @click="closeAddPopup()" class="closeModal">
-                  ×
+                  ☓
                 </div>
               </div>
             </section>
             <!-- 追加ポップアップここまで -->
-
-            <!-- id属性が必要か検討！！！！！！！！！！！！！！！！！！ -->
 
             <!-- 繰り返しここから -->
             <section v-for="task in tasks" :key="task.tid">
@@ -84,15 +82,15 @@
                     <h1>タスクの編集</h1>
                     <p>タスク名</p>
                     <p>
-                      <input type=”text” name=”name” v-model="name" class="editInput">
+                      <input type="text" v-model="name" class="editInput">
                     </p>
                     <p>メモ</p>
                     <p>
-                      <textarea name="memo" v-model="memo" class="editInput"></textarea>
+                      <textarea v-model="memo" class="editInput"></textarea>
                     </p>
                     <p>優先度</p>
                     <p>
-                      <select name="priority" v-model="priority" class="editInput">
+                      <select v-model="priority" class="editInput">
                         <option value="2">高</option>
                         <option value="1" selected>中</option>
                         <option value="0">低</option>
@@ -100,7 +98,7 @@
                     </p>
                     <p>期限</p>
                     <p>
-                      <input type="date" name=”deadline” v-model="deadline" class="editInput">
+                      <input type="date" v-model="deadline" class="editInput">
                     </p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
@@ -115,6 +113,9 @@
               <!-- 編集ポップアップここまで -->
             </section>
             <!-- 繰り返しここまで -->
+
+            <!-- this.tasksが空ならタスクがありませんを表示 -->
+            <!-- <p>タスクがありません</p> -->
 
           </div>
         </div>

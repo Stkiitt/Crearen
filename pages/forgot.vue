@@ -13,8 +13,8 @@
           <p>入力されたメールアドレスにパスワード再設定URLを送信します。</p>
         </div>
 
-        <label for="email" class="ml-5">メールアドレス</label>
-        <input type="email" v-model="email" class="form-control mx-auto col-10" id="email" placeholder="example@xxx.xx">
+        <label class="ml-5">メールアドレス</label>
+        <input type="email" v-model="email" class="form-control mx-auto col-10" placeholder="example@xxx.xx">
 
         <p></p>
 
