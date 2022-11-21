@@ -30,8 +30,30 @@
               <div @click="closeAddPopup()" class="modalBg"></div>
               <div class="modalWrapper">
                 <div class="addContents">
-                  <h1>追加用ポップアップだよ～ん</h1>
-                  <p>追加をするならさっさと追加しろ</p>
+                  <h1>タスクの追加</h1>
+                    <p>タスク名</p>
+                    <p>
+                      <input type=”text” name=”name” v-model="name" class="addInput">
+                    </p>
+                    <p>メモ</p>
+                    <p>
+                      <textarea name="memo" v-model="memo" class="addInput"></textarea>
+                    </p>
+                    <p>優先度</p>
+                    <p>
+                      <select name="priority" v-model="priority" class="addInput">
+                        <option value="0">低</option>
+                        <option value="1" selected>中</option>
+                        <option value="2">高</option>
+                      </select>
+                    </p>
+                    <p>期限</p>
+                    <p>
+                      <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="addInput">
+                    </p>
+                    <p>
+                      <button @click="addData()" class="btn btn-success">保存</button>
+                    </p>
                 </div>
                 <div @click="closeAddPopup()" class="closeModal">
                   ×
@@ -77,7 +99,7 @@
                     </p>
                     <p>期限</p>
                     <p>
-                      <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
+                      <input type="date" name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
                     </p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
@@ -218,6 +240,26 @@ export default {
         this.tasks.push(task);
       });
     },
+
+    async addData() {
+      const db = getFirestore(this.$app);
+      // データの追加
+      // ユーザidをログイン中のユーザのものにする
+      await addDoc(collection(db, "task"), {
+        deadline: this.deadline,
+        memo: this.memo,
+        name: this.name,
+        priority: Number(this.priority),
+        uid: this.uid,
+      });
+      this.getTasks();
+      this.closeAddPopup();
+      this.deadline = "";
+      this.memo = "";
+      this.name = "";
+      this.priority = 1;
+    },
+
     // データの上書き（編集ポップアップ用）
     async updateData(taskid) {
       const db = getFirestore(this.$app);
@@ -366,6 +408,14 @@ export default {
   top: 0.5rem;
   right: 1rem;
   cursor: pointer;
+}
+
+/* 追加ポップアップ内 */
+.addContents {
+  padding: 2em;
+}
+.addInput {
+  border: 1px solid gray;
 }
 
 /* 編集ポップアップ内 */
