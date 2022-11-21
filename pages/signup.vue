@@ -9,65 +9,232 @@
       <div class="col-7 border mx-auto">
         <h3 class="text-center">アカウントの作成</h3>
         <label for="username" class="ml-5">ユーザー名</label>
-        <input type=”text” class="form-control mx-auto col-10" name=”userName” required="required" placeholder="紅亜　連"
-          v-model="username">
+        <input type=”text” class="form-control mx-auto col-10" name=”userName” placeholder="紅亜　連" v-model="username">
+        <p class="err">{{ errName }}</p>
 
         <label for="email" class="ml-5">メールアドレス</label>
-        <input type=”email” class="form-control mx-auto col-10" name=”email” required="required"
-          placeholder="example@aaa.com" v-model="email">
+        <input type=”email” class="form-control mx-auto col-10" name=”email” placeholder="example@aaa.com"
+          v-model="email">
+        <p class="err">{{ errEmail }}</p>
 
         <label for="exampleInputPassword1" class="ml-5">パスワード (英数6文字以上)</label>
-        <input type="password" class="form-control mx-auto col-10" name="passWord" required="required" v-model="password">
+        <input type=”password” class="form-control mx-auto col-10" name=”passWord” v-model="password">
+        <p class="err">{{ errPasswordVaridity }}</p>
 
         <label for="exampleInputPassword1" class="ml-5">パスワード再確認</label>
-        <input type="password" class="form-control mx-auto col-10" name="passWordCheck" required="required" v-model="passwordcheck">
+        <input type=”password” class="form-control mx-auto col-10" name=”passWordCheck” v-model="passwordcheck">
+        <p class="err">{{ errPasswordMatch }}</p>
 
         <p class="mt-2 text-center"><NuxtLink class="ml-5" to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input
-            type="checkbox"></p>
+            type="checkbox" id="termsCheckbox"></p>
+        <p class="errCheckbox text-center">{{ errCheckbox }}</p>
 
-        <p class="text-center"><a type="button" class="btn btn-success" id="confirmBtn">確認画面へ進む</a></p>
+        <p class="text-center"><button @click="checkData()" class="btn btn-success" id="confirmBtn">確認画面へ進む</button>
+        </p>
 
       </div>
 
     </div>
+
+    <!--確認ポップアップ内容ここから-->
+    <section id="confirmPopup" class="modalArea">
+      <div @click="closeConfirmPopup()" class="modalBg"></div>
+      <div class="modalWrapper">
+        <div class="confirmContents">
+          <div class="container mt-5">
+            <div class="border mx-auto">
+              <h3 class="text-center">登録内容の確認</h3>
+              <p><label for="username" class="ml-5 mt-5">ユーザー名　　　：{{ username }}</label></p>
+              <p><label for="email" class="ml-5">メールアドレス　：{{ email }}</label></p>
+              <p><label for="exampleInputPassword1" class="ml-5 form-wrapper">パスワード　　　：{{ password }}</label></p>
+              <p class="text-center mt-5"><button @click="signup()" id="confirmBtn"
+                  class="btn btn-success col-4">登録する</button></p>
+              <p class="text-center"><button @click="closeConfirmPopup()" class="btn btn-danger col-4"
+                  id="backBtn">入力画面へ戻る</button></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!--確認ポップアップここまで-->
   </div>
 </template>
 
 <script>
+import { getFirestore, doc, setDoc } from "@firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 export default {
+  head() {
+    return {
+      title: "新規登録画面",
+      script: [
+        {
+          type: "text/javascript",
+          src: "//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+        },
+      ],
+    }
+  },
   data() {
     return {
       username: "",
       email: "",
       password: "",
       passwordcheck: "",
+      errName: "",
+      errEmail: "",
+      errPasswordVaridity: "",
+      errPasswordMatch: "",
+      errCheckbox: "",
     }
   },
   methods: {
+    // 入力データのチェック
+    checkData() {
+      const checkName = this.username != "";
+      const checkEmail = this.email != "";
+      const checkPasswordValidity = this.password.match(/^([a-zA-Z0-9]{6,})$/);
+      const checkPasswordMatch = this.password == this.passwordcheck;
+      const checkCheckbox = document.getElementById('termsCheckbox').checked;
+      if (!checkName) {
+        this.errName = "※ 名前を入力してください";
+      } else {
+        this.errName = "";
+      };
+      if (!checkEmail) {
+        this.errEmail = "※ メールアドレスを入力してください";
+      } else {
+        this.errEmail = "";
+      };
+      if (!checkPasswordValidity) {
+        this.errPasswordVaridity = "※ 英数6字以上で入力してください";
+      } else {
+        this.errPasswordVaridity = "";
+      };
+      if (!checkPasswordMatch) {
+        this.errPasswordMatch = "※ パスワードが一致していません";
+      } else {
+        this.errPasswordMatch = "";
+      };
+      if (!checkCheckbox) {
+        this.errCheckbox = "※ 利用規約に同意してください";
+      } else {
+        this.errCheckbox = "";
+      };
+      if (checkPasswordValidity && checkPasswordMatch && checkName && checkEmail && checkCheckbox) {
+        this.openConfirmPopup();
+      };
+    },
+    // 新規登録
     signup() {
       const auth = getAuth(this.$app);
       createUserWithEmailAndPassword(auth, this.email, this.password)
-        .then(() => {
-          // 登録が成功したらログイン
-          location.href = 'http://localhost:3000/index_test';
+        .then((userCredential) => {
+          const user = userCredential.user;
+          this.registerUserData(user.uid);
+          location.href = 'http://localhost:3000/taskadmin';
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           alert(errorCode + "," + errorMessage);
         });
-    }
+    },
+    // ユーザ情報の登録
+    async registerUserData(uid) {
+      const db = getFirestore(this.$app);
+      await setDoc(doc(db, "user", uid), {
+        user_name: this.username,
+      });
+    },
+    // 確認ポップアップを開く
+    openConfirmPopup() {
+      $('#confirmPopup').fadeIn();
+    },
+    // 確認ポップアップを閉じる
+    closeConfirmPopup() {
+      $('#confirmPopup').fadeOut();
+    },
   }
 }
 </script>
 
 <style>
-#logo{
+#logo {
   width: 9em;
 }
 
-#confirmBtn{
+#confirmBtn {
   color: white;
+}
+
+/* モーダルCSS */
+.modalArea {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  /*サイトによってここの数値は調整 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modalBg {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+.modalWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  max-width: 700px;
+  padding: 10px 30px;
+  background-color: #fff;
+}
+
+.closeModal {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
+}
+
+/* エラーメッセージ */
+.err {
+  margin-left: 4em;
+  color: red;
+  font-size: small;
+}
+
+.errCheckbox {
+  color: red;
+  font-size: small;
+}
+
+/* 確認ポップアップ内 */
+.confirmContents {
+  padding: 2em;
+}
+
+#confirmBtn {
+  color: white;
+}
+
+#backBtn {
+  color: white;
+}
+
+/* 以下ボタンスタイル */
+button {
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #282828;
+  border-radius: 2px;
+  cursor: pointer;
 }
 </style>

@@ -72,7 +72,7 @@ export default {
           this.uid = user.uid;
         // ログインしていない
         } else {
-          location.href = 'http://localhost:3000/login';
+          location.href = 'http://localhost:3000';
         }
       });
     },

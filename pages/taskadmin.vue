@@ -26,7 +26,7 @@
           <div class="m-2 p-3 border">
             <h2 class="my-4" id="ToDo">ToDo</h2>
             <button @click="openAddPopup()" class="button-add">＋追加</button>
-            <!--追加ポップアップここから-->
+            <!-- 追加ポップアップここから -->
             <section id="addTask" class="modalArea">
               <div @click="closeAddPopup()" class="modalBg"></div>
               <div class="modalWrapper">
@@ -61,21 +61,22 @@
                 </div>
               </div>
             </section>
-            <!--追加ポップアップここまで-->
+            <!-- 追加ポップアップここまで -->
 
             <!-- id属性が必要か検討！！！！！！！！！！！！！！！！！！ -->
 
             <!-- 繰り返しここから -->
             <section v-for="task in tasks" :key="task.tid">
-            <!-- タスク表示ここから -->
-              <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)" v-bind:class="changeBorderColor(task.priority)" class="cursorPointer">
+              <!-- タスク表示ここから -->
+              <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                v-bind:class="changeBorderColor(task.priority)" class="cursorPointer">
                 <h4 class="task-title">{{ task.name }}</h4>
                 <span class="task-content">期限：　{{ task.deadline }}</span>
                 <span class="task-content">優先度：　{{ priorityToStr(task.priority) }}</span>
               </div>
-            <!-- タスク表示ここまで -->
+              <!-- タスク表示ここまで -->
 
-              <!--編集ポップアップ内容ここから-->
+              <!-- 編集ポップアップ内容ここから -->
               <section id="editTask" class="modalArea">
                 <div @click="closeEditPopup()" class="modalBg"></div>
                 <div class="modalWrapper">
@@ -105,13 +106,13 @@
                       <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
                       <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
                     </p>
-                    </div>
+                  </div>
                   <div @click="closeEditPopup()" class="closeModal">
                     ☓
                   </div>
                 </div>
               </section>
-              <!--編集ポップアップここまで-->
+              <!-- 編集ポップアップここまで -->
             </section>
             <!-- 繰り返しここまで -->
 
@@ -263,7 +264,7 @@ export default {
     // データの上書き（編集ポップアップ用）
     async updateData(taskid) {
       const db = getFirestore(this.$app);
-      await updateDoc(doc(db, "task", taskid), {  // 変数にセットされているデータを登録
+      await updateDoc(doc(db, "task", taskid), {
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
@@ -331,11 +332,11 @@ export default {
 </script>
 
 <style>
-#logo{
+#logo {
   width: 9em;
 }
 
-#copyright{
+#copyright {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -422,6 +423,7 @@ export default {
 .editContents {
   padding: 2em;
 }
+
 .editInput {
   border: 1px solid gray;
 }
