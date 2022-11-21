@@ -17,14 +17,12 @@
           placeholder="example@aaa.com" v-model="email">
 
         <label for="exampleInputPassword1" class="ml-5">パスワード (英数6文字以上)</label>
-        <input type=”password” class="form-control mx-auto col-10" name=”passWord” required="required"
-          v-model="password">
+        <input type="password" class="form-control mx-auto col-10" name="passWord" required="required" v-model="password">
 
         <label for="exampleInputPassword1" class="ml-5">パスワード再確認</label>
-        <input type=”password” class="form-control mx-auto col-10" name=”passWordCheck” required="required"
-          v-model="passwordcheck">
+        <input type="password" class="form-control mx-auto col-10" name="passWordCheck" required="required" v-model="passwordcheck">
 
-        <p class="mt-2 text-center"><a class="ml-5" href="./terms.html" target="_blank">利用規約</a>に同意しました。<input
+        <p class="mt-2 text-center"><NuxtLink class="ml-5" to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input
             type="checkbox"></p>
 
         <p class="text-center"><a type="button" class="btn btn-success" id="confirmBtn">確認画面へ進む</a></p>
