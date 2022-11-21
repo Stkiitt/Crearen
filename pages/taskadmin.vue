@@ -98,7 +98,7 @@
                     </p>
                     <p>期限</p>
                     <p>
-                      <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
+                      <input type="date" name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
                     </p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
