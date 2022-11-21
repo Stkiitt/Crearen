@@ -36,7 +36,7 @@
             <label for="exampleInputPassword1">パスワード</label>
             <input type="password" class="form-control" id="exampleInputPassword1" placeholder="PassWord" v-model="password">
             <button @click="login()" class="btn btn-primary mt-3">ログイン</button>
-            <p class="mt-3"><a href="#">パスワードを忘れた</a></p>
+            <NuxtLink to="/forgot" target="_blank"><p class="mt-3">パスワードを忘れた</p></NuxtLink>
             <p><NuxtLink to="/signup" target="_blank" rel="noopener noreferrer">新規登録</NuxtLink></p>
           </div>
 
