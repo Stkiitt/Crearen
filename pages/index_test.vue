@@ -3,23 +3,23 @@
     <!-- タスクの追加 -->
     <p>
       タスク名
-      <input type=”text” name=”name” v-model="name">
+      <input type="text" v-model="name">
     </p>
     <p>
       優先度
-      <select name="priority" v-model="priority">
-        <option value="0">低</option>
-        <option value="1" selected>中</option>
+      <select v-model="priority">
         <option value="2">高</option>
+        <option value="1" selected>中</option>
+        <option value="0">低</option>
       </select>
     </p>
     <p>
       メモ
-      <textarea name="memo" v-model="memo"></textarea>
+      <textarea v-model="memo"></textarea>
     </p>
     <p>
       期限
-      <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline">
+      <input type="text" placeholder="yyyy/mm/dd" v-model="deadline">
     </p>
     <p>
       <button @click="addData()">追加</button>

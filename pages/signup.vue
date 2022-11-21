@@ -8,24 +8,24 @@
 
       <div class="col-7 border mx-auto">
         <h3 class="text-center">アカウントの作成</h3>
-        <label for="username" class="ml-5">ユーザー名</label>
-        <input type=”text” class="form-control mx-auto col-10" name=”userName” placeholder="紅亜　連" v-model="username">
+        <label class="ml-5">ユーザー名</label>
+        <input type="text" class="form-control mx-auto col-10" placeholder="紅亜　連" v-model="username">
         <p class="err">{{ errName }}</p>
 
-        <label for="email" class="ml-5">メールアドレス</label>
-        <input type=”email” class="form-control mx-auto col-10" name=”email” placeholder="example@aaa.com"
+        <label class="ml-5">メールアドレス</label>
+        <input type="email" class="form-control mx-auto col-10" placeholder="example@aaa.com"
           v-model="email">
         <p class="err">{{ errEmail }}</p>
 
-        <label for="exampleInputPassword1" class="ml-5">パスワード (英数6文字以上)</label>
-        <input type=”password” class="form-control mx-auto col-10" name=”passWord” v-model="password">
+        <label class="ml-5">パスワード (英数6文字以上)</label>
+        <input type="password" class="form-control mx-auto col-10" v-model="password">
         <p class="err">{{ errPasswordVaridity }}</p>
 
-        <label for="exampleInputPassword1" class="ml-5">パスワード再確認</label>
-        <input type=”password” class="form-control mx-auto col-10" name=”passWordCheck” v-model="passwordcheck">
+        <label class="ml-5">パスワード再確認</label>
+        <input type="password" class="form-control mx-auto col-10" v-model="passwordcheck">
         <p class="err">{{ errPasswordMatch }}</p>
 
-        <p class="mt-2 text-center"><NuxtLink class="ml-5" to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input
+        <p class="mt-2 text-center"><NuxtLink to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input
             type="checkbox" id="termsCheckbox"></p>
         <p class="errCheckbox text-center">{{ errCheckbox }}</p>
 
@@ -44,9 +44,9 @@
           <div class="container mt-5">
             <div class="border mx-auto">
               <h3 class="text-center">登録内容の確認</h3>
-              <p><label for="username" class="ml-5 mt-5">ユーザー名　　　：{{ username }}</label></p>
-              <p><label for="email" class="ml-5">メールアドレス　：{{ email }}</label></p>
-              <p><label for="exampleInputPassword1" class="ml-5 form-wrapper">パスワード　　　：{{ password }}</label></p>
+              <p><label class="ml-5 mt-5">ユーザー名　　　：{{ username }}</label></p>
+              <p><label class="ml-5">メールアドレス　：{{ email }}</label></p>
+              <p><label class="ml-5 form-wrapper">パスワード　　　：{{ password }}</label></p>
               <p class="text-center mt-5"><button @click="signup()" id="confirmBtn"
                   class="btn btn-success col-4">登録する</button></p>
               <p class="text-center"><button @click="closeConfirmPopup()" class="btn btn-danger col-4"
