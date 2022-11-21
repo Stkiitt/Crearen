@@ -10,21 +10,26 @@
         <h3 class="text-center">アカウントの作成</h3>
         <label for="username" class="ml-5">ユーザー名</label>
         <input type=”text” class="form-control mx-auto col-10" name=”userName” placeholder="紅亜　連" v-model="username">
+        <p class="err">{{ errName }}</p>
 
         <label for="email" class="ml-5">メールアドレス</label>
         <input type=”email” class="form-control mx-auto col-10" name=”email” placeholder="example@aaa.com"
           v-model="email">
+        <p class="err">{{ errEmail }}</p>
 
         <label for="exampleInputPassword1" class="ml-5">パスワード (英数6文字以上)</label>
         <input type=”password” class="form-control mx-auto col-10" name=”passWord” v-model="password">
+        <p class="err">{{ errPasswordVaridity }}</p>
 
         <label for="exampleInputPassword1" class="ml-5">パスワード再確認</label>
         <input type=”password” class="form-control mx-auto col-10" name=”passWordCheck” v-model="passwordcheck">
+        <p class="err">{{ errPasswordMatch }}</p>
 
-        <p class="mt-2 text-center"><a class="ml-5" href="./terms.html" target="_blank">利用規約</a>に同意しました。<input
-            type="checkbox"></p>
+        <p class="mt-2 text-center"><a href="./terms.html" target="_blank">利用規約</a>に同意しました。<input
+            type="checkbox" id="termsCheckbox"></p>
+        <p class="errCheckbox text-center">{{ errCheckbox }}</p>
 
-        <p class="text-center"><button @click="checkPassword()" class="btn btn-success" id="confirmBtn">確認画面へ進む</button>
+        <p class="text-center"><button @click="checkData()" class="btn btn-success" id="confirmBtn">確認画面へ進む</button>
         </p>
 
       </div>
@@ -76,19 +81,48 @@ export default {
       email: "",
       password: "",
       passwordcheck: "",
+      errName: "",
+      errEmail: "",
+      errPasswordVaridity: "",
+      errPasswordMatch: "",
+      errCheckbox: "",
     }
   },
   methods: {
-
-    // 利用規約チェックボックスが入力されているか確認する関数つくる
-
-    // パスワードのチェック
-    checkPassword() {
-      if (this.password.match(/^([a-zA-Z0-9]{6,})$/) && this.password == this.passwordcheck) {
-        // if (this.password == this.passwordcheck) {
-        this.openConfirmPopup();
+    // 入力データのチェック
+    checkData() {
+      const checkName = this.username != "";
+      const checkEmail = this.email != "";
+      const checkPasswordValidity = this.password.match(/^([a-zA-Z0-9]{6,})$/);
+      const checkPasswordMatch = this.password == this.passwordcheck;
+      const checkCheckbox = document.getElementById('termsCheckbox').checked;
+      if (!checkName) {
+        this.errName = "※ 名前を入力してください";
       } else {
-        alert("error");
+        this.errName = "";
+      };
+      if (!checkEmail) {
+        this.errEmail = "※ メールアドレスを入力してください";
+      } else {
+        this.errEmail = "";
+      };
+      if (!checkPasswordValidity) {
+        this.errPasswordVaridity = "※ 英数6字以上で入力してください";
+      } else {
+        this.errPasswordVaridity = "";
+      };
+      if (!checkPasswordMatch) {
+        this.errPasswordMatch = "※ パスワードが一致していません";
+      } else {
+        this.errPasswordMatch = "";
+      };
+      if (!checkCheckbox) {
+        this.errCheckbox = "※ 利用規約に同意してください";
+      } else {
+        this.errCheckbox = "";
+      };
+      if (checkPasswordValidity && checkPasswordMatch && checkName && checkEmail && checkCheckbox) {
+        this.openConfirmPopup();
       };
     },
     // 新規登録
@@ -113,11 +147,11 @@ export default {
         user_name: this.username,
       });
     },
-    // 編集ポップアップを開く
+    // 確認ポップアップを開く
     openConfirmPopup() {
       $('#confirmPopup').fadeIn();
     },
-    // 編集ポップアップを閉じる
+    // 確認ポップアップを閉じる
     closeConfirmPopup() {
       $('#confirmPopup').fadeOut();
     },
@@ -168,6 +202,18 @@ export default {
   top: 0.5rem;
   right: 1rem;
   cursor: pointer;
+}
+
+/* エラーメッセージ */
+.err {
+  margin-left: 4em;
+  color: red;
+  font-size: small;
+}
+
+.errCheckbox {
+  color: red;
+  font-size: small;
 }
 
 /* 確認ポップアップ内 */

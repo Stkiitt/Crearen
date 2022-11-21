@@ -9,7 +9,8 @@
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <button type="button" class="btn btn-dark">使い方</button>
+            <NuxtLink to="/manual" target="_blank" rel="noopener noreferrer"><button type="button"
+                class="btn btn-dark">使い方</button></NuxtLink>
           </li>
           <li class="nav-item ml-3">
             <button @click="logout()" type="button" class="btn btn-dark">ログアウト</button>
@@ -42,14 +43,14 @@
                     <p>優先度</p>
                     <p>
                       <select name="priority" v-model="priority" class="addInput">
-                        <option value="0">低</option>
-                        <option value="1" selected>中</option>
                         <option value="2">高</option>
+                        <option value="1" selected>中</option>
+                        <option value="0">低</option>
                       </select>
                     </p>
                     <p>期限</p>
                     <p>
-                      <input type=”text” name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="addInput">
+                      <input type="date" name=”deadline” v-model="deadline" class="addInput">
                     </p>
                     <p>
                       <button @click="addData()" class="btn btn-success">保存</button>
@@ -99,7 +100,7 @@
                     </p>
                     <p>期限</p>
                     <p>
-                      <input type="date" name=”deadline” placeholder="yyyy/mm/dd" v-model="deadline" class="editInput">
+                      <input type="date" name=”deadline” v-model="deadline" class="editInput">
                     </p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
