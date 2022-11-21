@@ -25,7 +25,7 @@
         <input type=”password” class="form-control mx-auto col-10" name=”passWordCheck” v-model="passwordcheck">
         <p class="err">{{ errPasswordMatch }}</p>
 
-        <p class="mt-2 text-center"><a href="./terms.html" target="_blank">利用規約</a>に同意しました。<input
+        <p class="mt-2 text-center"><NuxtLink class="ml-5" to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input
             type="checkbox" id="termsCheckbox"></p>
         <p class="errCheckbox text-center">{{ errCheckbox }}</p>
 
