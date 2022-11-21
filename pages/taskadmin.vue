@@ -9,7 +9,8 @@
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <button type="button" class="btn btn-dark">使い方</button>
+            <NuxtLink to="/manual" target="_blank" rel="noopener noreferrer"><button type="button"
+                class="btn btn-dark">使い方</button></NuxtLink>
           </li>
           <li class="nav-item ml-3">
             <button @click="logout()" type="button" class="btn btn-dark">ログアウト</button>
