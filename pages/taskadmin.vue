@@ -202,7 +202,7 @@ export default {
       tasks: [],
       name: "",
       memo: "",
-      priority: "",
+      priority: "中",
       deadline: "",
       taskid: "",
     }
