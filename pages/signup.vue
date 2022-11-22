@@ -9,12 +9,11 @@
       <div class="col-7 border mx-auto">
         <h3 class="text-center">アカウントの作成</h3>
         <label class="ml-5">ユーザー名</label>
-        <input type="text" class="form-control mx-auto col-10" placeholder="紅亜　連" v-model="username">
+        <input type="text" class="form-control mx-auto col-10" v-model="username">
         <p class="err">{{ errName }}</p>
 
         <label class="ml-5">メールアドレス</label>
-        <input type="email" class="form-control mx-auto col-10" placeholder="example@aaa.com"
-          v-model="email">
+        <input type="email" class="form-control mx-auto col-10" v-model="email">
         <p class="err">{{ errEmail }}</p>
 
         <label class="ml-5">パスワード (英数6文字以上)</label>
@@ -48,9 +47,9 @@
               <p><label class="ml-5">メールアドレス　：{{ email }}</label></p>
               <p><label class="ml-5 form-wrapper">パスワード　　　：{{ password }}</label></p>
               <p class="text-center mt-5"><button @click="signup()" id="confirmBtn"
-                  class="btn btn-success col-4">登録する</button></p>
+                  class="btn btn-success col-4">この内容で登録する</button></p>
               <p class="text-center"><button @click="closeConfirmPopup()" class="btn btn-danger col-4"
-                  id="backBtn">入力画面へ戻る</button></p>
+                  id="backBtn">修正する</button></p>
             </div>
           </div>
         </div>

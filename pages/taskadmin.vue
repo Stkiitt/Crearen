@@ -43,9 +43,9 @@
                     <p>優先度</p>
                     <p>
                       <select v-model="priority" class="addInput">
-                        <option value="2">高</option>
-                        <option value="1" selected>中</option>
-                        <option value="0">低</option>
+                        <option value="高">高</option>
+                        <option value="中" selected>中</option>
+                        <option value="低">低</option>
                       </select>
                     </p>
                     <p>期限</p>
@@ -53,7 +53,7 @@
                       <input type="date" v-model="deadline" class="addInput">
                     </p>
                     <p>
-                      <button @click="addData()" class="btn btn-success">保存</button>
+                      <button @click="addData()" class="btn btn-success">タスクを追加する</button>
                     </p>
                 </div>
                 <div @click="closeAddPopup()" class="closeModal">
@@ -70,7 +70,7 @@
                 v-bind:class="changeBorderColor(task.priority)" class="cursorPointer">
                 <h4 class="task-title">{{ task.name }}</h4>
                 <span class="task-content">期限：　{{ task.deadline }}</span>
-                <span class="task-content">優先度：　{{ priorityToStr(task.priority) }}</span>
+                <span class="task-content">優先度：　{{ task.priority }}</span>
               </div>
               <!-- タスク表示ここまで -->
 
@@ -91,9 +91,9 @@
                     <p>優先度</p>
                     <p>
                       <select v-model="priority" class="editInput">
-                        <option value="2">高</option>
-                        <option value="1" selected>中</option>
-                        <option value="0">低</option>
+                        <option value="高">高</option>
+                        <option value="中" selected>中</option>
+                        <option value="低">低</option>
                       </select>
                     </p>
                     <p>期限</p>
@@ -101,7 +101,7 @@
                       <input type="date" v-model="deadline" class="editInput">
                     </p>
                     <p>
-                      <button @click="updateData(taskid)" class="btn btn-warning">保存</button>
+                      <button @click="updateData(taskid)" class="btn btn-warning">編集を保存する</button>
                       <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
                     </p>
                   </div>
@@ -115,7 +115,9 @@
             <!-- 繰り返しここまで -->
 
             <!-- this.tasksが空ならタスクがありませんを表示 -->
-            <!-- <p>タスクがありません</p> -->
+            <div v-if="!tasks.length">
+              <p id="noTasks">タスクがありません</p>
+            </div>
 
           </div>
         </div>
@@ -200,7 +202,7 @@ export default {
       tasks: [],
       name: "",
       memo: "",
-      priority: 1,
+      priority: "中",
       deadline: "",
       taskid: "",
     }
@@ -251,7 +253,7 @@ export default {
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
-        priority: Number(this.priority),
+        priority: this.priority,
         uid: this.uid,
       });
       this.getTasks();
@@ -259,7 +261,7 @@ export default {
       this.deadline = "";
       this.memo = "";
       this.name = "";
-      this.priority = 1;
+      this.priority = "";
     },
 
     // データの上書き（編集ポップアップ用）
@@ -269,7 +271,7 @@ export default {
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
-        priority: Number(this.priority),
+        priority: this.priority,
         uid: this.uid,
       });
       this.getTasks();
@@ -304,28 +306,18 @@ export default {
       $('#editTask').fadeOut();
       this.name = "";
       this.memo = "";
-      this.priority = 1;
+      this.priority = "";
       this.deadline = "";
       this.taskid = "";
     },
     // タスクの枠の色
     changeBorderColor(priority) {
-      if (priority == 2) {
+      if (priority == "高") {
         return "border border-danger my-3";
-      } else if (priority == 1) {
+      } else if (priority == "中") {
         return "border border-warning my-3";
       } else {
         return "border my-3";
-      };
-    },
-    // priorityを文字に変換
-    priorityToStr(priority) {
-      if (priority == 2) {
-        return "高";
-      } else if (priority == 1) {
-        return "中";
-      } else {
-        return "低";
       };
     },
   }
@@ -343,6 +335,12 @@ export default {
 
 #ToDo {
   display: inline;
+}
+
+#noTasks {
+  margin: 10% 0 10% 34%;
+  font-size: large;
+  font-weight: bold;
 }
 
 .button-add {
