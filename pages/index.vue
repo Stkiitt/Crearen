@@ -17,8 +17,32 @@
     </nav>
     <NuxtLink to="index.vue"></NuxtLink>
 
-    <div id="image">
-      <img src="~/assets/top/犬.jpg" alt="犬">
+    <div class="wrap">
+
+      <!-- メインのスライダー -->
+      <div class="swiper slider">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <img style="width: 100%;" src="../assets/top/犬.jpg" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img style="width: 100%;" src="../assets/top/猫.jpg" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img style="width: 100%;" src="../assets/top/豚.png" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img style="width: 100%;" src="../assets/top/猫.jpg" alt="" />
+          </div>
+          <div class="swiper-slide">
+            <img style="width: 100%;" src="../assets/top/犬.jpg" alt="" />
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+        <!-- 前後の矢印 -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+      </div>
     </div>
 
     <div class="container mt-5">
@@ -32,12 +56,17 @@
           <div class="m-2 p-3 border">
             <h2 class="my-4">ログイン</h2>
             <label>メールアドレス</label>
-            <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" v-model="email">
+            <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email"
+              v-model="email">
             <label>パスワード</label>
             <input type="password" class="form-control" placeholder="PassWord" v-model="password">
             <button @click="login()" class="btn btn-primary mt-3">ログイン</button>
-            <NuxtLink to="/forgot" target="_blank"><p class="mt-3">パスワードを忘れた</p></NuxtLink>
-            <p><NuxtLink to="/signup" target="_blank" rel="noopener noreferrer">新規登録</NuxtLink></p>
+            <NuxtLink to="/forgot" target="_blank">
+              <p class="mt-3">パスワードを忘れた</p>
+            </NuxtLink>
+            <p>
+              <NuxtLink to="/signup" target="_blank" rel="noopener noreferrer">新規登録</NuxtLink>
+            </p>
           </div>
 
         </div>
@@ -101,6 +130,22 @@
 <script>
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
+  head() {
+    return {
+      title: "タスク管理画面",
+      script: [
+        {
+          src: "https://unpkg.com/swiper/swiper-bundle.min.js"
+        },
+      ],
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://unpkg.com/swiper/swiper-bundle.min.css"
+        },
+      ],
+    }
+  },
   data() {
     return {
       email: "",
@@ -116,9 +161,22 @@ export default {
     }
   },
   mounted() {
+    const swiper = new Swiper(".swiper", {
+      loop: true,
+      // ページネーション
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+      // 前後の矢印
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+    });;
   },
   methods: {
-    login(){
+    login() {
       const auth = getAuth(this.$app);
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
@@ -129,7 +187,7 @@ export default {
           // ログイン失敗
           const errorCode = error.code;
           const errorMessage = error.message;
-          alert(errorCode+","+errorMessage);
+          alert(errorCode + "," + errorMessage);
         });
     },
   }
@@ -137,21 +195,36 @@ export default {
 </script>
 
 <style>
-.splide__slide img {
-  width: 100%;
-  height: auto;
-}
-
-#logo{
+#logo {
   width: 9em;
 }
 
-#image{
-  text-align: center; 
+#image {
+  text-align: center;
   width: 100%;
 }
 
-#copyright{
+#copyright {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.swiper-slide img {
+  height: auto;
+  width: 100%;
+}
+
+/* ページネーションのサイズと色 */
+.swiper-pagination-bullet {
+  background-color: orange;
+  height: 10px;
+  width: 10px;
+}
+
+.swiper-button-next {
+  color: orange;
+}
+
+.swiper-button-prev {
+  color: orange;
 }
 </style>
