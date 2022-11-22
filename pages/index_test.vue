@@ -8,9 +8,9 @@
     <p>
       優先度
       <select v-model="priority">
-        <option value="2">高</option>
-        <option value="1" selected>中</option>
-        <option value="0">低</option>
+        <option value="高">高</option>
+        <option value="中" selected>中</option>
+        <option value="低">低</option>
       </select>
     </p>
     <p>
@@ -53,7 +53,7 @@ export default {
       deadline: "",
       memo: "",
       name: "",
-      priority: 1,
+      priority: "",
     }
   },
   mounted() {
@@ -88,14 +88,14 @@ export default {
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
-        priority: Number(this.priority),
+        priority: this.priority,
         uid: this.uid,
       });
       console.log("Document written with ID: ", docRef.id);
       this.deadline = "";
       this.memo = "";
       this.name = "";
-      this.priority = 1;
+      this.priority = "";
     },
 
     async getTasks() {
@@ -119,7 +119,7 @@ export default {
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
-        priority: Number(this.priority),
+        priority: this.priority ,
         uid: this.uid,
       });
 
