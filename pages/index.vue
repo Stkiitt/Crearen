@@ -132,7 +132,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 export default {
   head() {
     return {
-      title: "タスク管理画面",
+      title: "トップページ",
       script: [
         {
           src: "https://unpkg.com/swiper/swiper-bundle.min.js"
@@ -150,18 +150,17 @@ export default {
     return {
       email: "",
       password: "",
-      swiperOption: {
-        autoplay: {
-          delay: 2500,
-          disableOnInteraction: false,
-        },
-        slidesPerView: 1,
-        loop: true,
-      },
     }
   },
   mounted() {
+    // 画像スライドの設定
     const swiper = new Swiper(".swiper", {
+      autoplay: {
+        delay: 3000,
+        disableOnInteraction: false,
+      },
+      speed: 1000,
+      spaceBetween: 20,
       loop: true,
       // ページネーション
       pagination: {
@@ -206,6 +205,11 @@ export default {
 
 #copyright {
   background-color: rgba(0, 0, 0, 0.05);
+}
+
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .swiper-slide img {
