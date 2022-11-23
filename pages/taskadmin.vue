@@ -261,7 +261,7 @@ export default {
       this.deadline = "";
       this.memo = "";
       this.name = "";
-      this.priority = "";
+      this.priority = "中";
     },
 
     // データの上書き（編集ポップアップ用）
@@ -306,7 +306,7 @@ export default {
       $('#editTask').fadeOut();
       this.name = "";
       this.memo = "";
-      this.priority = "";
+      this.priority = "中";
       this.deadline = "";
       this.taskid = "";
     },
