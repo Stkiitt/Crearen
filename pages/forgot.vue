@@ -29,6 +29,22 @@
 <script>
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 export default {
+  head() {
+    return {
+      title: "パスワード再設定",
+      script: [
+        {
+          src: "https://unpkg.com/swiper/swiper-bundle.min.js"
+        },
+      ],
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://unpkg.com/swiper/swiper-bundle.min.css"
+        },
+      ],
+    }
+  },
   data() {
     return {
       email: "",

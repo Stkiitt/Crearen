@@ -74,6 +74,22 @@
 
 <script>
 export default {
+  head() {
+    return {
+      title: "ヘルプページ",
+      script: [
+        {
+          src: "https://unpkg.com/swiper/swiper-bundle.min.js"
+        },
+      ],
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://unpkg.com/swiper/swiper-bundle.min.css"
+        },
+      ],
+    }
+  },
   data() {
     return {
     }

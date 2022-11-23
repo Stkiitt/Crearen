@@ -24,8 +24,9 @@
         <input type="password" class="form-control mx-auto col-10" v-model="passwordcheck">
         <p class="err">{{ errPasswordMatch }}</p>
 
-        <p class="mt-2 text-center"><NuxtLink to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input
-            type="checkbox" id="termsCheckbox"></p>
+        <p class="mt-2 text-center">
+          <NuxtLink to="/terms" target="_blank">利用規約</NuxtLink>に同意しました。<input type="checkbox" id="termsCheckbox">
+        </p>
         <p class="errCheckbox text-center">{{ errCheckbox }}</p>
 
         <p class="text-center"><button @click="checkData()" class="btn btn-success" id="confirmBtn">確認画面へ進む</button>
@@ -65,11 +66,20 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 export default {
   head() {
     return {
-      title: "新規登録画面",
+      title: "新規登録",
       script: [
         {
           type: "text/javascript",
           src: "//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+        },
+        {
+          src: "https://unpkg.com/swiper/swiper-bundle.min.js"
+        },
+      ],
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://unpkg.com/swiper/swiper-bundle.min.css"
         },
       ],
     }
