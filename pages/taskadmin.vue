@@ -32,29 +32,29 @@
               <div class="modalWrapper">
                 <div class="addContents">
                   <h1>タスクの追加</h1>
-                    <p>タスク名</p>
-                    <p>
-                      <input type="text" v-model="name" class="addInput">
-                    </p>
-                    <p>メモ</p>
-                    <p>
-                      <textarea v-model="memo" class="addInput"></textarea>
-                    </p>
-                    <p>優先度</p>
-                    <p>
-                      <select v-model="priority" class="addInput">
-                        <option value="高">高</option>
-                        <option value="中" selected>中</option>
-                        <option value="低">低</option>
-                      </select>
-                    </p>
-                    <p>期限</p>
-                    <p>
-                      <input type="date" v-model="deadline" class="addInput">
-                    </p>
-                    <p>
-                      <button @click="addData()" class="btn btn-success">タスクを追加する</button>
-                    </p>
+                  <p>タスク名</p>
+                  <p>
+                    <input type="text" v-model="name" class="addInput">
+                  </p>
+                  <p>メモ</p>
+                  <p>
+                    <textarea v-model="memo" class="addInput"></textarea>
+                  </p>
+                  <p>優先度</p>
+                  <p>
+                    <select v-model="priority" class="addInput">
+                      <option value="高">高</option>
+                      <option value="中" selected>中</option>
+                      <option value="低">低</option>
+                    </select>
+                  </p>
+                  <p>期限</p>
+                  <p>
+                    <input type="date" v-model="deadline" class="addInput">
+                  </p>
+                  <p>
+                    <button @click="addData()" class="btn btn-success">タスクを追加する</button>
+                  </p>
                 </div>
                 <div @click="closeAddPopup()" class="closeModal">
                   ☓
@@ -69,8 +69,11 @@
               <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
                 v-bind:class="changeBorderColor(task.priority)" class="cursorPointer">
                 <h4 class="task-title">{{ task.name }}</h4>
-                <span class="task-content">期限：　{{ task.deadline }}</span>
-                <span class="task-content">優先度：　{{ task.priority }}</span>
+                <div class="test">
+                  <span class="task-content">期限：{{ task.deadline }}</span>
+                  <span class="task-content">優先度：{{ task.priority }}</span>
+                  <img id="complete" class="task-content" src="../assets/check/check.png">
+                </div>
               </div>
               <!-- タスク表示ここまで -->
 
@@ -124,7 +127,7 @@
 
         <div class="col-4">
           <div class="m-2 p-3 border">
-            <h2 class="my-4">遊び要素</h2>
+            <h2>遊び要素</h2>
           </div>
         </div>
       </div>
@@ -334,6 +337,13 @@ export default {
 </script>
 
 <style>
+.test{
+  position: absolute;
+  display: flex;
+  right: 0%;
+  width: 50%;
+}
+
 #logo {
   width: 9em;
 }
@@ -370,17 +380,38 @@ export default {
   line-height: 2.5em;
   margin: 0;
   padding-left: 1em;
-  display: inline;
+  display: block;
+  width: 50%;
 }
 
 .task-content {
-  float: right;
-  margin-right: 3em;
+  /* float: right; */
+  right: 0em;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 2em;
   line-height: 4em;
+  text-align: right;
+}
+
+.task-content:last-child{
+  position: absolute;
+  right: 0;
+  margin-right: 1em;
 }
 
 .cursorPointer {
-  cursor: pointer
+  position: relative;
+  cursor: pointer;
+  display: flex;
+}
+
+/* .cursorPointer>div:last-of-type{
+  margin-left: auto;
+} */
+
+#complete {
+  height: 2em;
 }
 
 /* モーダルCSS */
@@ -423,6 +454,7 @@ export default {
 .addContents {
   padding: 2em;
 }
+
 .addInput {
   border: 1px solid gray;
 }
