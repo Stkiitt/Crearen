@@ -32,29 +32,29 @@
               <div class="modalWrapper">
                 <div class="addContents">
                   <h1>タスクの追加</h1>
-                    <p>タスク名</p>
-                    <p>
-                      <input type="text" v-model="name" class="addInput">
-                    </p>
-                    <p>メモ</p>
-                    <p>
-                      <textarea v-model="memo" class="addInput"></textarea>
-                    </p>
-                    <p>優先度</p>
-                    <p>
-                      <select v-model="priority" class="addInput">
-                        <option value="高">高</option>
-                        <option value="中" selected>中</option>
-                        <option value="低">低</option>
-                      </select>
-                    </p>
-                    <p>期限</p>
-                    <p>
-                      <input type="date" v-model="deadline" class="addInput">
-                    </p>
-                    <p>
-                      <button @click="addData()" class="btn btn-success">タスクを追加する</button>
-                    </p>
+                  <p>タスク名</p>
+                  <p>
+                    <input type="text" v-model="name" class="addInput">
+                  </p>
+                  <p>メモ</p>
+                  <p>
+                    <textarea v-model="memo" class="addInput"></textarea>
+                  </p>
+                  <p>優先度</p>
+                  <p>
+                    <select v-model="priority" class="addInput">
+                      <option value="高">高</option>
+                      <option value="中" selected>中</option>
+                      <option value="低">低</option>
+                    </select>
+                  </p>
+                  <p>期限</p>
+                  <p>
+                    <input type="date" v-model="deadline" class="addInput">
+                  </p>
+                  <p>
+                    <button @click="addData()" class="btn btn-success">タスクを追加する</button>
+                  </p>
                 </div>
                 <div @click="closeAddPopup()" class="closeModal">
                   ☓
@@ -124,7 +124,7 @@
 
         <div class="col-4">
           <div class="m-2 p-3 border">
-            <h2 class="my-4">遊び要素</h2>
+            <h2>遊び要素</h2>
           </div>
         </div>
       </div>
@@ -293,6 +293,20 @@ export default {
       this.getTasks();
       this.closeEditPopup();
     },
+    // タスク完了ボタン
+    async completeButton(name, memo, priority, deadline, taskid) {
+      const db = getFirestore(this.$app);
+      await addDoc(collection(db, "task_completed"), {
+        deadline: deadline,
+        memo: memo,
+        name: name,
+        priority: priority,
+        uid: this.uid,
+      });
+      await deleteDoc(doc(db, "task", taskid));
+      this.getTasks();
+    },
+
     // 追加ポップアップを開く
     openAddPopup() {
       $('#addTask').fadeIn();
@@ -334,6 +348,14 @@ export default {
 </script>
 
 <style>
+#test{
+  width: 80%;
+}
+
+#complete {
+  height: 2em;
+}
+
 #logo {
   width: 9em;
 }
@@ -423,6 +445,7 @@ export default {
 .addContents {
   padding: 2em;
 }
+
 .addInput {
   border: 1px solid gray;
 }
