@@ -66,14 +66,16 @@
             <!-- 繰り返しここから -->
             <section v-for="task in tasks" :key="task.tid">
               <!-- タスク表示ここから -->
-              <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
-                v-bind:class="changeBorderColor(task.priority)" class="cursorPointer">
-                <h4 class="task-title">{{ task.name }}</h4>
-                <div class="test">
-                  <span class="task-content">期限：{{ task.deadline }}</span>
+              <div v-bind:class="changeBorderColor(task.priority)" class="task">
+                <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                  class="task-content-group">
+                  <h4 class="task-title">{{ task.name }}</h4>
+                  <span v-if="task.deadline" v-bind:class="changeDeadlineColor(task.deadline)" class="task-content">
+                    期限：{{ task.deadline }}</span>
                   <span class="task-content">優先度：{{ task.priority }}</span>
-                  <img id="complete" class="task-content" src="../assets/check/check.png">
                 </div>
+                <span class="task-comp"><img @click="completeButton(name, memo, priority, deadline, taskid)"
+                    id="complete" src="../assets/check/check.png"></span>
               </div>
               <!-- タスク表示ここまで -->
 
@@ -296,6 +298,20 @@ export default {
       this.getTasks();
       this.closeEditPopup();
     },
+
+    // タスク完了ボタン
+    async completeButton(name, memo, priority, deadline, taskid) {
+      const db = getFirestore(this.$app);
+      await addDoc(collection(db, "task_completed"), {
+        deadline: deadline,
+        memo: memo,
+        name: name,
+        priority: priority,
+        uid: this.uid,
+      });
+      await deleteDoc(doc(db, "task", taskid));
+      this.getTasks();
+    },
     // 追加ポップアップを開く
     openAddPopup() {
       $('#addTask').fadeIn();
@@ -325,11 +341,25 @@ export default {
     // タスクの枠の色
     changeBorderColor(priority) {
       if (priority == "高") {
-        return "border border-danger my-3";
+        return "border border-danger high-p my-3";
       } else if (priority == "中") {
-        return "border border-warning my-3";
+        return "border border-warning middle-p my-3";
       } else {
-        return "border my-3";
+        return "border low-p my-3";
+      };
+    },
+    // 期限の色
+    changeDeadlineColor(deadline) {
+      const deadlineChecked = Number(deadline.replace(/-/g, ''));
+      const todayData = new Date();
+      const year = todayData.getFullYear();
+      const month = todayData.getMonth() + 1;
+      const date = todayData.getDate();
+      const today = year * 10000 + month * 100 + date;
+      if (deadlineChecked < today) {
+        return "task-content deadline-red";
+      } else {
+        return "task-content";
       };
     },
   }
@@ -337,13 +367,6 @@ export default {
 </script>
 
 <style>
-.test{
-  position: absolute;
-  display: flex;
-  right: 0%;
-  width: 50%;
-}
-
 #logo {
   width: 9em;
 }
@@ -373,45 +396,62 @@ export default {
 }
 
 .task {
-  height: 3em;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.task-content-group {
+  display: flex;
+  width: 90%;
 }
 
 .task-title {
-  line-height: 2.5em;
-  margin: 0;
+  position: block;
+  left: 0;
+  margin: auto 1em auto 0;
   padding-left: 1em;
   display: block;
   width: 50%;
 }
 
 .task-content {
-  /* float: right; */
-  right: 0em;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 2em;
-  line-height: 4em;
-  text-align: right;
+  position: relative;
+  display: block;
+  right: 0;
+  margin: auto 2em auto auto;
 }
 
-.task-content:last-child{
-  position: absolute;
-  right: 0;
+.task-content:last-child {
   margin-right: 1em;
 }
 
-.cursorPointer {
-  position: relative;
-  cursor: pointer;
-  display: flex;
+.task-comp {
+  padding-left: 1em;
+  margin: auto 1em auto auto;
 }
 
-/* .cursorPointer>div:last-of-type{
-  margin-left: auto;
-} */
-
 #complete {
-  height: 2em;
+  height: 2.5em;
+}
+
+/* タスク表示 */
+.high-p {
+  border: 1px solid red;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.middle-p {
+  border: 1px solid yellow;
+  background-color: rgba(255, 250, 0, 0.1);
+}
+
+/* .low-p {
+} */
+.deadline-red {
+  color: red;
 }
 
 /* モーダルCSS */
