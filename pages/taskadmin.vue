@@ -298,7 +298,6 @@ export default {
       this.getTasks();
       this.closeEditPopup();
     },
-
     // タスク完了ボタン
     async completeButton(name, memo, priority, deadline, taskid) {
       const db = getFirestore(this.$app);
@@ -367,6 +366,14 @@ export default {
 </script>
 
 <style>
+#test{
+  width: 80%;
+}
+
+#complete {
+  height: 2em;
+}
+
 #logo {
   width: 9em;
 }
