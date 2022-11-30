@@ -47,12 +47,14 @@
 
     <div class="container mt-5">
       <div class="row">
+        <!-- お知らせ -->
         <div class="col-7">
           <div class="m-2 p-3 border">
             <h2 class="my-4">お知らせ</h2>
           </div>
         </div>
-        <div class="col-5">
+        <!-- ログインしていないとき -->
+        <div v-if="!loggedIn" class="col-5">
           <div class="m-2 p-3 border">
             <h2 class="my-4">ログイン</h2>
             <label>メールアドレス</label>
@@ -68,7 +70,15 @@
               <NuxtLink to="/signup" target="_blank" rel="noopener noreferrer">新規登録</NuxtLink>
             </p>
           </div>
-
+        </div>
+        <!-- ログイン済み -->
+        <div v-if="loggedIn" class="col-5 text-center">
+          <div class="m-2 p-3 border">
+            <h2 class="my-4">ログイン済みです</h2>
+            <p>
+              <NuxtLink to="/taskadmin" class="btn btn-success" rel="noopener noreferrer">タスク管理画面へ</NuxtLink>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -150,6 +160,7 @@ export default {
     return {
       email: "",
       password: "",
+      loggedIn: false,
     }
   },
   mounted() {
@@ -173,8 +184,18 @@ export default {
         prevEl: ".swiper-button-prev",
       },
     });;
+    this.checkLogin();
   },
   methods: {
+    // ログインの確認
+    checkLogin() {
+      const auth = getAuth(this.$app);
+      const user = auth.currentUser;
+      if (user) {
+        this.loggedIn = true;
+      }
+    },
+    // ログイン機能
     login() {
       const auth = getAuth(this.$app);
       signInWithEmailAndPassword(auth, this.email, this.password)
