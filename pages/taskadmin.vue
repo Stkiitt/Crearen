@@ -22,7 +22,7 @@
     <div class="container mt-5">
       <h2>タスク管理画面</h2>
       <div class="row">
-        <div class="col-8">
+        <div class="col-xl-8 order-xl-1 col-12 order-2">
           <div class="m-2 p-3 border">
             <h2 class="my-4" id="ToDo">ToDo</h2>
             <button @click="openAddPopup()" class="button-add">＋追加</button>
@@ -74,8 +74,9 @@
                     期限：{{ task.deadline }}</span>
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
-                <span class="task-comp"><img @click="completeButton(name, memo, priority, deadline, taskid)"
-                    id="complete" src="../assets/check/check.png"></span>
+                <span class="task-comp"><img
+                    @click="completeButton(task.name, task.memo, task.priority, task.deadline, task.tid)" id="complete"
+                    src="../assets/check/check.png"></span>
               </div>
               <!-- タスク表示ここまで -->
 
@@ -127,7 +128,7 @@
           </div>
         </div>
 
-        <div class="col-4">
+        <div class="col-xl-4 order-xl-2 col-12 order-1">
           <div class="m-2 p-3 border">
             <h2>遊び要素</h2>
           </div>
@@ -258,7 +259,6 @@ export default {
         this.tasks.push(task);
       });
     },
-
     async addData() {
       const db = getFirestore(this.$app);
       // データの追加
@@ -277,7 +277,6 @@ export default {
       this.name = "";
       this.priority = "中";
     },
-
     // データの上書き（編集ポップアップ用）
     async updateData(taskid) {
       const db = getFirestore(this.$app);
@@ -345,7 +344,7 @@ export default {
         return "border border-warning middle-p my-3";
       } else {
         return "border low-p my-3";
-      };
+      }
     },
     // 期限の色
     changeDeadlineColor(deadline) {
@@ -359,17 +358,13 @@ export default {
         return "task-content deadline-red";
       } else {
         return "task-content";
-      };
+      }
     },
   }
 }
 </script>
 
 <style>
-#test{
-  width: 80%;
-}
-
 #complete {
   height: 2em;
 }
@@ -438,10 +433,6 @@ export default {
 .task-comp {
   padding-left: 1em;
   margin: auto 1em auto auto;
-}
-
-#complete {
-  height: 2.5em;
 }
 
 /* タスク表示 */
