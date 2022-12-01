@@ -74,11 +74,28 @@
                     期限：{{ task.deadline }}</span>
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
-                <span class="task-comp"><img
-                    @click="completeButton(task.name, task.memo, task.priority, task.deadline, task.tid)" id="complete"
-                    src="../assets/check/check.png"></span>
+                <span class="task-comp">
+                  <img  @click="completeCheckAlert(task)" id="complete"
+                    src="../assets/check/check.png">
+                </span>
               </div>
               <!-- タスク表示ここまで -->
+
+              <!-- タスク完了ポップアップここから -->
+              <!-- <section id="CompTask" class="modalArea">
+                <div class="modalBg"></div>
+                <div class="modalWrapper">
+                  <div class="compContents">
+                    <p>タスクを完了しますか？</p>
+                    <p>
+                      <button @click="completeButton(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                       class="btn btn-warning">はい</button>
+                      <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
+                    </p>
+                  </div>
+                </div>
+              </section> -->
+              <!-- タスク完了ポップアップここまで -->
 
               <!-- 編集ポップアップ内容ここから -->
               <section id="editTask" class="modalArea">
@@ -336,7 +353,28 @@ export default {
       this.deadline = "";
       this.taskid = "";
     },
+    // タスク完了ポップアップを開く
+    //保留⇒アラートを試す
+    // openCompPopup(){
+    //   $('#CompTask').fadeIn();
+    // },
+    // // タスク完了ポップアップを閉じる
+    // closeCompPopup(){
+    //   $('#CompTask').fadeOut();
+    // },
     // タスクの枠の色
+    completeCheckAlert(task){
+      if(confirm("タスクを完了しますか？")){
+        this.completeButton(
+          task.name, 
+          task.memo, 
+          task.priority, 
+          task.deadline, 
+          task.tid)
+      }else{
+        alert("キャンセルしました")
+      }
+    },
     changeBorderColor(priority) {
       if (priority == "高") {
         return "border border-danger high-p my-3";
@@ -367,6 +405,11 @@ export default {
 <style>
 #complete {
   height: 2em;
+}
+
+#complete:hover {
+  transform: scale(1.4, 1.4);
+  filter: opacity(30%);;
 }
 
 #logo {
@@ -496,6 +539,18 @@ export default {
 .addInput {
   border: 1px solid gray;
 }
+
+/* 完了ポップアップ 
+保留⇒アラートを試す
+
+#CompTask .modalWrapper{
+  max-width: 250px;
+}
+
+.compContents{
+  padding: 5px;
+  text-align: center;
+} */
 
 /* 編集ポップアップ内 */
 .editContents {
