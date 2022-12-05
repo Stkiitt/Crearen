@@ -74,11 +74,33 @@
                     期限：{{ task.deadline }}</span>
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
-                <span class="task-comp"><img
-                    @click="completeButton(task.name, task.memo, task.priority, task.deadline, task.tid)" id="complete"
-                    src="../assets/check/check.png"></span>
+                <span class="task-comp">
+                  <img  @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid)" id="complete"
+                    src="../assets/check/check.png">
+                </span>
               </div>
               <!-- タスク表示ここまで -->
+
+              <!-- タスク完了ポップアップここから -->
+              <section id="CompTask" class="modalArea">
+                <div class="modalBg"></div>
+                <div class="modalWrapper">
+                  <div class="compContents">
+                    <span hidden>{{ name }}</span>
+                    <span hidden>{{ memo }}</span>
+                    <span hidden>{{ priority }}</span>
+                    <span hidden>{{ deadline }}</span>
+                    <span hidden>{{ taskid }}</span>
+                    <p>タスクを完了しますか？</p>
+                    <p>
+                      <button @click="completeButton(name, memo, priority, deadline, taskid)"
+                       class="btn btn-warning">はい</button>
+                      <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
+                    </p>
+                  </div>
+                </div>
+              </section>
+              <!-- タスク完了ポップアップここまで -->
 
               <!-- 編集ポップアップ内容ここから -->
               <section id="editTask" class="modalArea">
@@ -300,7 +322,13 @@ export default {
     // タスク完了ボタン
     async completeButton(name, memo, priority, deadline, taskid) {
       const db = getFirestore(this.$app);
+      const todayData = new Date();
+      const year = todayData.getFullYear();
+      const month = todayData.getMonth() + 1;
+      const date = todayData.getDate();
+      const today = year * 10000 + month * 100 + date;
       await addDoc(collection(db, "task_completed"), {
+        date: today,
         deadline: deadline,
         memo: memo,
         name: name,
@@ -309,6 +337,7 @@ export default {
       });
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
+      this.closeCompPopup();
     },
     // 追加ポップアップを開く
     openAddPopup() {
@@ -336,7 +365,20 @@ export default {
       this.deadline = "";
       this.taskid = "";
     },
-    // タスクの枠の色
+    //タスク完了ポップアップを開く
+    openCompPopup(name, memo, priority, deadline, taskid){
+      this.name = name;
+      this.memo = memo;
+      this.priority = priority;
+      this.deadline = deadline;
+      this.taskid = taskid;
+      $('#CompTask').fadeIn();
+    },
+    // タスク完了ポップアップを閉じる
+    closeCompPopup(){
+      $('#CompTask').fadeOut();
+    },
+    //タスクの枠の色
     changeBorderColor(priority) {
       if (priority == "高") {
         return "border border-danger high-p my-3";
@@ -367,6 +409,11 @@ export default {
 <style>
 #complete {
   height: 2em;
+}
+
+#complete:hover {
+  transform: scale(1.4, 1.4);
+  filter: opacity(30%);;
 }
 
 #logo {
@@ -495,6 +542,16 @@ export default {
 
 .addInput {
   border: 1px solid gray;
+}
+
+/* 完了ポップアップ */
+#CompTask .modalWrapper{
+  max-width: 250px;
+}
+
+.compContents{
+  padding: 5px;
+  text-align: center;
 }
 
 /* 編集ポップアップ内 */
