@@ -86,11 +86,6 @@
                 <div @click="closeCompPopup()" class="modalBg"></div>
                 <div class="modalWrapper">
                   <div class="compContents">
-                    <!-- <span hidden>{{ name }}</span>
-                    <span hidden>{{ memo }}</span>
-                    <span hidden>{{ priority }}</span>
-                    <span hidden>{{ deadline }}</span>
-                    <span hidden>{{ taskid }}</span> -->
                     <p>タスクを完了しますか？</p>
                     <p>
                       <button @click="completeButton(name, memo, priority, deadline, taskid)"
