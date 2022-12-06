@@ -83,14 +83,14 @@
 
               <!-- タスク完了ポップアップここから -->
               <section id="CompTask" class="modalArea">
-                <div class="modalBg"></div>
+                <div @click="closeCompPopup()" class="modalBg"></div>
                 <div class="modalWrapper">
                   <div class="compContents">
-                    <span hidden>{{ name }}</span>
+                    <!-- <span hidden>{{ name }}</span>
                     <span hidden>{{ memo }}</span>
                     <span hidden>{{ priority }}</span>
                     <span hidden>{{ deadline }}</span>
-                    <span hidden>{{ taskid }}</span>
+                    <span hidden>{{ taskid }}</span> -->
                     <p>タスクを完了しますか？</p>
                     <p>
                       <button @click="completeButton(name, memo, priority, deadline, taskid)"
@@ -329,10 +329,10 @@ export default {
       const today = year * 10000 + month * 100 + date;
       await addDoc(collection(db, "task_completed"), {
         date: today,
-        deadline: deadline,
-        memo: memo,
-        name: name,
-        priority: priority,
+        deadline: this.deadline,
+        memo: this.memo,
+        name: this.name,
+        priority: this.priority,
         uid: this.uid,
       });
       await deleteDoc(doc(db, "task", taskid));
@@ -377,6 +377,11 @@ export default {
     // タスク完了ポップアップを閉じる
     closeCompPopup(){
       $('#CompTask').fadeOut();
+      this.name = "";
+      this.memo = "";
+      this.priority = "中";
+      this.deadline = "";
+      this.taskid = "";
     },
     //タスクの枠の色
     changeBorderColor(priority) {
