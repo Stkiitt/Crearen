@@ -9,57 +9,14 @@
     </nav>
     <h1 class="title mt-5"> 進行中のミッション</h1>
     <div class="container mt-2 mission">
-      <div id="achievement">
+      <div v-for="achievement in achievements" id="achievement">
         <div class="row">
-          <h4 id="taskTitle">タスクを{{achievement[0][0]}}回達成する</h4>
-          <h4 id="progress">{{achievement[0][1]}}/{{achievement[0][0]}}</h4>
+          <h4 id="taskTitle">{{ achievement[2] }}<span class="complete">{{ achievement[4] }}</span></h4>
+          <h4 id="progress">{{ achievement[1] }}/{{ achievement[0] }}</h4>
         </div>
-        <h4 id="taskStar">{{achievement[0][2]}}</h4>
-      </div>
-      <div id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">難易度「低」のタスクを{{achievement[1][0]}}回達成する</h4>
-          <h4 id="progress">{{achievement[1][1]}}/{{achievement[1][0]}}</h4>
-        </div>
-        <h4 id="taskStar">{{achievement[1][2]}}</h4>
-      </div>
-      <div id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">難易度「中」のタスクを{{achievement[2][0]}}回達成する</h4>
-          <h4 id="progress">{{achievement[2][1]}}/{{achievement[2][0]}}</h4>
-        </div>
-        <h4 id="taskStar">{{achievement[2][2]}}</h4>
-      </div>
-      <div id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">難易度「高」のタスクを{{achievement[3][0]}}回達成する</h4>
-          <h4 id="progress">{{achievement[3][1]}}/{{achievement[3][0]}}</h4>
-        </div>
-        <h4 id="taskStar">{{achievement[3][2]}}</h4>
-      </div>
-      <div id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">ログイン日数</h4>
-          <h4 id="progress">{{achievement[4][1]}}/{{achievement[4][0]}}</h4>
-        </div>
-        <h4 id="taskStar">{{achievement[4][2]}}</h4>
-      </div> 
-      <div id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">期限前にタスクを完了する</h4>
-          <h4 id="progress">{{achievement[5][1]}}/{{achievement[5][0]}}</h4>
-        </div>
-        <h4 id="taskStar">{{achievement[5][2]}}</h4>
-      </div>
-      <div id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">タスクを失敗する</h4>
-          <h4 id="progress">{{achievement[6][1]}}/{{achievement[6][0]}}</h4>
-        </div>
-        <h4 id="taskStar">{{achievement[6][2]}}</h4>
+        <h4 id="taskStar">{{ achievement[3] }}</h4>
       </div>
     </div>
-
     <div class="text-center">
       <button type="button" class="btn btn-danger mt-3 mb-3" onclick="window.close();">閉じる</button>
     </div>
@@ -68,6 +25,8 @@
 </template>
 
 <script>
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   head() {
     return {
@@ -87,23 +46,101 @@ export default {
   },
   data() {
     return {
-      achievement: [
-        [10, 0, "★☆☆☆☆"],
-        [3, 0, "★☆☆☆☆"],
-        [3, 0, "★☆☆☆☆"],
-        [3, 0, "★☆☆☆☆"],
-        [3, 0, "★☆☆☆☆"],
-        [3, 0, "★☆☆☆☆"],
-        [3, 0, "★☆☆☆☆"],
-      ],
+      achievements: [],
     }
   },
   mounted() {
+    this.checkLogin();
   },
   methods: {
-    getachievementData() {
+    // ログインの確認
+    checkLogin() {
+      const auth = getAuth(this.$app);
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.uid = user.uid;
+          this.getAchievementData();
+        } else {
+          location.href = 'http://localhost:3000';
+        }
+      });
     },
-    // 実績が増えても対応できるように
+    // 実績データの取得
+    async getAchievementData() {
+      const db = getFirestore(this.$app);
+      const docSnap = await getDoc(doc(db, "user", "てすと"));
+      if (docSnap.exists()) {
+        const ad = docSnap.data();
+        this.achievements = [];
+        const test = [
+          [
+            [10, ad.completed_all, "タスクを10回達成する", "★☆☆☆☆"],
+            [20, ad.completed_all, "タスクを20回達成する", "★★☆☆☆"],
+            [30, ad.completed_all, "タスクを30回達成する", "★★★☆☆"],
+            [40, ad.completed_all, "タスクを40回達成する", "★★★★☆"],
+            [50, ad.completed_all, "タスクを50回達成する", "★★★★★"],
+            [50, ad.completed_all, "タスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+          [
+            [10, ad.completed_low, "難易度「低」のタスクを10回達成する", "★☆☆☆☆"],
+            [20, ad.completed_low, "難易度「低」のタスクを20回達成する", "★★☆☆☆"],
+            [30, ad.completed_low, "難易度「低」のタスクを30回達成する", "★★★☆☆"],
+            [40, ad.completed_low, "難易度「低」のタスクを40回達成する", "★★★★☆"],
+            [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★★"],
+            [50, ad.completed_low, "難易度「低」のタスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+          [
+            [10, ad.completed_middle, "難易度「中」のタスクを10回達成する", "★☆☆☆☆"],
+            [20, ad.completed_middle, "難易度「中」のタスクを20回達成する", "★★☆☆☆"],
+            [30, ad.completed_middle, "難易度「中」のタスクを30回達成する", "★★★☆☆"],
+            [40, ad.completed_middle, "難易度「中」のタスクを40回達成する", "★★★★☆"],
+            [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★★"],
+            [50, ad.completed_middle, "難易度「中」のタスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+          [
+            [10, ad.completed_high, "難易度「高」のタスクを10回達成する", "★☆☆☆☆"],
+            [20, ad.completed_high, "難易度「高」のタスクを20回達成する", "★★☆☆☆"],
+            [30, ad.completed_high, "難易度「高」のタスクを30回達成する", "★★★☆☆"],
+            [40, ad.completed_high, "難易度「高」のタスクを40回達成する", "★★★★☆"],
+            [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★★"],
+            [50, ad.completed_high, "難易度「高」のタスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+          [
+            [10, ad.daily_login, "ログイン日数：10日", "★☆☆☆☆"],
+            [20, ad.daily_login, "ログイン日数：20日", "★★☆☆☆"],
+            [30, ad.daily_login, "ログイン日数：30日", "★★★☆☆"],
+            [40, ad.daily_login, "ログイン日数：40日", "★★★★☆"],
+            [50, ad.daily_login, "ログイン日数：50日", "★★★★★"],
+            [50, ad.daily_login, "ログイン日数50日以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+          [
+            [10, ad.task_success, "期限前にタスクを10回完了する", "★☆☆☆☆"],
+            [20, ad.task_success, "期限前にタスクを20回完了する", "★★☆☆☆"],
+            [30, ad.task_success, "期限前にタスクを30回完了する", "★★★☆☆"],
+            [40, ad.task_success, "期限前にタスクを40回完了する", "★★★★☆"],
+            [50, ad.task_success, "期限前にタスクを50回完了する", "★★★★★"],
+            [50, ad.task_success, "期限前にタスクを50回以上完了！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+          [
+            [10, ad.task_failure, "タスクを10回失敗する", "★☆☆"],
+            [20, ad.task_failure, "タスクを20回失敗する", "★★☆"],
+            [30, ad.task_failure, "タスクを30回失敗する", "★★★"],
+            [30, ad.task_failure, "タスクを30回以上失敗失敗しました！", "★★★", "Complete !!"]     ////////////////////////// 相談
+          ],
+        ];
+        for (let i = 0; i < test.length; i++) {
+          const testLength = test[i].length;
+          if (test[i][0][1] < test[i][0][0]) this.achievements.push(test[i][0]);
+          else if (testLength > 1 && test[i][1][1] < test[i][1][0]) this.achievements.push(test[i][1]);
+          else if (testLength > 2 && test[i][2][1] < test[i][2][0]) this.achievements.push(test[i][2]);
+          else if (testLength > 3 && test[i][3][1] < test[i][3][0]) this.achievements.push(test[i][3]);
+          else if (testLength > 4 && test[i][4][1] < test[i][4][0]) this.achievements.push(test[i][4]);
+          else this.achievements.push(test[i][testLength - 1]);
+        }
+      } else {
+        console.log("No such document.");
+      }
+    },
   }
 }
 </script>
@@ -152,6 +189,10 @@ export default {
 #taskStar {
   margin-left: 0.5em;
   display: block;
+}
+.complete {
+  color: rgb(255, 174, 0);
+  margin-left: 1em;
 }
 
 #progress {

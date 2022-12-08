@@ -89,7 +89,7 @@
                     <p>タスクを完了しますか？</p>
                     <p>
                       <button @click="completeButton(name, memo, priority, deadline, taskid)"
-                       class="btn btn-warning">はい</button>
+                        class="btn btn-warning">はい</button>
                       <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
                     </p>
                   </div>
