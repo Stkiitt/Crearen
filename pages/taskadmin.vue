@@ -306,7 +306,7 @@ export default {
         const date = todayData.getDate();
         const today = year + month + date;
         const deadlineChecked = Number((this.deadline).replace(/-/g, ''));
-        if (today <= deadlineChecked && (today + 200000) >= deadlineChecked) {
+        if ((today <= deadlineChecked && (today + 200000) >= deadlineChecked) || (deadlineChecked == "")) {
           this.dateerr = "";
           return true;
         } else {
@@ -389,6 +389,8 @@ export default {
     // 追加ポップアップを閉じる
     closeAddPopup() {
       $('#addTask').fadeOut();
+      this.taskerr = "";
+      this.dateerr = "";
     },
     // 編集ポップアップを開く
     openEditPopup(name, memo, priority, deadline, taskid) {
@@ -407,6 +409,8 @@ export default {
       this.priority = "中";
       this.deadline = "";
       this.taskid = "";
+      this.taskerr = "";
+      this.dateerr = "";
     },
     //タスク完了ポップアップを開く
     openCompPopup(name, memo, priority, deadline, taskid) {
