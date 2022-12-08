@@ -11,10 +11,14 @@
     <div class="container mt-2 mission">
       <div v-for="achievement in achievements" id="achievement">
         <div class="row">
-          <h4 id="taskTitle">{{ achievement[2] }}<span class="complete">{{ achievement[4] }}</span></h4>
-          <h4 id="progress">{{ achievement[1] }}/{{ achievement[0] }}</h4>
+          <h4 id="taskTitle">{{ achievement[2] }}<span class="complete">{{ achievement[5] }}</span></h4>
+          <h4 id="progress">{{ achievement[1] }}/{{ achievement[0] }}<img :src="changeTrophyImg([achievement[4]])" class="trophyImg"></h4>
         </div>
-        <h4 id="taskStar">{{ achievement[3] }}</h4>
+        <h4 id="taskStarProgBar">{{ achievement[3] }}
+          <span class="progBar">
+            <span class="bar" :style="changeProgressBar(achievement[0], achievement[1])"></span>
+          </span>
+        </h4>
       </div>
     </div>
     <div class="text-center">
@@ -77,55 +81,55 @@ export default {
             [10, ad.completed_all, "タスクを10回達成する", "★☆☆☆☆"],
             [20, ad.completed_all, "タスクを20回達成する", "★★☆☆☆"],
             [30, ad.completed_all, "タスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_all, "タスクを40回達成する", "★★★★☆"],
-            [50, ad.completed_all, "タスクを50回達成する", "★★★★★"],
-            [50, ad.completed_all, "タスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+            [40, ad.completed_all, "タスクを40回達成する", "★★★★☆", 1],
+            [50, ad.completed_all, "タスクを50回達成する", "★★★★★", 2],
+            [50, ad.completed_all, "タスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
           [
             [10, ad.completed_low, "難易度「低」のタスクを10回達成する", "★☆☆☆☆"],
             [20, ad.completed_low, "難易度「低」のタスクを20回達成する", "★★☆☆☆"],
             [30, ad.completed_low, "難易度「低」のタスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_low, "難易度「低」のタスクを40回達成する", "★★★★☆"],
-            [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★★"],
-            [50, ad.completed_low, "難易度「低」のタスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+            [40, ad.completed_low, "難易度「低」のタスクを40回達成する", "★★★★☆", 1],
+            [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★★", 2],
+            [50, ad.completed_low, "難易度「低」のタスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
           [
             [10, ad.completed_middle, "難易度「中」のタスクを10回達成する", "★☆☆☆☆"],
             [20, ad.completed_middle, "難易度「中」のタスクを20回達成する", "★★☆☆☆"],
             [30, ad.completed_middle, "難易度「中」のタスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_middle, "難易度「中」のタスクを40回達成する", "★★★★☆"],
-            [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★★"],
-            [50, ad.completed_middle, "難易度「中」のタスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+            [40, ad.completed_middle, "難易度「中」のタスクを40回達成する", "★★★★☆", 1],
+            [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★★", 2],
+            [50, ad.completed_middle, "難易度「中」のタスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
           [
             [10, ad.completed_high, "難易度「高」のタスクを10回達成する", "★☆☆☆☆"],
             [20, ad.completed_high, "難易度「高」のタスクを20回達成する", "★★☆☆☆"],
             [30, ad.completed_high, "難易度「高」のタスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_high, "難易度「高」のタスクを40回達成する", "★★★★☆"],
-            [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★★"],
-            [50, ad.completed_high, "難易度「高」のタスクを50回以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+            [40, ad.completed_high, "難易度「高」のタスクを40回達成する", "★★★★☆", 1],
+            [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★★", 2],
+            [50, ad.completed_high, "難易度「高」のタスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
           [
             [10, ad.daily_login, "ログイン日数：10日", "★☆☆☆☆"],
             [20, ad.daily_login, "ログイン日数：20日", "★★☆☆☆"],
             [30, ad.daily_login, "ログイン日数：30日", "★★★☆☆"],
-            [40, ad.daily_login, "ログイン日数：40日", "★★★★☆"],
-            [50, ad.daily_login, "ログイン日数：50日", "★★★★★"],
-            [50, ad.daily_login, "ログイン日数50日以上達成！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+            [40, ad.daily_login, "ログイン日数：40日", "★★★★☆", 1],
+            [50, ad.daily_login, "ログイン日数：50日", "★★★★★", 2],
+            [50, ad.daily_login, "ログイン日数50日以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
           [
             [10, ad.task_success, "期限前にタスクを10回完了する", "★☆☆☆☆"],
             [20, ad.task_success, "期限前にタスクを20回完了する", "★★☆☆☆"],
             [30, ad.task_success, "期限前にタスクを30回完了する", "★★★☆☆"],
-            [40, ad.task_success, "期限前にタスクを40回完了する", "★★★★☆"],
-            [50, ad.task_success, "期限前にタスクを50回完了する", "★★★★★"],
-            [50, ad.task_success, "期限前にタスクを50回以上完了！", "★★★★★", "Complete !!"]     ////////////////////////// 相談
+            [40, ad.task_success, "期限前にタスクを40回完了する", "★★★★☆", 1],
+            [50, ad.task_success, "期限前にタスクを50回完了する", "★★★★★", 2],
+            [50, ad.task_success, "期限前にタスクを50回以上完了！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
           [
             [10, ad.task_failure, "タスクを10回失敗する", "★☆☆"],
-            [20, ad.task_failure, "タスクを20回失敗する", "★★☆"],
-            [30, ad.task_failure, "タスクを30回失敗する", "★★★"],
-            [30, ad.task_failure, "タスクを30回以上失敗失敗しました！", "★★★", "Complete !!"]     ////////////////////////// 相談
+            [20, ad.task_failure, "タスクを20回失敗する", "★★☆", 1],
+            [30, ad.task_failure, "タスクを30回失敗する", "★★★", 2],
+            [30, ad.task_failure, "タスクを30回以上失敗失敗しました！", "★★★", 3, "Complete !!"]     ////////////////////////// 相談
           ],
         ];
         for (let i = 0; i < test.length; i++) {
@@ -139,6 +143,27 @@ export default {
         }
       } else {
         console.log("No such document.");
+      }
+    },
+    // プログレスバーの長さ変更
+    changeProgressBar(target, now) {
+      let returnStyle = "";
+      if (target > now) {
+        const percent = now / target * 100;
+        returnStyle = "width: " + percent + "%;";
+      } else {
+        returnStyle = "width: 100%;";
+      }
+      return returnStyle;
+    },
+    // トロフィーの変更
+    changeTrophyImg(img) {
+      if(img == 1) {
+        return require("~/assets/trophy/銅.png");
+      }else if(img == 2) {
+        return require("~/assets/trophy/銀.png");
+      }else if(img == 3) {
+        return require("~/assets/trophy/金.png");
       }
     },
   }
@@ -171,6 +196,7 @@ export default {
   border: 1px solid black;
   background-color: bisque;
   overflow: auto;
+  padding: 0 30px;
 }
 
 #achievement {
@@ -178,6 +204,7 @@ export default {
   border: 1px solid black;
   margin-top: 2em;
   margin-bottom: 2em;
+  box-shadow: 5px 3px 5px rgb(130, 130, 130);
 }
 
 #taskTitle {
@@ -186,10 +213,33 @@ export default {
   display: block;
 }
 
-#taskStar {
+.trophyImg {
+  width: 25px;
+  margin-left: 0.7em;
+}
+
+#taskStarProgBar {
   margin-left: 0.5em;
   display: block;
 }
+
+.progBar {
+  position: relative;
+  width: 300px;
+  height: 10px;
+  float: right;
+  margin: 14px 20px;
+  background-color: #ececec;
+  border-radius: 5px;
+}
+
+.progBar .bar {
+  position: absolute;
+  height: 100%;
+  background-color: #FFCA28;
+  border-radius: 5px;
+}
+
 .complete {
   color: rgb(255, 174, 0);
   margin-left: 1em;
@@ -202,7 +252,7 @@ export default {
 }
 
 .row {
-  width: 95%;
+  width: 99%;
 }
 </style>
   

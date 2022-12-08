@@ -66,11 +66,11 @@
             <!-- 繰り返しここから -->
             <section v-for="task in tasks" :key="task.tid">
               <!-- タスク表示ここから -->
-              <div v-bind:class="changeBorderColor(task.priority)" class="task">
+              <div :class="changeBorderColor(task.priority)" class="task">
                 <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
                   class="task-content-group">
                   <h4 class="task-title">{{ task.name }}</h4>
-                  <span v-if="task.deadline" v-bind:class="changeDeadlineColor(task.deadline)" class="task-content">
+                  <span v-if="task.deadline" :class="changeDeadlineColor(task.deadline)" class="task-content">
                     期限：{{ task.deadline }}</span>
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
