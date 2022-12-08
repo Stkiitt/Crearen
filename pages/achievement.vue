@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="body">
     <nav class="navbar navbar-expand-sm navbar-warning bg-warning mb-3">
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav4"
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
@@ -7,35 +7,56 @@
       </button>
       <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
     </nav>
-
-    <div class="container mt-5 border">
-      <h2 class="mt-3"> ミッション</h2>
-      <hr>
+    <h1 class="title mt-5"> 進行中のミッション</h1>
+    <div class="container mt-2 mission">
       <div id="achievement">
-        
         <div class="row">
-          <h4 id="taskTitle">タスクを10回達成する</h4>
-          <h4 id="progress">1/5</h4>
+          <h4 id="taskTitle">タスクを{{achievement[0][0]}}回達成する</h4>
+          <h4 id="progress">{{achievement[0][1]}}/{{achievement[0][0]}}</h4>
         </div>
-        <h4 id="taskStar">★☆☆☆☆</h4>
+        <h4 id="taskStar">{{achievement[0][2]}}</h4>
       </div>
       <div id="achievement">
         <div class="row">
-          <h4 id="taskTitle">難易度「低」のタスクを3回達成する</h4>
+          <h4 id="taskTitle">難易度「低」のタスクを{{achievement[1][0]}}回達成する</h4>
+          <h4 id="progress">{{achievement[1][1]}}/{{achievement[1][0]}}</h4>
         </div>
-        <h4 id="taskStar">★☆☆☆☆</h4>
+        <h4 id="taskStar">{{achievement[1][2]}}</h4>
       </div>
       <div id="achievement">
         <div class="row">
-          <h4 id="taskTitle">難易度「中」のタスクを3回達成する</h4>
+          <h4 id="taskTitle">難易度「中」のタスクを{{achievement[2][0]}}回達成する</h4>
+          <h4 id="progress">{{achievement[2][1]}}/{{achievement[2][0]}}</h4>
         </div>
-        <h4 id="taskStar">★☆☆☆☆</h4>
+        <h4 id="taskStar">{{achievement[2][2]}}</h4>
       </div>
       <div id="achievement">
         <div class="row">
-          <h4 id="taskTitle">難易度「高」のタスクを3回達成する</h4>
+          <h4 id="taskTitle">難易度「高」のタスクを{{achievement[3][0]}}回達成する</h4>
+          <h4 id="progress">{{achievement[3][1]}}/{{achievement[3][0]}}</h4>
         </div>
-        <h4 id="taskStar">★☆☆☆☆</h4>
+        <h4 id="taskStar">{{achievement[3][2]}}</h4>
+      </div>
+      <div id="achievement">
+        <div class="row">
+          <h4 id="taskTitle">ログイン日数</h4>
+          <h4 id="progress">{{achievement[4][1]}}/{{achievement[4][0]}}</h4>
+        </div>
+        <h4 id="taskStar">{{achievement[4][2]}}</h4>
+      </div> 
+      <div id="achievement">
+        <div class="row">
+          <h4 id="taskTitle">期限前にタスクを完了する</h4>
+          <h4 id="progress">{{achievement[5][1]}}/{{achievement[5][0]}}</h4>
+        </div>
+        <h4 id="taskStar">{{achievement[5][2]}}</h4>
+      </div>
+      <div id="achievement">
+        <div class="row">
+          <h4 id="taskTitle">タスクを失敗する</h4>
+          <h4 id="progress">{{achievement[6][1]}}/{{achievement[6][0]}}</h4>
+        </div>
+        <h4 id="taskStar">{{achievement[6][2]}}</h4>
       </div>
     </div>
 
@@ -66,11 +87,23 @@ export default {
   },
   data() {
     return {
+      achievement: [
+        [10, 0, "★☆☆☆☆"],
+        [3, 0, "★☆☆☆☆"],
+        [3, 0, "★☆☆☆☆"],
+        [3, 0, "★☆☆☆☆"],
+        [3, 0, "★☆☆☆☆"],
+        [3, 0, "★☆☆☆☆"],
+        [3, 0, "★☆☆☆☆"],
+      ],
     }
   },
   mounted() {
   },
   methods: {
+    getachievementData() {
+    },
+    // 実績が増えても対応できるように
   }
 }
 </script>
@@ -80,7 +113,31 @@ export default {
   width: 9em;
 }
 
+#body {
+  background-color: blanchedalmond;
+}
+
+.container {
+  position: relative;
+
+}
+
+.title {
+  max-width: 800px;
+  margin: 0 auto;
+  display: block;
+}
+
+.mission {
+  max-width: 800px;
+  height: 400px;
+  border: 1px solid black;
+  background-color: bisque;
+  overflow: auto;
+}
+
 #achievement {
+  background-color: white;
   border: 1px solid black;
   margin-top: 2em;
   margin-bottom: 2em;
@@ -102,6 +159,7 @@ export default {
   right: 0em;
   display: block;
 }
+
 .row {
   width: 95%;
 }
