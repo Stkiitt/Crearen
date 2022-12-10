@@ -148,6 +148,9 @@
         <div class="col-xl-4 order-xl-2 col-12 order-1">
           <div class="m-2 p-3 border">
             <h2>遊び要素</h2>
+            <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
+              <button type="button" class="btn btn-dark">ミッション進捗</button>
+            </NuxtLink>
           </div>
         </div>
       </div>

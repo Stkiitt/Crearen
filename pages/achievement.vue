@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      uid: "",
       achievements: [],
     }
   },
@@ -135,7 +136,7 @@ export default {
         for (let i = 0; i < test.length; i++) {
           const testLength = test[i].length;
           if (test[i][0][1] < test[i][0][0]) this.achievements.push(test[i][0]);
-          else if (testLength > 1 && test[i][1][1] < test[i][1][0]) this.achievements.push(test[i][1]);
+          else if (test[i][1][1] < test[i][1][0]) this.achievements.push(test[i][1]);
           else if (testLength > 2 && test[i][2][1] < test[i][2][0]) this.achievements.push(test[i][2]);
           else if (testLength > 3 && test[i][3][1] < test[i][3][0]) this.achievements.push(test[i][3]);
           else if (testLength > 4 && test[i][4][1] < test[i][4][0]) this.achievements.push(test[i][4]);
