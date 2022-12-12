@@ -154,6 +154,16 @@ export default {
       const db = getFirestore(this.$app);
       await setDoc(doc(db, "user", uid), {
         user_name: this.username,
+        achievement: 0,
+        completed_all: 0,
+        completed_high: 0,
+        completed_low: 0,
+        completed_middle: 0,
+        completed_quick: 0,
+        daily_login: 0,
+        task_delete: 0,
+        task_failure: 0,
+        task_success: 0,
       });
     },
     // 確認ポップアップを開く

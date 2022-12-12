@@ -376,6 +376,12 @@ export default {
         priority: this.priority,
         uid: this.uid,
       });
+      await getDoc(doc(db, "user", this.uid), {
+        
+      });
+      await updateDoc(doc(db, "user", this.uid), {
+        
+      });
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
       this.closeCompPopup();
