@@ -75,8 +75,8 @@
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
                 <span class="task-comp">
-                  <img  @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid)" id="complete"
-                    src="../assets/check/check.png">
+                  <img @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                    id="complete" src="../assets/check/check.png">
                 </span>
               </div>
               <!-- タスク表示ここまで -->
@@ -89,7 +89,7 @@
                     <p>タスクを完了しますか？</p>
                     <p>
                       <button @click="completeButton(name, memo, priority, deadline, taskid)"
-                       class="btn btn-warning">はい</button>
+                        class="btn btn-warning">はい</button>
                       <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
                     </p>
                   </div>
@@ -330,6 +330,12 @@ export default {
         priority: this.priority,
         uid: this.uid,
       });
+      await getDoc(doc(db, "user", this.uid), {
+        
+      });
+      await updateDoc(doc(db, "user", this.uid), {
+        
+      });
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
       this.closeCompPopup();
@@ -361,7 +367,7 @@ export default {
       this.taskid = "";
     },
     //タスク完了ポップアップを開く
-    openCompPopup(name, memo, priority, deadline, taskid){
+    openCompPopup(name, memo, priority, deadline, taskid) {
       this.name = name;
       this.memo = memo;
       this.priority = priority;
@@ -370,7 +376,7 @@ export default {
       $('#CompTask').fadeIn();
     },
     // タスク完了ポップアップを閉じる
-    closeCompPopup(){
+    closeCompPopup() {
       $('#CompTask').fadeOut();
       this.name = "";
       this.memo = "";
@@ -413,7 +419,8 @@ export default {
 
 #complete:hover {
   transform: scale(1.4, 1.4);
-  filter: opacity(30%);;
+  filter: opacity(30%);
+  ;
 }
 
 #logo {
@@ -545,11 +552,11 @@ export default {
 }
 
 /* 完了ポップアップ */
-#CompTask .modalWrapper{
+#CompTask .modalWrapper {
   max-width: 250px;
 }
 
-.compContents{
+.compContents {
   padding: 5px;
   text-align: center;
 }
