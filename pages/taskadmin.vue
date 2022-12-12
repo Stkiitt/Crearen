@@ -33,10 +33,10 @@
                 <div class="addContents">
                   <h1>タスクの追加</h1>
                   <p>タスク名</p>
-                  
-                    <input type="text" v-model="name" class="addInput">
-                    <p class="err">{{ taskerr }}</p>
-                  
+
+                  <input type="text" v-model="name" class="addInput">
+                  <p class="err">{{ taskerr }}</p>
+
                   <p>メモ</p>
                   <p>
                     <textarea v-model="memo" class="addInput"></textarea>
@@ -50,10 +50,10 @@
                     </select>
                   </p>
                   <p>期限</p>
-                  
-                    <input type="date" v-model="deadline" class="addInput">
-                    <p class="err">{{ dateerr }}</p>
-                  
+
+                  <input type="date" v-model="deadline" class="addInput">
+                  <p class="err">{{ dateerr }}</p>
+
                   <p>
                     <button @click="addData()" class="btn btn-success">タスクを追加する</button>
                   </p>
@@ -106,8 +106,8 @@
                   <div class="editContents">
                     <h1>タスクの編集</h1>
                     <p>タスク名</p>
-                      <input type="text" v-model="name" class="editInput">
-                      <p class="err">{{taskerr}}</p>
+                    <input type="text" v-model="name" class="editInput">
+                    <p class="err">{{ taskerr }}</p>
                     <p>メモ</p>
                     <p>
                       <textarea v-model="memo" class="editInput"></textarea>
@@ -121,8 +121,8 @@
                       </select>
                     </p>
                     <p>期限</p>
-                      <input type="date" v-model="deadline" class="editInput">
-                      <p class="err">{{dateerr}}</p>
+                    <input type="date" v-model="deadline" class="editInput">
+                    <p class="err">{{ dateerr }}</p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">編集を保存する</button>
                       <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore, getDoc} from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   head() {
@@ -246,6 +246,7 @@ export default {
   },
   mounted() {
     this.checkLogin();
+    this.getNow();
   },
   methods: {
     // ログインの確認
@@ -281,7 +282,19 @@ export default {
         this.tasks.push(task);
       });
     },
-
+    //現在時刻の取得(秒単位まで)
+    getNow() {
+      const todayData = new Date();
+      const year = (todayData.getFullYear()) * 10000000000;
+      const month = (todayData.getMonth() + 1) * 100000000;
+      const date = todayData.getDate() * 1000000;
+      const hours = todayData.getHours() * 10000;
+      const minutes = todayData.getMinutes() * 100;
+      const seconds = todayData.getSeconds();
+      const now = year + month + date + hours + minutes + seconds;
+      console.log(now);
+      return now;
+    },
     dataCheck(num) {
       //0はタスク名用、1は期限用
       if (num == 0) {
@@ -323,6 +336,7 @@ export default {
           name: this.name,
           priority: this.priority,
           uid: this.uid,
+          time: this.getNow(),
         });
         this.getTasks();
         this.closeAddPopup();
@@ -359,13 +373,8 @@ export default {
     // タスク完了ボタン
     async completeButton(name, memo, priority, deadline, taskid) {
       const db = getFirestore(this.$app);
-      const todayData = new Date();
-      const year = todayData.getFullYear();
-      const month = todayData.getMonth() + 1;
-      const date = todayData.getDate();
-      const today = year * 10000 + month * 100 + date;
       await addDoc(collection(db, "task_completed"), {
-        date: today,
+        time: this.getNow(),
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
@@ -373,10 +382,10 @@ export default {
         uid: this.uid,
       });
       await getDoc(doc(db, "user", this.uid), {
-        
+
       });
       await updateDoc(doc(db, "user", this.uid), {
-        
+
       });
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
@@ -536,9 +545,10 @@ export default {
 }
 
 .err {
-  color: red ;
+  color: red;
   font-size: small;
 }
+
 /* タスク表示 */
 .high-p {
   border: 1px solid red;
