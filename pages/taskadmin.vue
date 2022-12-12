@@ -106,10 +106,8 @@
                   <div class="editContents">
                     <h1>タスクの編集</h1>
                     <p>タスク名</p>
-                    <p>
                       <input type="text" v-model="name" class="editInput">
-                      {{taskerr}}
-                    </p>
+                      <p class="err">{{taskerr}}</p>
                     <p>メモ</p>
                     <p>
                       <textarea v-model="memo" class="editInput"></textarea>
@@ -123,10 +121,8 @@
                       </select>
                     </p>
                     <p>期限</p>
-                    <p>
                       <input type="date" v-model="deadline" class="editInput">
-                      {{dateerr}}
-                    </p>
+                      <p class="err">{{dateerr}}</p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">編集を保存する</button>
                       <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
