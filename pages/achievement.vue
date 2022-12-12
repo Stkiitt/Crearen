@@ -9,16 +9,25 @@
     </nav>
     <h1 class="title mt-5"> 進行中のミッション</h1>
     <div class="container mt-2 mission">
-      <div v-for="achievement in achievements" id="achievement">
-        <div class="row">
-          <h4 id="taskTitle">{{ achievement[2] }}<span class="complete">{{ achievement[5] }}</span></h4>
-          <h4 id="progress">{{ achievement[1] }}/{{ achievement[0] }}<img :src="changeTrophyImg([achievement[4]])" class="trophyImg"></h4>
+      <div v-for="achievement in achievements">
+        <div :style="changeAchievementBGC(achievement[5])" id="achievement">
+          <div class="row">
+            <h4 id="taskTitle">
+              <span>{{ achievement[2] }}</span>
+            </h4>
+            <h4 id="progress">
+              <span v-if="!achievement[5]">{{ achievement[1] }}/{{ achievement[0] }}</span>
+              <span v-if="achievement[5]" class="complete">{{ achievement[5] }}</span>
+              <img :src="changeTrophyImg([achievement[4]])" class="trophyImg">
+            </h4>
+          </div>
+          <h4 id="taskStarProgBar">
+            {{ achievement[3] }}
+            <span class="progBar">
+              <span class="bar" :style="changeProgressBar(achievement[0], achievement[1])"></span>
+            </span>
+          </h4>
         </div>
-        <h4 id="taskStarProgBar">{{ achievement[3] }}
-          <span class="progBar">
-            <span class="bar" :style="changeProgressBar(achievement[0], achievement[1])"></span>
-          </span>
-        </h4>
       </div>
     </div>
     <div class="text-center">
@@ -166,6 +175,11 @@ export default {
       }else if(img == 3) {
         return require("~/assets/trophy/金.png");
       }
+    },
+    // 実績の背景色変更
+    changeAchievementBGC(comp) {
+      if(comp) return "background-color: rgba(255, 246, 115, 0.6);";
+      else return "";
     },
   }
 }
