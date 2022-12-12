@@ -33,10 +33,10 @@
                 <div class="addContents">
                   <h1>タスクの追加</h1>
                   <p>タスク名</p>
-                  <p>
+                  
                     <input type="text" v-model="name" class="addInput">
-                    {{ taskerr }}
-                  </p>
+                    <p class="err">{{ taskerr }}</p>
+                  
                   <p>メモ</p>
                   <p>
                     <textarea v-model="memo" class="addInput"></textarea>
@@ -50,10 +50,10 @@
                     </select>
                   </p>
                   <p>期限</p>
-                  <p>
+                  
                     <input type="date" v-model="deadline" class="addInput">
-                    {{ dateerr }}
-                  </p>
+                    <p class="err">{{ dateerr }}</p>
+                  
                   <p>
                     <button @click="addData()" class="btn btn-success">タスクを追加する</button>
                   </p>
@@ -296,7 +296,7 @@ export default {
           this.taskerr = "";
           return true;
         } else {
-          this.taskerr = "タスク名の文字数が不適切です。"
+          this.taskerr = "※タスク名の文字数が不適切です。"
           return false;
         }
       } else if (num == 1) {
@@ -310,7 +310,7 @@ export default {
           this.dateerr = "";
           return true;
         } else {
-          this.dateerr = "期限が不適切です。"
+          this.dateerr = "※期限が不適切です。"
           return false;
         }
       }
@@ -526,6 +526,10 @@ export default {
   margin: auto 1em auto auto;
 }
 
+.err {
+  color: red ;
+  font-size: small;
+}
 /* タスク表示 */
 .high-p {
   border: 1px solid red;
