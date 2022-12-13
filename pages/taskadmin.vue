@@ -20,7 +20,37 @@
     </nav>
 
     <div class="container mt-5">
-      <h2>タスク管理画面</h2>
+      <div style="display: flex;">
+        <h2>タスク管理画面</h2>
+        <button @click="openHistoryPopup()" class="button-add">タスク履歴</button>
+        <!-- 履歴ポップアップここから -->
+        <section id="taskHistory" class="modalArea">
+          <div @click="closeHistoryPopup()" class="modalBg"></div>
+          <div class="modalWrapper">
+            <div v-for="comptask in comptasks" :key="comptask.tid">
+              <div class="historyContents">
+                <div class="history-title">
+                  <span class="history-name">名前：{{ comptask.name }}</span>
+                  <span class="history-compdate">完了日時：{{ comptask.date }}</span>
+                </div>
+                <div class="history-content-group">
+                  <p>優先度：{{ comptask.priority }}</p>
+                  <p>期限：{{ comptask.deadline }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="!comptasks.length">
+              <p>完了したタスクがありません</p>
+            </div>
+
+            <div @click="closeHistoryPopup()" class="closeModal">
+              ☓
+            </div>
+          </div>
+        </section>
+        <!-- 履歴ポップアップここまで -->
+      </div>
       <div class="row">
         <div class="col-xl-8 order-xl-1 col-12 order-2">
           <div class="m-2 p-3 border">
@@ -33,10 +63,10 @@
                 <div class="addContents">
                   <h1>タスクの追加</h1>
                   <p>タスク名</p>
-                  
-                    <input type="text" v-model="name" class="addInput">
-                    <p class="err">{{ taskerr }}</p>
-                  
+
+                  <input type="text" v-model="name" class="addInput">
+                  <p class="err">{{ taskerr }}</p>
+
                   <p>メモ</p>
                   <p>
                     <textarea v-model="memo" class="addInput"></textarea>
@@ -50,10 +80,10 @@
                     </select>
                   </p>
                   <p>期限</p>
-                  
-                    <input type="date" v-model="deadline" class="addInput">
-                    <p class="err">{{ dateerr }}</p>
-                  
+
+                  <input type="date" v-model="deadline" class="addInput">
+                  <p class="err">{{ dateerr }}</p>
+
                   <p>
                     <button @click="addData()" class="btn btn-success">タスクを追加する</button>
                   </p>
@@ -106,8 +136,8 @@
                   <div class="editContents">
                     <h1>タスクの編集</h1>
                     <p>タスク名</p>
-                      <input type="text" v-model="name" class="editInput">
-                      <p class="err">{{taskerr}}</p>
+                    <input type="text" v-model="name" class="editInput">
+                    <p class="err">{{ taskerr }}</p>
                     <p>メモ</p>
                     <p>
                       <textarea v-model="memo" class="editInput"></textarea>
@@ -121,8 +151,8 @@
                       </select>
                     </p>
                     <p>期限</p>
-                      <input type="date" v-model="deadline" class="editInput">
-                      <p class="err">{{dateerr}}</p>
+                    <input type="date" v-model="deadline" class="editInput">
+                    <p class="err">{{ dateerr }}</p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">編集を保存する</button>
                       <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
@@ -240,12 +270,14 @@ export default {
       priority: "中",
       deadline: "",
       taskid: "",
+      comptasks: [],
       taskerr: "",
       dateerr: "",
     }
   },
   mounted() {
     this.checkLogin();
+    this.getNow();
   },
   methods: {
     // ログインの確認
@@ -281,7 +313,30 @@ export default {
         this.tasks.push(task);
       });
     },
-
+    // task_completedからデータの取得
+    async getCompleteTasks() {
+      const db = getFirestore(this.$app);
+      const q = query(collection(db, "task_completed"), where("uid", "==", this.uid));
+      const querySnapshot = await getDocs(q);
+      this.comptasks = [];
+      querySnapshot.forEach((doc) => {
+        const comptask = doc.data();
+        comptask["tid"] = doc.id;
+        this.comptasks.push(comptask);
+      });
+    //現在時刻の取得(秒単位まで)
+    getNow() {
+      const todayData = new Date();
+      const year = (todayData.getFullYear()) * 1000000000;
+      const month = (todayData.getMonth() + 1) * 10000000;
+      const date = todayData.getDate() * 100000;
+      const hours = todayData.getHours() * 3600;
+      const minutes = todayData.getMinutes() * 60;
+      const seconds = todayData.getSeconds();
+      const now = year + month + date + hours + minutes + seconds;
+      console.log(now);
+      return now;
+    },
     dataCheck(num) {
       //0はタスク名用、1は期限用
       if (num == 0) {
@@ -323,6 +378,7 @@ export default {
           name: this.name,
           priority: this.priority,
           uid: this.uid,
+          time: this.getNow(),
         });
         this.getTasks();
         this.closeAddPopup();
@@ -359,13 +415,8 @@ export default {
     // タスク完了ボタン
     async completeButton(taskid) {
       const db = getFirestore(this.$app);
-      const todayData = new Date();
-      const year = todayData.getFullYear();
-      const month = todayData.getMonth() + 1;
-      const date = todayData.getDate();
-      const today = year * 10000 + month * 100 + date;
       await addDoc(collection(db, "task_completed"), {
-        date: today,
+        time: this.getNow(),
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
@@ -401,6 +452,15 @@ export default {
           // task_success: ad.task_success,
         });
       }
+    },
+    // 履歴ポップアップを開く
+    openHistoryPopup() {
+      this.getCompleteTasks();
+      $('#taskHistory').fadeIn();
+    },
+    // 履歴ポップアップを閉じる
+    closeHistoryPopup() {
+      $('#taskHistory').fadeOut();
     },
     // 追加ポップアップを開く
     openAddPopup() {
@@ -556,9 +616,10 @@ export default {
 }
 
 .err {
-  color: red ;
+  color: red;
   font-size: small;
 }
+
 /* タスク表示 */
 .high-p {
   border: 1px solid red;
@@ -610,6 +671,40 @@ export default {
   top: 0.5rem;
   right: 1rem;
   cursor: pointer;
+}
+
+
+/* 履歴ポップアップ内 */
+#taskHistory .modalWrapper {
+  padding: 2em;
+}
+
+.historyContents {
+  border: 1px solid black;
+  margin: 1em;
+}
+
+.history-title {
+  display: flex;
+  padding: 2px 0;
+}
+
+.history-name {
+  margin-left: 0.5m;
+  margin-right: 2em;
+}
+
+.history-compdate {
+  font-size: 0.9em;
+  color: gray;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  bottom: 0;
+}
+
+.history-content-group {
+  font-size: 0.8em;
+  color: gray;
 }
 
 /* 追加ポップアップ内 */

@@ -49,13 +49,13 @@
       <div class="row">
         <!-- お知らせ -->
         <div class="col-7">
-          <div class="m-2 p-3 border">
+          <div class="m-2 p-3 border" id="information">
             <h2 class="my-4">お知らせ</h2>
           </div>
         </div>
         <!-- ログインしていないとき -->
         <div v-if="!loggedIn" class="col-5">
-          <div class="m-2 p-3 border">
+          <div class="m-2 p-3 border" id="login">
             <h2 class="my-4">ログイン</h2>
             <label>メールアドレス</label>
             <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email"
@@ -73,11 +73,14 @@
         </div>
         <!-- ログイン済み -->
         <div v-if="loggedIn" class="col-5 text-center">
-          <div class="m-2 p-3 border">
-            <h2 class="my-4">ログイン済みです</h2>
-            <p>
-              <NuxtLink to="/taskadmin" class="btn btn-success" rel="noopener noreferrer">タスク管理画面へ</NuxtLink>
-            </p>
+          <div class="m-2 p-3 border" id="loggedin">
+            <div>
+              <h2 class="my-4">ログイン済みです</h2>
+              <p>
+                <NuxtLink to="/taskadmin" class="btn btn-success w-75" rel="noopener noreferrer">タスク管理画面へ</NuxtLink>
+              </p>
+              <button @click="logout()" type="button" class="btn btn-dark w-75" >ログアウト</button>
+            </div>
           </div>
         </div>
       </div>
@@ -138,7 +141,7 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   head() {
     return {
@@ -190,10 +193,11 @@ export default {
     // ログインの確認
     checkLogin() {
       const auth = getAuth(this.$app);
-      const user = auth.currentUser;
-      if (user) {
-        this.loggedIn = true;
-      }
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.loggedIn = true;
+        }
+      });
     },
     // ログイン機能
     login() {
@@ -210,6 +214,15 @@ export default {
           alert(errorCode + "," + errorMessage);
         });
     },
+    logout() {
+      const auth = getAuth(this.$app);
+      signOut(auth)
+        .then(() => {
+          location.href = 'http://localhost:3000';
+        }).catch((error) => {
+          console.log(error);
+        });
+    },
   }
 }
 </script>
@@ -222,6 +235,27 @@ export default {
 #image {
   text-align: center;
   width: 100%;
+}
+
+#information {
+  height: 25em;
+  box-shadow: 0px 0px 5px black;
+  border-radius: 10px;
+}
+
+#login {
+  height: 25em;
+  box-shadow: 0px 0px 5px black;
+  border-radius: 10px;
+}
+
+#loggedin {
+  height: 25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 5px black;
+  border-radius: 10px;
 }
 
 #copyright {
