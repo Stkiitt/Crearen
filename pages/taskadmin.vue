@@ -20,7 +20,37 @@
     </nav>
 
     <div class="container mt-5">
-      <h2>タスク管理画面</h2>
+      <div style="display: flex;">
+        <h2>タスク管理画面</h2>
+        <button @click="openHistoryPopup()" class="button-add">タスク履歴</button>
+        <!-- 履歴ポップアップここから -->
+        <section id="taskHistory" class="modalArea">
+          <div @click="closeHistoryPopup()" class="modalBg"></div>
+          <div class="modalWrapper">
+            <div v-for="comptask in comptasks" :key="comptask.tid">
+              <div class="historyContents">
+                <div class="history-title">
+                  <span class="history-name">名前：{{ comptask.name }}</span>
+                  <span class="history-compdate">完了日時：{{ comptask.date }}</span>
+                </div>
+                <div class="history-content-group">
+                  <p>優先度：{{ comptask.priority }}</p>
+                  <p>期限：{{ comptask.deadline }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="!comptasks.length">
+              <p>完了したタスクがありません</p>
+            </div>
+
+            <div @click="closeHistoryPopup()" class="closeModal">
+              ☓
+            </div>
+          </div>
+        </section>
+        <!-- 履歴ポップアップここまで -->
+      </div>
       <div class="row">
         <div class="col-xl-8 order-xl-1 col-12 order-2">
           <div class="m-2 p-3 border">
@@ -240,6 +270,7 @@ export default {
       priority: "中",
       deadline: "",
       taskid: "",
+      comptasks: [],
       taskerr: "",
       dateerr: "",
     }
@@ -282,6 +313,17 @@ export default {
         this.tasks.push(task);
       });
     },
+    // task_completedからデータの取得
+    async getCompleteTasks() {
+      const db = getFirestore(this.$app);
+      const q = query(collection(db, "task_completed"), where("uid", "==", this.uid));
+      const querySnapshot = await getDocs(q);
+      this.comptasks = [];
+      querySnapshot.forEach((doc) => {
+        const comptask = doc.data();
+        comptask["tid"] = doc.id;
+        this.comptasks.push(comptask);
+      });
     //現在時刻の取得(秒単位まで)
     getNow() {
       const todayData = new Date();
@@ -390,6 +432,15 @@ export default {
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
       this.closeCompPopup();
+    },
+    // 履歴ポップアップを開く
+    openHistoryPopup() {
+      this.getCompleteTasks();
+      $('#taskHistory').fadeIn();
+    },
+    // 履歴ポップアップを閉じる
+    closeHistoryPopup() {
+      $('#taskHistory').fadeOut();
     },
     // 追加ポップアップを開く
     openAddPopup() {
@@ -600,6 +651,40 @@ export default {
   top: 0.5rem;
   right: 1rem;
   cursor: pointer;
+}
+
+
+/* 履歴ポップアップ内 */
+#taskHistory .modalWrapper {
+  padding: 2em;
+}
+
+.historyContents {
+  border: 1px solid black;
+  margin: 1em;
+}
+
+.history-title {
+  display: flex;
+  padding: 2px 0;
+}
+
+.history-name {
+  margin-left: 0.5m;
+  margin-right: 2em;
+}
+
+.history-compdate {
+  font-size: 0.9em;
+  color: gray;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  bottom: 0;
+}
+
+.history-content-group {
+  font-size: 0.8em;
+  color: gray;
 }
 
 /* 追加ポップアップ内 */
