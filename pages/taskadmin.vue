@@ -90,7 +90,7 @@
                   <div class="compContents">
                     <p>タスクを完了しますか？</p>
                     <p>
-                      <button @click="completeButton(name, memo, priority, deadline, taskid)"
+                      <button @click="completeButton(taskid)"
                         class="btn btn-warning">はい</button>
                       <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
                     </p>
@@ -208,7 +208,7 @@
 </template>
 
 <script>
-import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   head() {
@@ -357,7 +357,7 @@ export default {
       this.closeEditPopup();
     },
     // タスク完了ボタン
-    async completeButton(name, memo, priority, deadline, taskid) {
+    async completeButton(taskid) {
       const db = getFirestore(this.$app);
       const todayData = new Date();
       const year = todayData.getFullYear();
@@ -372,15 +372,35 @@ export default {
         priority: this.priority,
         uid: this.uid,
       });
-      await getDoc(doc(db, "user", this.uid), {
-        
-      });
-      await updateDoc(doc(db, "user", this.uid), {
-        
-      });
+      await this.countAchievement(1);
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
       this.closeCompPopup();
+    },
+    // 実績のカウント(mode 0:ページ表示時のログイン日数、1:タスク完了時)
+    async countAchievement(mode) {
+      if (mode == 0) {
+        // 最終ログインが今日と異なるならログイン回数を追加して更新する処理
+      } else if (mode == 1) {
+        const db = getFirestore(this.$app);
+        const docSnap = await getDoc(doc(db, "user", this.uid));
+        let ad;
+        if (docSnap.exists()) ad = docSnap.data();
+        ad.completed_all++;
+        if (this.priority == "高") ad.completed_high++;
+        else if (this.priority == "中") ad.completed_middle++;
+        else if (this.priority == "低") ad.completed_low++;
+        await updateDoc(doc(db, "user", this.uid), {
+          // achievement: ad.achievement,
+          completed_all: ad.completed_all,
+          completed_high: ad.completed_high,
+          completed_low: ad.completed_low,
+          completed_middle: ad.completed_middle,
+          // completed_quick: ad.completed_quick,
+          // task_failure: ad.task_failure,
+          // task_success: ad.task_success,
+        });
+      }
     },
     // 追加ポップアップを開く
     openAddPopup() {
