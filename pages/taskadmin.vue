@@ -63,9 +63,10 @@
                 <div class="addContents">
                   <h1>タスクの追加</h1>
                   <p>タスク名</p>
-                  <p>
-                    <input type="text" v-model="name" class="addInput">
-                  </p>
+
+                  <input type="text" v-model="name" class="addInput">
+                  <p class="err">{{ taskerr }}</p>
+
                   <p>メモ</p>
                   <p>
                     <textarea v-model="memo" class="addInput"></textarea>
@@ -79,9 +80,10 @@
                     </select>
                   </p>
                   <p>期限</p>
-                  <p>
-                    <input type="date" v-model="deadline" class="addInput">
-                  </p>
+
+                  <input type="date" v-model="deadline" class="addInput">
+                  <p class="err">{{ dateerr }}</p>
+
                   <p>
                     <button @click="addData()" class="btn btn-success">タスクを追加する</button>
                   </p>
@@ -96,11 +98,11 @@
             <!-- 繰り返しここから -->
             <section v-for="task in tasks" :key="task.tid">
               <!-- タスク表示ここから -->
-              <div v-bind:class="changeBorderColor(task.priority)" class="task">
+              <div :class="changeBorderColor(task.priority)" class="task">
                 <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
                   class="task-content-group">
                   <h4 class="task-title">{{ task.name }}</h4>
-                  <span v-if="task.deadline" v-bind:class="changeDeadlineColor(task.deadline)" class="task-content">
+                  <span v-if="task.deadline" :class="changeDeadlineColor(task.deadline)" class="task-content">
                     期限：{{ task.deadline }}</span>
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
@@ -134,9 +136,8 @@
                   <div class="editContents">
                     <h1>タスクの編集</h1>
                     <p>タスク名</p>
-                    <p>
-                      <input type="text" v-model="name" class="editInput">
-                    </p>
+                    <input type="text" v-model="name" class="editInput">
+                    <p class="err">{{ taskerr }}</p>
                     <p>メモ</p>
                     <p>
                       <textarea v-model="memo" class="editInput"></textarea>
@@ -150,9 +151,8 @@
                       </select>
                     </p>
                     <p>期限</p>
-                    <p>
-                      <input type="date" v-model="deadline" class="editInput">
-                    </p>
+                    <input type="date" v-model="deadline" class="editInput">
+                    <p class="err">{{ dateerr }}</p>
                     <p>
                       <button @click="updateData(taskid)" class="btn btn-warning">編集を保存する</button>
                       <button @click="deleteData(taskid)" class="btn btn-danger">削除</button>
@@ -178,6 +178,9 @@
         <div class="col-xl-4 order-xl-2 col-12 order-1">
           <div class="m-2 p-3 border">
             <h2>遊び要素</h2>
+            <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
+              <button type="button" class="btn btn-dark">ミッション進捗</button>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -235,7 +238,7 @@
 </template>
 
 <script>
-import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { doc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore, getDoc} from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   head() {
@@ -268,10 +271,13 @@ export default {
       deadline: "",
       taskid: "",
       comptasks: [],
+      taskerr: "",
+      dateerr: "",
     }
   },
   mounted() {
     this.checkLogin();
+    this.getNow();
   },
   methods: {
     // ログインの確認
@@ -318,37 +324,86 @@ export default {
         comptask["tid"] = doc.id;
         this.comptasks.push(comptask);
       });
+    //現在時刻の取得(秒単位まで)
+    getNow() {
+      const todayData = new Date();
+      const year = (todayData.getFullYear()) * 1000000000;
+      const month = (todayData.getMonth() + 1) * 10000000;
+      const date = todayData.getDate() * 100000;
+      const hours = todayData.getHours() * 3600;
+      const minutes = todayData.getMinutes() * 60;
+      const seconds = todayData.getSeconds();
+      const now = year + month + date + hours + minutes + seconds;
+      console.log(now);
+      return now;
+    },
+    dataCheck(num) {
+      //0はタスク名用、1は期限用
+      if (num == 0) {
+        const nameLength = (this.name).length;
+        if (nameLength <= 25 && nameLength >= 1) {
+          this.taskerr = "";
+          return true;
+        } else {
+          this.taskerr = "※タスク名の文字数が不適切です。"
+          return false;
+        }
+      } else if (num == 1) {
+        const todayData = new Date();
+        const year = (todayData.getFullYear()) * 10000;
+        const month = (todayData.getMonth() + 1) * 100;
+        const date = todayData.getDate();
+        const today = year + month + date;
+        const deadlineChecked = Number((this.deadline).replace(/-/g, ''));
+        if ((today <= deadlineChecked && (today + 200000) >= deadlineChecked) || (deadlineChecked == "")) {
+          this.dateerr = "";
+          return true;
+        } else {
+          this.dateerr = "※期限が不適切です。"
+          return false;
+        }
+      }
     },
     async addData() {
       const db = getFirestore(this.$app);
       // データの追加
-      // ユーザidをログイン中のユーザのものにする
-      await addDoc(collection(db, "task"), {
-        deadline: this.deadline,
-        memo: this.memo,
-        name: this.name,
-        priority: this.priority,
-        uid: this.uid,
-      });
-      this.getTasks();
-      this.closeAddPopup();
-      this.deadline = "";
-      this.memo = "";
-      this.name = "";
-      this.priority = "中";
+      // 入力された文字列のチェック
+      const nameJudge = this.dataCheck(0);
+      const dateJudge = this.dataCheck(1);
+      if (nameJudge && dateJudge) {
+        // ユーザidをログイン中のユーザのものにする
+        await addDoc(collection(db, "task"), {
+          deadline: this.deadline,
+          memo: this.memo,
+          name: this.name,
+          priority: this.priority,
+          uid: this.uid,
+          time: this.getNow(),
+        });
+        this.getTasks();
+        this.closeAddPopup();
+        this.deadline = "";
+        this.memo = "";
+        this.name = "";
+        this.priority = "中";
+      }
     },
     // データの上書き（編集ポップアップ用）
     async updateData(taskid) {
-      const db = getFirestore(this.$app);
-      await updateDoc(doc(db, "task", taskid), {
-        deadline: this.deadline,
-        memo: this.memo,
-        name: this.name,
-        priority: this.priority,
-        uid: this.uid,
-      });
-      this.getTasks();
-      this.closeEditPopup();
+      const nameJudge = this.dataCheck(0);
+      const dateJudge = this.dataCheck(1);
+      if (nameJudge && dateJudge) {
+        const db = getFirestore(this.$app);
+        await updateDoc(doc(db, "task", taskid), {
+          deadline: this.deadline,
+          memo: this.memo,
+          name: this.name,
+          priority: this.priority,
+          uid: this.uid,
+        });
+        this.getTasks();
+        this.closeEditPopup();
+      }
     },
     // データの削除（編集ポップアップ用）
     async deleteData(taskid) {
@@ -360,18 +415,19 @@ export default {
     // タスク完了ボタン
     async completeButton(name, memo, priority, deadline, taskid) {
       const db = getFirestore(this.$app);
-      const todayData = new Date();
-      const year = todayData.getFullYear();
-      const month = todayData.getMonth() + 1;
-      const date = todayData.getDate();
-      const today = year * 10000 + month * 100 + date;
       await addDoc(collection(db, "task_completed"), {
-        date: today,
+        time: this.getNow(),
         deadline: this.deadline,
         memo: this.memo,
         name: this.name,
         priority: this.priority,
         uid: this.uid,
+      });
+      await getDoc(doc(db, "user", this.uid), {
+
+      });
+      await updateDoc(doc(db, "user", this.uid), {
+
       });
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
@@ -393,6 +449,8 @@ export default {
     // 追加ポップアップを閉じる
     closeAddPopup() {
       $('#addTask').fadeOut();
+      this.taskerr = "";
+      this.dateerr = "";
     },
     // 編集ポップアップを開く
     openEditPopup(name, memo, priority, deadline, taskid) {
@@ -411,6 +469,8 @@ export default {
       this.priority = "中";
       this.deadline = "";
       this.taskid = "";
+      this.taskerr = "";
+      this.dateerr = "";
     },
     //タスク完了ポップアップを開く
     openCompPopup(name, memo, priority, deadline, taskid) {
@@ -533,6 +593,11 @@ export default {
 .task-comp {
   padding-left: 1em;
   margin: auto 1em auto auto;
+}
+
+.err {
+  color: red;
+  font-size: small;
 }
 
 /* タスク表示 */
