@@ -20,7 +20,37 @@
     </nav>
 
     <div class="container mt-5">
-      <h2>タスク管理画面</h2>
+      <div style="display: flex;">
+        <h2>タスク管理画面</h2>
+        <button @click="openHistoryPopup()" class="button-add">タスク履歴</button>
+        <!-- 履歴ポップアップここから -->
+        <section id="taskHistory" class="modalArea">
+          <div @click="closeHistoryPopup()" class="modalBg"></div>
+          <div class="modalWrapper">
+            <div v-for="comptask in comptasks" :key="comptask.tid">
+              <div class="historyContents">
+                <div class="history-title">
+                  <span class="history-name">名前：{{ comptask.name }}</span>
+                  <span class="history-compdate">完了日時：{{ comptask.date }}</span>
+                </div>
+                <div class="history-content-group">
+                  <p>優先度：{{ comptask.priority }}</p>
+                  <p>期限：{{ comptask.deadline }}</p>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="!comptasks.length">
+              <p>完了したタスクがありません</p>
+            </div>
+
+            <div @click="closeHistoryPopup()" class="closeModal">
+              ☓
+            </div>
+          </div>
+        </section>
+        <!-- 履歴ポップアップここまで -->
+      </div>
       <div class="row">
         <div class="col-xl-8 order-xl-1 col-12 order-2">
           <div class="m-2 p-3 border">
@@ -75,8 +105,8 @@
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
                 <span class="task-comp">
-                  <img  @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid)" id="complete"
-                    src="../assets/check/check.png">
+                  <img @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                    id="complete" src="../assets/check/check.png">
                 </span>
               </div>
               <!-- タスク表示ここまで -->
@@ -89,7 +119,7 @@
                     <p>タスクを完了しますか？</p>
                     <p>
                       <button @click="completeButton(name, memo, priority, deadline, taskid)"
-                       class="btn btn-warning">はい</button>
+                        class="btn btn-warning">はい</button>
                       <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
                     </p>
                   </div>
@@ -237,6 +267,7 @@ export default {
       priority: "中",
       deadline: "",
       taskid: "",
+      comptasks: [],
     }
   },
   mounted() {
@@ -274,6 +305,18 @@ export default {
         const task = doc.data();
         task["tid"] = doc.id;
         this.tasks.push(task);
+      });
+    },
+    // task_completedからデータの取得
+    async getCompleteTasks() {
+      const db = getFirestore(this.$app);
+      const q = query(collection(db, "task_completed"), where("uid", "==", this.uid));
+      const querySnapshot = await getDocs(q);
+      this.comptasks = [];
+      querySnapshot.forEach((doc) => {
+        const comptask = doc.data();
+        comptask["tid"] = doc.id;
+        this.comptasks.push(comptask);
       });
     },
     async addData() {
@@ -334,6 +377,15 @@ export default {
       this.getTasks();
       this.closeCompPopup();
     },
+    // 履歴ポップアップを開く
+    openHistoryPopup() {
+      this.getCompleteTasks();
+      $('#taskHistory').fadeIn();
+    },
+    // 履歴ポップアップを閉じる
+    closeHistoryPopup() {
+      $('#taskHistory').fadeOut();
+    },
     // 追加ポップアップを開く
     openAddPopup() {
       $('#addTask').fadeIn();
@@ -361,7 +413,7 @@ export default {
       this.taskid = "";
     },
     //タスク完了ポップアップを開く
-    openCompPopup(name, memo, priority, deadline, taskid){
+    openCompPopup(name, memo, priority, deadline, taskid) {
       this.name = name;
       this.memo = memo;
       this.priority = priority;
@@ -370,7 +422,7 @@ export default {
       $('#CompTask').fadeIn();
     },
     // タスク完了ポップアップを閉じる
-    closeCompPopup(){
+    closeCompPopup() {
       $('#CompTask').fadeOut();
       this.name = "";
       this.memo = "";
@@ -413,7 +465,8 @@ export default {
 
 #complete:hover {
   transform: scale(1.4, 1.4);
-  filter: opacity(30%);;
+  filter: opacity(30%);
+  ;
 }
 
 #logo {
@@ -535,6 +588,40 @@ export default {
   cursor: pointer;
 }
 
+
+/* 履歴ポップアップ内 */
+#taskHistory .modalWrapper {
+  padding: 2em;
+}
+
+.historyContents {
+  border: 1px solid black;
+  margin: 1em;
+}
+
+.history-title {
+  display: flex;
+  padding: 2px 0;
+}
+
+.history-name {
+  margin-left: 0.5m;
+  margin-right: 2em;
+}
+
+.history-compdate {
+  font-size: 0.9em;
+  color: gray;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  bottom: 0;
+}
+
+.history-content-group {
+  font-size: 0.8em;
+  color: gray;
+}
+
 /* 追加ポップアップ内 */
 .addContents {
   padding: 2em;
@@ -545,11 +632,11 @@ export default {
 }
 
 /* 完了ポップアップ */
-#CompTask .modalWrapper{
+#CompTask .modalWrapper {
   max-width: 250px;
 }
 
-.compContents{
+.compContents {
   padding: 5px;
   text-align: center;
 }
