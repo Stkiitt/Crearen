@@ -285,11 +285,11 @@ export default {
     //現在時刻の取得(秒単位まで)
     getNow() {
       const todayData = new Date();
-      const year = (todayData.getFullYear()) * 10000000000;
-      const month = (todayData.getMonth() + 1) * 100000000;
-      const date = todayData.getDate() * 1000000;
-      const hours = todayData.getHours() * 10000;
-      const minutes = todayData.getMinutes() * 100;
+      const year = (todayData.getFullYear()) * 1000000000;
+      const month = (todayData.getMonth() + 1) * 10000000;
+      const date = todayData.getDate() * 100000;
+      const hours = todayData.getHours() * 3600;
+      const minutes = todayData.getMinutes() * 60;
       const seconds = todayData.getSeconds();
       const now = year + month + date + hours + minutes + seconds;
       console.log(now);
