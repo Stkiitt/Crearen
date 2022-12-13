@@ -9,7 +9,7 @@
     </nav>
     <h1 class="title mt-5"> 進行中のミッション</h1>
     <div class="container mt-2 mission">
-      <div v-for="achievement in achievements">
+      <div v-for="achievement in achievements" :key="achievement[2]">
         <div :style="changeAchievementBGC(achievement[5])" id="achievement">
           <div class="row">
             <h4 id="taskTitle">
@@ -88,59 +88,75 @@ export default {
         this.achievements = [];
         const test = [
           [
-            [10, ad.completed_all, "タスクを10回達成する", "★☆☆☆☆"],
-            [20, ad.completed_all, "タスクを20回達成する", "★★☆☆☆"],
-            [30, ad.completed_all, "タスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_all, "タスクを40回達成する", "★★★★☆", 1],
-            [50, ad.completed_all, "タスクを50回達成する", "★★★★★", 2],
-            [50, ad.completed_all, "タスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
+            [30, ad.completed_all, "タスクを30回達成する", "★☆☆☆☆"],
+            [50, ad.completed_all, "タスクを50回達成する", "★★☆☆☆"],
+            [100, ad.completed_all, "タスクを100回達成する", "★★★☆☆"],
+            [200, ad.completed_all, "タスクを200回達成する", "★★★★☆", 1],
+            [300, ad.completed_all, "タスクを300回達成する", "★★★★★", 2],
+            [300, ad.completed_all, "タスクを300回以上達成！", "★★★★★", 3, "Complete !!"]
           ],
           [
-            [10, ad.completed_low, "難易度「低」のタスクを10回達成する", "★☆☆☆☆"],
-            [20, ad.completed_low, "難易度「低」のタスクを20回達成する", "★★☆☆☆"],
-            [30, ad.completed_low, "難易度「低」のタスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_low, "難易度「低」のタスクを40回達成する", "★★★★☆", 1],
-            [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★★", 2],
-            [50, ad.completed_low, "難易度「低」のタスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
+            [1, ad.achievement, "ミッションを1個達成する", "★☆☆☆☆"],
+            [5, ad.achievement, "タスクを5達成する", "★★☆☆☆"],
+            [10, ad.achievement, "タスクを10個達成する", "★★★☆☆"],
+            [15, ad.achievement, "タスクを15個達成する", "★★★★☆", 1],
+            [30, ad.achievement, "タスクを30個達成する", "★★★★★", 2],
+            [30, ad.achievement, "タスクを30個以上達成！", "★★★★★", 3, "Complete !!"]
           ],
           [
-            [10, ad.completed_middle, "難易度「中」のタスクを10回達成する", "★☆☆☆☆"],
-            [20, ad.completed_middle, "難易度「中」のタスクを20回達成する", "★★☆☆☆"],
-            [30, ad.completed_middle, "難易度「中」のタスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_middle, "難易度「中」のタスクを40回達成する", "★★★★☆", 1],
-            [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★★", 2],
-            [50, ad.completed_middle, "難易度「中」のタスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
+            [1, ad.completed_low, "難易度「低」のタスクを1回達成する", "★☆☆☆☆"],
+            [5, ad.completed_low, "難易度「低」のタスクを5回達成する", "★★☆☆☆"],
+            [10, ad.completed_low, "難易度「低」のタスクを10回達成する", "★★★☆☆"],
+            [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★☆", 1],
+            [100, ad.completed_low, "難易度「低」のタスクを100回達成する", "★★★★★", 2],
+            [100, ad.completed_low, "難易度「低」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
           ],
           [
-            [10, ad.completed_high, "難易度「高」のタスクを10回達成する", "★☆☆☆☆"],
-            [20, ad.completed_high, "難易度「高」のタスクを20回達成する", "★★☆☆☆"],
-            [30, ad.completed_high, "難易度「高」のタスクを30回達成する", "★★★☆☆"],
-            [40, ad.completed_high, "難易度「高」のタスクを40回達成する", "★★★★☆", 1],
-            [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★★", 2],
-            [50, ad.completed_high, "難易度「高」のタスクを50回以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
+            [1, ad.completed_middle, "難易度「中」のタスクを1回達成する", "★☆☆☆☆"],
+            [5, ad.completed_middle, "難易度「中」のタスクを5回達成する", "★★☆☆☆"],
+            [10, ad.completed_middle, "難易度「中」のタスクを10回達成する", "★★★☆☆"],
+            [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★☆", 1],
+            [100, ad.completed_middle, "難易度「中」のタスクを100回達成する", "★★★★★", 2],
+            [100, ad.completed_middle, "難易度「中」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
           ],
           [
-            [10, ad.daily_login, "ログイン日数：10日", "★☆☆☆☆"],
-            [20, ad.daily_login, "ログイン日数：20日", "★★☆☆☆"],
+            [1, ad.completed_high, "難易度「高」のタスクを1回達成する", "★☆☆☆☆"],
+            [5, ad.completed_high, "難易度「高」のタスクを5回達成する", "★★☆☆☆"],
+            [10, ad.completed_high, "難易度「高」のタスクを10回達成する", "★★★☆☆"],
+            [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★☆", 1],
+            [100, ad.completed_high, "難易度「高」のタスクを100回達成する", "★★★★★", 2],
+            [100, ad.completed_high, "難易度「高」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
+          ],
+          [
+            [30, ad.task_success, "期限前にタスクを30回完了する", "★☆☆☆☆"],
+            [50, ad.task_success, "期限前にタスクを50回完了する", "★★☆☆☆"],
+            [100, ad.task_success, "期限前にタスクを100回完了する", "★★★☆☆"],
+            [150, ad.task_success, "期限前にタスクを150回完了する", "★★★★☆", 1],
+            [300, ad.task_success, "期限前にタスクを300回完了する", "★★★★★", 2],
+            [300, ad.task_success, "期限前にタスクを300回以上完了！", "★★★★★", 3, "Complete !!"]
+          ],
+          [
+            [1, ad.daily_login, "ログイン日数：1日", "★☆☆☆☆"],
+            [7, ad.daily_login, "ログイン日数：7日", "★★☆☆☆"],
             [30, ad.daily_login, "ログイン日数：30日", "★★★☆☆"],
-            [40, ad.daily_login, "ログイン日数：40日", "★★★★☆", 1],
-            [50, ad.daily_login, "ログイン日数：50日", "★★★★★", 2],
-            [50, ad.daily_login, "ログイン日数50日以上達成！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
-          ],
-          [
-            [10, ad.task_success, "期限前にタスクを10回完了する", "★☆☆☆☆"],
-            [20, ad.task_success, "期限前にタスクを20回完了する", "★★☆☆☆"],
-            [30, ad.task_success, "期限前にタスクを30回完了する", "★★★☆☆"],
-            [40, ad.task_success, "期限前にタスクを40回完了する", "★★★★☆", 1],
-            [50, ad.task_success, "期限前にタスクを50回完了する", "★★★★★", 2],
-            [50, ad.task_success, "期限前にタスクを50回以上完了！", "★★★★★", 3, "Complete !!"]     ////////////////////////// 相談
+            [100, ad.daily_login, "ログイン日数：100日", "★★★★☆", 1],
+            [300, ad.daily_login, "ログイン日数：300日", "★★★★★", 2],
+            [300, ad.daily_login, "ログイン日数300日以上達成！", "★★★★★", 3, "Complete !!"]
           ],
           [
             [10, ad.task_failure, "タスクを10回失敗する", "★☆☆"],
             [20, ad.task_failure, "タスクを20回失敗する", "★★☆", 1],
             [30, ad.task_failure, "タスクを30回失敗する", "★★★", 2],
-            [30, ad.task_failure, "タスクを30回以上失敗失敗しました！", "★★★", 3, "Complete !!"]     ////////////////////////// 相談
+            [30, ad.task_failure, "タスクを30回以上失敗しました！", "★★★", 3, "Complete !!"]
           ],
+          [
+            [30, ad.task_delete, "タスクを30回削除する", "★"],
+            [30, ad.task_delete, "タスクを30回以上削除しました。", "★", 3, "Complete !!"],
+          ],
+          [
+            [10, ad.task_delete, "？", "★"],
+            [10, ad.task_delete, "タスクを5分以内に10個達成したした。", "★", 3, "Complete !!"],
+          ]
         ];
         for (let i = 0; i < test.length; i++) {
           const testLength = test[i].length;
@@ -244,7 +260,7 @@ export default {
   height: 10px;
   float: right;
   margin: 14px 20px;
-  background-color: #ececec;
+  background-color: lightgray;
   border-radius: 5px;
 }
 
