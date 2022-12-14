@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   head() {
@@ -81,95 +81,124 @@ export default {
     },
     // 実績データの取得
     async getAchievementData() {
-      const db = getFirestore(this.$app);
-      const docSnap = await getDoc(doc(db, "user", "てすと"));
-      if (docSnap.exists()) {
-        const ad = docSnap.data();
-        this.achievements = [];
-        const test = [
-          [
-            [30, ad.completed_all, "タスクを30回達成する", "★☆☆☆☆"],
-            [50, ad.completed_all, "タスクを50回達成する", "★★☆☆☆"],
-            [100, ad.completed_all, "タスクを100回達成する", "★★★☆☆"],
-            [200, ad.completed_all, "タスクを200回達成する", "★★★★☆", 1],
-            [300, ad.completed_all, "タスクを300回達成する", "★★★★★", 2],
-            [300, ad.completed_all, "タスクを300回以上達成！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [1, ad.achievement, "ミッションを1個達成する", "★☆☆☆☆"],
-            [5, ad.achievement, "タスクを5達成する", "★★☆☆☆"],
-            [10, ad.achievement, "タスクを10個達成する", "★★★☆☆"],
-            [15, ad.achievement, "タスクを15個達成する", "★★★★☆", 1],
-            [30, ad.achievement, "タスクを30個達成する", "★★★★★", 2],
-            [30, ad.achievement, "タスクを30個以上達成！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [1, ad.completed_low, "難易度「低」のタスクを1回達成する", "★☆☆☆☆"],
-            [5, ad.completed_low, "難易度「低」のタスクを5回達成する", "★★☆☆☆"],
-            [10, ad.completed_low, "難易度「低」のタスクを10回達成する", "★★★☆☆"],
-            [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★☆", 1],
-            [100, ad.completed_low, "難易度「低」のタスクを100回達成する", "★★★★★", 2],
-            [100, ad.completed_low, "難易度「低」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [1, ad.completed_middle, "難易度「中」のタスクを1回達成する", "★☆☆☆☆"],
-            [5, ad.completed_middle, "難易度「中」のタスクを5回達成する", "★★☆☆☆"],
-            [10, ad.completed_middle, "難易度「中」のタスクを10回達成する", "★★★☆☆"],
-            [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★☆", 1],
-            [100, ad.completed_middle, "難易度「中」のタスクを100回達成する", "★★★★★", 2],
-            [100, ad.completed_middle, "難易度「中」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [1, ad.completed_high, "難易度「高」のタスクを1回達成する", "★☆☆☆☆"],
-            [5, ad.completed_high, "難易度「高」のタスクを5回達成する", "★★☆☆☆"],
-            [10, ad.completed_high, "難易度「高」のタスクを10回達成する", "★★★☆☆"],
-            [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★☆", 1],
-            [100, ad.completed_high, "難易度「高」のタスクを100回達成する", "★★★★★", 2],
-            [100, ad.completed_high, "難易度「高」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [30, ad.task_success, "期限前にタスクを30回完了する", "★☆☆☆☆"],
-            [50, ad.task_success, "期限前にタスクを50回完了する", "★★☆☆☆"],
-            [100, ad.task_success, "期限前にタスクを100回完了する", "★★★☆☆"],
-            [150, ad.task_success, "期限前にタスクを150回完了する", "★★★★☆", 1],
-            [300, ad.task_success, "期限前にタスクを300回完了する", "★★★★★", 2],
-            [300, ad.task_success, "期限前にタスクを300回以上完了！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [1, ad.daily_login, "ログイン日数：1日", "★☆☆☆☆"],
-            [7, ad.daily_login, "ログイン日数：7日", "★★☆☆☆"],
-            [30, ad.daily_login, "ログイン日数：30日", "★★★☆☆"],
-            [100, ad.daily_login, "ログイン日数：100日", "★★★★☆", 1],
-            [300, ad.daily_login, "ログイン日数：300日", "★★★★★", 2],
-            [300, ad.daily_login, "ログイン日数300日以上達成！", "★★★★★", 3, "Complete !!"]
-          ],
-          [
-            [10, ad.task_failure, "タスクを10回失敗する", "★☆☆"],
-            [20, ad.task_failure, "タスクを20回失敗する", "★★☆", 1],
-            [30, ad.task_failure, "タスクを30回失敗する", "★★★", 2],
-            [30, ad.task_failure, "タスクを30回以上失敗しました！", "★★★", 3, "Complete !!"]
-          ],
-          [
-            [30, ad.task_delete, "タスクを30回削除する", "★"],
-            [30, ad.task_delete, "タスクを30回以上削除しました。", "★", 3, "Complete !!"],
-          ],
-          [
-            [10, ad.task_delete, "？", "★"],
-            [10, ad.task_delete, "タスクを5分以内に10個達成したした。", "★", 3, "Complete !!"],
-          ]
-        ];
-        for (let i = 0; i < test.length; i++) {
-          const testLength = test[i].length;
-          if (test[i][0][1] < test[i][0][0]) this.achievements.push(test[i][0]);
-          else if (test[i][1][1] < test[i][1][0]) this.achievements.push(test[i][1]);
-          else if (testLength > 2 && test[i][2][1] < test[i][2][0]) this.achievements.push(test[i][2]);
-          else if (testLength > 3 && test[i][3][1] < test[i][3][0]) this.achievements.push(test[i][3]);
-          else if (testLength > 4 && test[i][4][1] < test[i][4][0]) this.achievements.push(test[i][4]);
-          else this.achievements.push(test[i][testLength - 1]);
-        }
-      } else {
-        console.log("No such document.");
+      const ad = await this.updateCountAchievement();
+      this.achievements = [];
+      const al = [
+        [
+          [30, ad.completed_all, "タスクを30回達成する", "★☆☆☆☆"],
+          [50, ad.completed_all, "タスクを50回達成する", "★★☆☆☆"],
+          [100, ad.completed_all, "タスクを100回達成する", "★★★☆☆"],
+          [200, ad.completed_all, "タスクを200回達成する", "★★★★☆", 1],
+          [300, ad.completed_all, "タスクを300回達成する", "★★★★★", 2],
+          [300, ad.completed_all, "タスクを300回以上達成！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [1, ad.achievement, "ミッションを1個達成する", "★☆☆☆☆"],
+          [5, ad.achievement, "ミッションを5個達成する", "★★☆☆☆"],
+          [10, ad.achievement, "ミッションを10個達成する", "★★★☆☆"],
+          [15, ad.achievement, "ミッションを15個達成する", "★★★★☆", 1],
+          [30, ad.achievement, "ミッションを30個達成する", "★★★★★", 2],
+          [30, ad.achievement, "ミッションを30個以上達成！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [1, ad.completed_low, "難易度「低」のタスクを1回達成する", "★☆☆☆☆"],
+          [5, ad.completed_low, "難易度「低」のタスクを5回達成する", "★★☆☆☆"],
+          [10, ad.completed_low, "難易度「低」のタスクを10回達成する", "★★★☆☆"],
+          [50, ad.completed_low, "難易度「低」のタスクを50回達成する", "★★★★☆", 1],
+          [100, ad.completed_low, "難易度「低」のタスクを100回達成する", "★★★★★", 2],
+          [100, ad.completed_low, "難易度「低」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [1, ad.completed_middle, "難易度「中」のタスクを1回達成する", "★☆☆☆☆"],
+          [5, ad.completed_middle, "難易度「中」のタスクを5回達成する", "★★☆☆☆"],
+          [10, ad.completed_middle, "難易度「中」のタスクを10回達成する", "★★★☆☆"],
+          [50, ad.completed_middle, "難易度「中」のタスクを50回達成する", "★★★★☆", 1],
+          [100, ad.completed_middle, "難易度「中」のタスクを100回達成する", "★★★★★", 2],
+          [100, ad.completed_middle, "難易度「中」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [1, ad.completed_high, "難易度「高」のタスクを1回達成する", "★☆☆☆☆"],
+          [5, ad.completed_high, "難易度「高」のタスクを5回達成する", "★★☆☆☆"],
+          [10, ad.completed_high, "難易度「高」のタスクを10回達成する", "★★★☆☆"],
+          [50, ad.completed_high, "難易度「高」のタスクを50回達成する", "★★★★☆", 1],
+          [100, ad.completed_high, "難易度「高」のタスクを100回達成する", "★★★★★", 2],
+          [100, ad.completed_high, "難易度「高」のタスクを100回以上達成！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [30, ad.task_success, "期限前にタスクを30回完了する", "★☆☆☆☆"],
+          [50, ad.task_success, "期限前にタスクを50回完了する", "★★☆☆☆"],
+          [100, ad.task_success, "期限前にタスクを100回完了する", "★★★☆☆"],
+          [150, ad.task_success, "期限前にタスクを150回完了する", "★★★★☆", 1],
+          [300, ad.task_success, "期限前にタスクを300回完了する", "★★★★★", 2],
+          [300, ad.task_success, "期限前にタスクを300回以上完了！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [1, ad.daily_login, "ログイン日数：1日", "★☆☆☆☆"],
+          [7, ad.daily_login, "ログイン日数：7日", "★★☆☆☆"],
+          [30, ad.daily_login, "ログイン日数：30日", "★★★☆☆"],
+          [100, ad.daily_login, "ログイン日数：100日", "★★★★☆", 1],
+          [300, ad.daily_login, "ログイン日数：300日", "★★★★★", 2],
+          [300, ad.daily_login, "ログイン日数：300日以上達成！", "★★★★★", 3, "Complete !!"]
+        ],
+        [
+          [10, ad.task_failure, "タスクを10回失敗する", "★☆☆"],
+          [20, ad.task_failure, "タスクを20回失敗する", "★★☆", 1],
+          [30, ad.task_failure, "タスクを30回失敗する", "★★★", 2],
+          [30, ad.task_failure, "タスクを30回以上失敗しました。", "★★★", 3, "Complete !!"]
+        ],
+        [
+          [30, ad.task_delete, "タスクを30回削除する", "★"],
+          [30, ad.task_delete, "タスクを30回以上削除しました。", "★", 3, "Complete !!"],
+        ],
+        [
+          [10, ad.completed_quick, "？", "★"],
+          [10, ad.completed_quick, "タスクを作成してから5分以内に完了：10回", "★", 3, "Complete !!"],
+        ]
+      ];
+      for (let i = 0; i < al.length; i++) {
+        const alLength = al[i].length;
+        if (al[i][0][1] < al[i][0][0]) this.achievements.push(al[i][0]);
+        else if (al[i][1][1] < al[i][1][0]) this.achievements.push(al[i][1]);
+        else if (alLength > 2 && al[i][2][1] < al[i][2][0]) this.achievements.push(al[i][2]);
+        else if (alLength > 3 && al[i][3][1] < al[i][3][0]) this.achievements.push(al[i][3]);
+        else if (alLength > 4 && al[i][4][1] < al[i][4][0]) this.achievements.push(al[i][4]);
+        else this.achievements.push(al[i][alLength - 1]);
       }
+    },
+    // ミッションの達成回数更新
+    async updateCountAchievement() {
+      let countAchievement = 0;
+      let ad;
+      const db = getFirestore(this.$app);
+      const docSnap = await getDoc(doc(db, "user", this.uid));
+      if (docSnap.exists()) ad = docSnap.data();
+      const checkList = [
+        [ad.completed_all, 30, 50, 100, 200, 300],
+        [ad.achievement, 1, 5, 10, 15, 30],
+        [ad.completed_low, 1, 5, 10, 50, 100],
+        [ad.completed_middle, 1, 5, 10, 50, 100],
+        [ad.completed_high, 1, 5, 10, 50, 100],
+        [ad.task_success, 30, 50, 100, 200, 300],
+        [ad.daily_login, 1, 7, 30, 100, 300],
+        [ad.task_failure, 10, 20, 30],
+        [ad.task_delete, 30],
+        [ad.completed_quick, 10],
+      ];
+      checkList.forEach((check) => {
+        let tmpCount = 0;
+        for (let i=1; i<check.length; i++) {
+          if (check[0] < check[i]) {
+            break;
+          }
+          tmpCount = i;
+        }
+        countAchievement += tmpCount;
+      });
+      await updateDoc(doc(db, "user", this.uid), {
+        achievement: countAchievement,
+      });
+      ad.achievement = countAchievement;
+      return ad;
     },
     // プログレスバーの長さ変更
     changeProgressBar(target, now) {
