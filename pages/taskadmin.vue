@@ -31,7 +31,7 @@
               <div class="historyContents">
                 <div class="history-title">
                   <span class="history-name">名前：{{ comptask.name }}</span>
-                  <span class="history-compdate">完了日時：{{ comptask.date }}</span>
+                  <span class="history-compdate">完了日時：{{ comptask.time }}</span>
                 </div>
                 <div class="history-content-group">
                   <p>優先度：{{ comptask.priority }}</p>
@@ -107,7 +107,7 @@
                   <span class="task-content">優先度：{{ task.priority }}</span>
                 </div>
                 <span class="task-comp">
-                  <img @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
+                  <img @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid, task.time)"
                     id="complete" src="../assets/check/check.png">
                 </span>
               </div>
@@ -270,6 +270,7 @@ export default {
       priority: "中",
       deadline: "",
       taskid: "",
+      time_created: 0,
       comptasks: [],
       taskerr: "",
       dateerr: "",
@@ -277,7 +278,6 @@ export default {
   },
   mounted() {
     this.checkLogin();
-    this.getNow();
   },
   methods: {
     // ログインの確認
@@ -287,6 +287,7 @@ export default {
         if (user) {
           this.uid = user.uid;
           this.getTasks();
+          this.countAchievement(0);
         } else {
           location.href = 'http://localhost:3000';
         }
@@ -324,6 +325,7 @@ export default {
         comptask["tid"] = doc.id;
         this.comptasks.push(comptask);
       });
+    },
     //現在時刻の取得(秒単位まで)
     getNow() {
       const todayData = new Date();
@@ -334,8 +336,16 @@ export default {
       const minutes = todayData.getMinutes() * 60;
       const seconds = todayData.getSeconds();
       const now = year + month + date + hours + minutes + seconds;
-      console.log(now);
       return now;
+    },
+    // 今日のYYYYMMDDを取得（日まで）
+    getToday() {
+        const todayData = new Date();
+        const year = todayData.getFullYear();
+        const month = todayData.getMonth() + 1;
+        const date = todayData.getDate();
+        const today = year * 10000 + month * 100 + date;
+        return today;
     },
     dataCheck(num) {
       //0はタスク名用、1は期限用
@@ -349,11 +359,7 @@ export default {
           return false;
         }
       } else if (num == 1) {
-        const todayData = new Date();
-        const year = (todayData.getFullYear()) * 10000;
-        const month = (todayData.getMonth() + 1) * 100;
-        const date = todayData.getDate();
-        const today = year + month + date;
+        const today = this.getToday();
         const deadlineChecked = Number((this.deadline).replace(/-/g, ''));
         if ((today <= deadlineChecked && (today + 200000) >= deadlineChecked) || (deadlineChecked == "")) {
           this.dateerr = "";
@@ -409,6 +415,7 @@ export default {
     async deleteData(taskid) {
       const db = getFirestore(this.$app);
       await deleteDoc(doc(db, "task", taskid));
+      this.countAchievement(2);
       this.getTasks();
       this.closeEditPopup();
     },
@@ -428,28 +435,46 @@ export default {
       this.getTasks();
       this.closeCompPopup();
     },
-    // 実績のカウント(mode 0:ページ表示時のログイン日数、1:タスク完了時)
+    // 実績のカウント(mode 0:ページ表示時のログイン日数、1:タスク完了時、2:タスク削除時)
     async countAchievement(mode) {
+      console.log("ログインカウント確認しました");  ///////////////////////////
+      const db = getFirestore(this.$app);
+      const docSnap = await getDoc(doc(db, "user", this.uid));
+      const today = this.getToday();
+      let ad;
+      if (docSnap.exists()) ad = docSnap.data();
       if (mode == 0) {
-        // 最終ログインが今日と異なるならログイン回数を追加して更新する処理
+        if (ad.last_login != today) {
+          ad.daily_login++;
+          await updateDoc(doc(db, "user", this.uid), {
+            last_login: today,
+            daily_login: ad.daily_login,
+          });
+        }
       } else if (mode == 1) {
-        const db = getFirestore(this.$app);
-        const docSnap = await getDoc(doc(db, "user", this.uid));
-        let ad;
-        if (docSnap.exists()) ad = docSnap.data();
-        ad.completed_all++;
-        if (this.priority == "高") ad.completed_high++;
+        const timeDiff = this.getNow() - this.time_created;  // 作成してすぐに完了していないか確認（不正してないか）
+        if (timeDiff < 300) ad.completed_quick++;          //////////////////// 不正していたら他のカウントを増やすか決める /////////////////
+        ad.completed_all++;  // タスク完了の合計カウントを増やす
+        if (this.priority == "高") ad.completed_high++;  // 難易度ごとのカウントを増やす
         else if (this.priority == "中") ad.completed_middle++;
         else if (this.priority == "低") ad.completed_low++;
+        const deadlineChecked = Number(this.deadline.replace(/-/g, ''));  // 期限を過ぎていないか確認
+        const today = this.getToday();
+        if (deadlineChecked >= today || deadlineChecked == "") ad.task_success++;
+        else ad.task_failure++;
         await updateDoc(doc(db, "user", this.uid), {
-          // achievement: ad.achievement,
           completed_all: ad.completed_all,
           completed_high: ad.completed_high,
           completed_low: ad.completed_low,
           completed_middle: ad.completed_middle,
-          // completed_quick: ad.completed_quick,
-          // task_failure: ad.task_failure,
-          // task_success: ad.task_success,
+          completed_quick: ad.completed_quick,
+          task_failure: ad.task_failure,
+          task_success: ad.task_success,
+        });
+      } else if (mode == 2) {
+        ad.task_delete++;
+        await updateDoc(doc(db, "user", this.uid), {
+          task_delete: ad.task_delete,
         });
       }
     },
@@ -493,12 +518,13 @@ export default {
       this.dateerr = "";
     },
     //タスク完了ポップアップを開く
-    openCompPopup(name, memo, priority, deadline, taskid) {
+    openCompPopup(name, memo, priority, deadline, taskid, time_created) {
       this.name = name;
       this.memo = memo;
       this.priority = priority;
       this.deadline = deadline;
       this.taskid = taskid;
+      this.time_created = time_created;
       $('#CompTask').fadeIn();
     },
     // タスク完了ポップアップを閉じる
@@ -509,6 +535,7 @@ export default {
       this.priority = "中";
       this.deadline = "";
       this.taskid = "";
+      this.time_created = 0;
     },
     //タスクの枠の色
     changeBorderColor(priority) {
@@ -523,11 +550,7 @@ export default {
     // 期限の色
     changeDeadlineColor(deadline) {
       const deadlineChecked = Number(deadline.replace(/-/g, ''));
-      const todayData = new Date();
-      const year = todayData.getFullYear();
-      const month = todayData.getMonth() + 1;
-      const date = todayData.getDate();
-      const today = year * 10000 + month * 100 + date;
+      const today = this.getToday();
       if (deadlineChecked < today) {
         return "task-content deadline-red";
       } else {
