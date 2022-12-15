@@ -50,7 +50,55 @@
         <!-- お知らせ -->
         <div class="col-7">
           <div class="m-2 p-3 border" id="information">
-            <h2 class="my-4">お知らせ</h2>
+            <h2 class="my-4" id="informationTitle">Information</h2>
+
+            <!-- 繰り返しここから -->
+            <section v-for="task in tasks" :key="task.tid">
+              <!-- タスク表示ここから -->
+              <div>
+                <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)">
+                  <h4>{{ task.name }}</h4>
+                </div>
+              </div>
+              <!-- タスク表示ここまで -->
+
+              <!-- 編集ポップアップ内容ここから -->
+              <section id="editTask" class="modalArea">
+                <div @click="closeEditPopup()" class="modalBg"></div>
+                <div class="modalWrapper">
+                  <div class="editContents">
+                    <h1>タスクの編集</h1>
+                    <p>タスク名</p>
+                    <input type="text" v-model="name" class="editInput">
+                    <p class="err">{{ taskerr }}</p>
+                  </div>
+                  <div @click="closeEditPopup()" class="closeModal">
+                    ☓
+                  </div>
+                </div>
+              </section>
+              <!-- 編集ポップアップここまで -->
+            </section>
+            <!-- 繰り返しここまで -->
+            <dl>
+              <div>
+                <dt>2022/12/25</dt>
+                <dd><a href="#">サービス終了のお知らせ</a>
+                </dd>
+              </div>
+              <div>
+                <dt>2022/12/20</dt>
+                <dd>
+                  <a href="#">遊び要素に新たなコンテンツを追加！</a>
+                </dd>
+              </div>
+              <div>
+                <dt>2022/12/13</dt>
+                <dd>
+                  <a href="#">サービス開始！</a>
+                </dd>
+              </div>
+            </dl>
           </div>
         </div>
         <!-- ログインしていないとき -->
@@ -79,7 +127,7 @@
               <p>
                 <NuxtLink to="/taskadmin" class="btn btn-success w-75" rel="noopener noreferrer">タスク管理画面へ</NuxtLink>
               </p>
-              <button @click="logout()" type="button" class="btn btn-dark w-75" >ログアウト</button>
+              <button @click="logout()" type="button" class="btn btn-dark w-75">ログアウト</button>
             </div>
           </div>
         </div>
@@ -241,6 +289,13 @@ export default {
   height: 25em;
   box-shadow: 0px 0px 5px black;
   border-radius: 10px;
+  height: 25em;
+  /*スクロールの高さ*/
+  overflow-y: scroll;
+}
+
+#informationTitle {
+  border-bottom: dotted;
 }
 
 #login {
