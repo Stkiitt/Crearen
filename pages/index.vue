@@ -53,52 +53,30 @@
             <h2 class="my-4" id="informationTitle">Information</h2>
 
             <!-- 繰り返しここから -->
-            <section v-for="task in tasks" :key="task.tid">
-              <!-- タスク表示ここから -->
-              <div>
-                <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)">
-                  <h4>{{ task.name }}</h4>
+            <section v-for="info in infos" :key="info.tid">
+              <dl>
+                <div>
+                  <dt>{{ info.date }}</dt>
+                  <dd class="info1" @click="openInfoPopup(info.title, info.date, info.content)">{{ info.title }}</dd>
                 </div>
-              </div>
-              <!-- タスク表示ここまで -->
-
-              <!-- 編集ポップアップ内容ここから -->
-              <section id="editTask" class="modalArea">
-                <div @click="closeEditPopup()" class="modalBg"></div>
-                <div class="modalWrapper">
-                  <div class="editContents">
-                    <h1>タスクの編集</h1>
-                    <p>タスク名</p>
-                    <input type="text" v-model="name" class="editInput">
-                    <p class="err">{{ taskerr }}</p>
+              </dl>
+              <!-- お知らせポップアップここから -->
+              <section id="infoPopup" class="modalArea">
+                <div @click="closeInfoPopup()" class="modalBg"></div>
+                <div class="modalWrapperInfo">
+                  <div>
+                    <h3>{{ date }}</h3>
+                    <h1>{{ title }}</h1>
+                    <p>{{ content }}</p>
                   </div>
-                  <div @click="closeEditPopup()" class="closeModal">
+                  <div @click="closeInfoPopup()" class="closeModal">
                     ☓
                   </div>
                 </div>
               </section>
-              <!-- 編集ポップアップここまで -->
+              <!-- お知らせポップアップここまで -->
             </section>
             <!-- 繰り返しここまで -->
-            <dl>
-              <div>
-                <dt>2022/12/25</dt>
-                <dd><a href="#">サービス終了のお知らせ</a>
-                </dd>
-              </div>
-              <div>
-                <dt>2022/12/20</dt>
-                <dd>
-                  <a href="#">遊び要素に新たなコンテンツを追加！</a>
-                </dd>
-              </div>
-              <div>
-                <dt>2022/12/13</dt>
-                <dd>
-                  <a href="#">サービス開始！</a>
-                </dd>
-              </div>
-            </dl>
           </div>
         </div>
         <!-- ログインしていないとき -->
@@ -190,11 +168,16 @@
 
 <script>
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 export default {
   head() {
     return {
       title: "トップページ",
       script: [
+        {
+          type: "text/javascript",
+          src: "//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+        },
         {
           src: "https://unpkg.com/swiper/swiper-bundle.min.js"
         },
@@ -212,6 +195,10 @@ export default {
       email: "",
       password: "",
       loggedIn: false,
+      date: "",
+      title: "",
+      content: "",
+      infos: [],
     }
   },
   mounted() {
@@ -236,6 +223,7 @@ export default {
       },
     });;
     this.checkLogin();
+    this.getInfo();
   },
   methods: {
     // ログインの確認
@@ -271,6 +259,29 @@ export default {
           console.log(error);
         });
     },
+    //informationからデータの取得
+    async getInfo() {
+      const db = getFirestore(this.$app);
+      const q = query(collection(db, "information"));
+      const querySnapshot = await getDocs(q);
+      this.infos = [];
+      querySnapshot.forEach((doc) => {
+        const info = doc.data();
+        info["tid"] = doc.id;
+        this.infos.push(info);
+      });
+    },
+    // お知らせポップアップを開く
+    openInfoPopup(title, date, content) {
+      this.title = title;
+      this.date = date;
+      this.content = content;
+      $('#infoPopup').fadeIn();
+    },
+    // お知らせポップアップを閉じる
+    closeInfoPopup() {
+      $('#infoPopup').fadeOut();
+    },
   }
 }
 </script>
@@ -296,6 +307,14 @@ export default {
 
 #informationTitle {
   border-bottom: dotted;
+}
+
+.info1 {
+  cursor: pointer;
+}
+
+.info1:link{
+  color: blue;
 }
 
 #login {
@@ -327,6 +346,14 @@ export default {
   width: 100%;
 }
 
+.modalWrapperInfo div h1{
+  border-bottom: solid;
+}
+
+.modalWrapperInfo div p{
+  margin-top: 1em;
+  font-size: large;
+}
 /* ページネーションのサイズと色 */
 .swiper-pagination-bullet {
   background-color: orange;
@@ -340,5 +367,36 @@ export default {
 
 .swiper-button-prev {
   color: orange;
+}
+
+/* モーダルCSS */
+.modalArea {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  /*サイトによってここの数値は調整 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modalBg {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+.modalWrapperInfo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 40%;
+  max-width: 700px;
+  min-width: 200px;
+  padding: 10px 30px;
+  background-color: #fff;
 }
 </style>
