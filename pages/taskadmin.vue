@@ -53,7 +53,7 @@
       </div>
       <div class="row">
         <div class="col-xl-8 order-xl-1 col-12 order-2">
-          <div class="m-2 p-3 border">
+          <div class="m-2 p-3 border" id="ToDoBlock">
             <h2 class="my-4" id="ToDo">ToDo</h2>
             <button @click="openAddPopup()" class="button-add">＋追加</button>
             <!-- 追加ポップアップここから -->
@@ -176,7 +176,7 @@
         </div>
 
         <div class="col-xl-4 order-xl-2 col-12 order-1">
-          <div class="m-2 p-3 border">
+          <div class="m-2 p-3 border" id="profile">
             <h2>遊び要素</h2>
             <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
               <button type="button" class="btn btn-dark">ミッション進捗</button>
@@ -636,6 +636,20 @@ export default {
 .task-comp {
   padding-left: 1em;
   margin: auto 1em auto auto;
+}
+
+#ToDoBlock{
+  height: 35em;
+  box-shadow: 0px 0px 5px black;
+  border-radius: 10px;
+  /*スクロールの高さ*/
+  overflow-y: scroll;
+}
+
+#profile{
+  height: 35em;
+  box-shadow: 0px 0px 5px black;
+  border-radius: 10px;
 }
 
 .err {
