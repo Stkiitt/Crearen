@@ -300,7 +300,6 @@ export default {
   height: 25em;
   box-shadow: 0px 0px 5px black;
   border-radius: 10px;
-  height: 25em;
   /*スクロールの高さ*/
   overflow-y: scroll;
 }
