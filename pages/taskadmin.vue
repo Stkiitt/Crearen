@@ -31,7 +31,7 @@
               <div class="historyContents">
                 <div class="history-title">
                   <span class="history-name">名前：{{ comptask.name }}</span>
-                  <span class="history-compdate">完了日時：{{ comptask.time }}</span>
+                  <span class="history-compdate">完了日時：{{ changeTimetype(comptask.time) }}</span>
                 </div>
                 <div class="history-content-group">
                   <p>優先度：{{ comptask.priority }}</p>
@@ -326,6 +326,14 @@ export default {
         this.comptasks.push(comptask);
       });
     },
+    changeTimetype(time) {
+      let change_time = String(time);
+      let year_type = change_time.slice(0,4);
+      let month_type = change_time.slice(4,6);
+      let day_type = change_time.slice(6,8);
+      const time_changed = year_type + "-" + month_type + "-" + day_type;
+      return time_changed;
+    },
     //現在時刻の取得(秒単位まで)
     getNow() {
       const todayData = new Date();
@@ -351,7 +359,7 @@ export default {
       //0はタスク名用、1は期限用
       if (num == 0) {
         const nameLength = (this.name).length;
-        if (nameLength <= 25 && nameLength >= 1) {
+        if (nameLength <= 20 && nameLength >= 1) {
           this.taskerr = "";
           return true;
         } else {
