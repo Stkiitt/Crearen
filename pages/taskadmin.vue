@@ -53,9 +53,11 @@
       </div>
       <div class="row">
         <div class="col-xl-8 order-xl-1 col-12 order-2">
-          <div class="m-2 p-3 border" id="ToDoBlock">
-            <h2 class="my-4" id="ToDo">ToDo</h2>
-            <button @click="openAddPopup()" class="button-add">＋追加</button>
+          <div class="m-2 px-3 border" id="ToDoBlock">
+            <div id="taskList">
+              <h2 class="my-4" id="ToDo">ToDo</h2>
+              <button @click="openAddPopup()" class="button-add">＋追加</button>
+            </div>
             <!-- 追加ポップアップここから -->
             <section id="addTask" class="modalArea">
               <div @click="closeAddPopup()" class="modalBg"></div>
@@ -120,8 +122,7 @@
                   <div class="compContents">
                     <p>タスクを完了しますか？</p>
                     <p>
-                      <button @click="completeButton(taskid)"
-                        class="btn btn-warning">はい</button>
+                      <button @click="completeButton(taskid)" class="btn btn-warning">はい</button>
                       <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
                     </p>
                   </div>
@@ -166,7 +167,6 @@
               <!-- 編集ポップアップここまで -->
             </section>
             <!-- 繰り返しここまで -->
-
             <!-- this.tasksが空ならタスクがありませんを表示 -->
             <div v-if="!tasks.length">
               <p id="noTasks">タスクがありません</p>
@@ -340,12 +340,12 @@ export default {
     },
     // 今日のYYYYMMDDを取得（日まで）
     getToday() {
-        const todayData = new Date();
-        const year = todayData.getFullYear();
-        const month = todayData.getMonth() + 1;
-        const date = todayData.getDate();
-        const today = year * 10000 + month * 100 + date;
-        return today;
+      const todayData = new Date();
+      const year = todayData.getFullYear();
+      const month = todayData.getMonth() + 1;
+      const date = todayData.getDate();
+      const today = year * 10000 + month * 100 + date;
+      return today;
     },
     dataCheck(num) {
       //0はタスク名用、1は期限用
@@ -584,6 +584,14 @@ export default {
   display: inline;
 }
 
+#taskList{
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 10px;
+  z-index: 10;
+}
+
 #noTasks {
   margin: 10% 0 10% 34%;
   font-size: large;
@@ -638,18 +646,16 @@ export default {
   margin: auto 1em auto auto;
 }
 
-#ToDoBlock{
+#ToDoBlock {
   height: 35em;
   box-shadow: 0px 0px 5px black;
-  border-radius: 10px;
   /*スクロールの高さ*/
   overflow-y: scroll;
 }
 
-#profile{
+#profile {
   height: 35em;
   box-shadow: 0px 0px 5px black;
-  border-radius: 10px;
 }
 
 .err {
