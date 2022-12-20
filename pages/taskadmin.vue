@@ -52,7 +52,7 @@
         <!-- 履歴ポップアップここまで -->
       </div>
       <div class="row">
-        <div class="col-xl-8 order-xl-1 col-12 order-2">
+        <div class="col-lg-8 order-lg-1 col-12 order-2">
           <div class="m-2 p-3 border">
             <h2 class="my-4" id="ToDo">ToDo</h2>
             <button @click="openAddPopup()" class="button-add">＋追加</button>
@@ -175,12 +175,23 @@
           </div>
         </div>
 
-        <div class="col-xl-4 order-xl-2 col-12 order-1">
+        <div class="col-lg-4 order-lg-2 col-12 order-1">
           <div class="m-2 p-3 border">
-            <h2>遊び要素</h2>
-            <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
-              <button type="button" class="btn btn-dark">ミッション進捗</button>
-            </NuxtLink>
+            <h2 class="profile">プロフィール</h2>
+            <div class="P-group row">
+              <div id="Avatar" class="col-lg-12 col-6">
+                <img src="../assets/Avatar/A_Sample.jpeg" alt="アバターを設定しませんか？">
+              </div>
+              <div class="col-lg-12 col-6">
+                <p class="P-title">称号：</p>
+                <p class="P-elements">ユーザー名：</p>
+                <p class="P-elements">ログイン日数：</p>
+                <p class="P-elements">累計タスク達成数：</p>
+                <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
+                  <button type="button" class="btn btn-dark">ミッション進捗</button>
+                </NuxtLink>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -636,6 +647,26 @@ export default {
 .task-comp {
   padding-left: 1em;
   margin: auto 1em auto auto;
+}
+
+.P-title {
+  font-size: small;
+}
+
+.P-group {
+  
+}
+
+.P-elementgroup {
+
+}
+
+#Avatar {
+  text-align: center;
+}
+
+#Avatar img{
+  width: 170px;
 }
 
 .err {
