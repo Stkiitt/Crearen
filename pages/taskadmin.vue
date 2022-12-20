@@ -31,7 +31,7 @@
               <div class="historyContents">
                 <div class="history-title">
                   <span class="history-name">名前：{{ comptask.name }}</span>
-                  <span class="history-compdate">完了日時：{{ comptask.time }}</span>
+                  <span class="history-compdate">完了日時：{{ changeTimetype(comptask.time) }}</span>
                 </div>
                 <div class="history-content-group">
                   <p>優先度：{{ comptask.priority }}</p>
@@ -53,15 +53,17 @@
       </div>
       <div class="row">
         <div class="col-xl-8 order-xl-1 col-12 order-2">
-          <div class="m-2 p-3 border">
-            <h2 class="my-4" id="ToDo">ToDo</h2>
-            <button @click="openAddPopup()" class="button-add">追加</button>
-            <select @change="sortTasks(Number($event.target.value))" class="sort_select">
-              <option value="0">新しい順</option>
-              <option value="1">古い順</option>
-              <option value="2">優先度順</option>
-              <option value="3">期限が近い順</option>
-            </select>
+          <div class="m-2 p-3 border" id="ToDoBlock">
+            <div id="taskList">
+              <h2 class="my-4" id="ToDo">ToDo</h2>
+              <button @click="openAddPopup()" class="button-add">追加</button>
+              <select @change="sortTasks(Number($event.target.value))" class="sort_select">
+                <option value="0">新しい順</option>
+                <option value="1">古い順</option>
+                <option value="2">優先度順</option>
+                <option value="3">期限が近い順</option>
+              </select>
+            </div>
             <!-- 追加ポップアップここから -->
             <section id="addTask" class="modalArea">
               <div @click="closeAddPopup()" class="modalBg"></div>
@@ -126,8 +128,7 @@
                   <div class="compContents">
                     <p>タスクを完了しますか？</p>
                     <p>
-                      <button @click="completeButton(taskid)"
-                        class="btn btn-warning">はい</button>
+                      <button @click="completeButton(taskid)" class="btn btn-warning">はい</button>
                       <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
                     </p>
                   </div>
@@ -172,7 +173,6 @@
               <!-- 編集ポップアップここまで -->
             </section>
             <!-- 繰り返しここまで -->
-
             <!-- this.tasksが空ならタスクがありませんを表示 -->
             <div v-if="!tasks.length">
               <p id="noTasks">タスクがありません</p>
@@ -182,7 +182,7 @@
         </div>
 
         <div class="col-xl-4 order-xl-2 col-12 order-1">
-          <div class="m-2 p-3 border">
+          <div class="m-2 p-3 border" id="profile">
             <h2>遊び要素</h2>
             <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
               <button type="button" class="btn btn-dark">ミッション進捗</button>
@@ -364,7 +364,14 @@ export default {
             else return ac - bc;
           });
           break;
-      }
+    },
+    changeTimetype(time) {
+      let change_time = String(time);
+      let year_type = change_time.slice(0,4);
+      let month_type = change_time.slice(4,6);
+      let day_type = change_time.slice(6,8);
+      const time_changed = year_type + "-" + month_type + "-" + day_type;
+      return time_changed;
     },
     //現在時刻の取得(秒単位まで)
     getNow() {
@@ -391,7 +398,7 @@ export default {
       //0はタスク名用、1は期限用
       if (num == 0) {
         const nameLength = (this.name).length;
-        if (nameLength <= 25 && nameLength >= 1) {
+        if (nameLength <= 20 && nameLength >= 1) {
           this.taskerr = "";
           return true;
         } else {
@@ -631,6 +638,14 @@ export default {
   display: inline;
 }
 
+#taskList{
+  position: sticky;
+  top: 0;
+  background-color: white;
+  padding: 10px;
+  z-index: 5;
+}
+
 #noTasks {
   margin: 10% 0 10% 34%;
   font-size: large;
@@ -705,6 +720,18 @@ export default {
 .task-comp {
   padding-left: 1em;
   margin: auto 1em auto auto;
+}
+
+#ToDoBlock {
+  height: 35em;
+  box-shadow: 0px 0px 5px black;
+  /*スクロールの高さ*/
+  overflow-y: scroll;
+}
+
+#profile {
+  height: 35em;
+  box-shadow: 0px 0px 5px black;
 }
 
 .err {
