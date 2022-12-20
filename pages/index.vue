@@ -299,7 +299,6 @@ export default {
 #information {
   height: 25em;
   box-shadow: 0px 0px 5px black;
-  border-radius: 10px;
   /*スクロールの高さ*/
   overflow-y: scroll;
 }
@@ -319,7 +318,6 @@ export default {
 #login {
   height: 25em;
   box-shadow: 0px 0px 5px black;
-  border-radius: 10px;
 }
 
 #loggedin {
@@ -328,7 +326,6 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0px 0px 5px black;
-  border-radius: 10px;
 }
 
 #copyright {

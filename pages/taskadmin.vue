@@ -597,7 +597,7 @@ export default {
   top: 0;
   background-color: white;
   padding: 10px;
-  z-index: 10;
+  z-index: 5;
 }
 
 #noTasks {
