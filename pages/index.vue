@@ -23,19 +23,13 @@
       <div class="swiper slider">
         <div class="swiper-wrapper">
           <div class="swiper-slide">
-            <img style="width: 100%;" src="../assets/top/犬.jpg" alt="" />
+            <img style="width: 100%;" src="../assets/top/service_start.png" alt="" />
           </div>
           <div class="swiper-slide">
             <img style="width: 100%;" src="../assets/top/猫.jpg" alt="" />
           </div>
           <div class="swiper-slide">
             <img style="width: 100%;" src="../assets/top/豚.png" alt="" />
-          </div>
-          <div class="swiper-slide">
-            <img style="width: 100%;" src="../assets/top/猫.jpg" alt="" />
-          </div>
-          <div class="swiper-slide">
-            <img style="width: 100%;" src="../assets/top/犬.jpg" alt="" />
           </div>
         </div>
         <div class="swiper-pagination"></div>
@@ -269,6 +263,12 @@ export default {
         const info = doc.data();
         info["tid"] = doc.id;
         this.infos.push(info);
+        this.infos.sort((a, b) => {
+          const ac = Number(a.date.replace(/\u002f/g, ''));
+          const bc = Number(b.date.replace(/\u002f/g, ''));
+          console.log(ac);
+          return bc - ac;
+        })
       });
     },
     // お知らせポップアップを開く
@@ -311,7 +311,7 @@ export default {
   cursor: pointer;
 }
 
-.info1:link{
+.info1:link {
   color: blue;
 }
 
@@ -342,14 +342,15 @@ export default {
   width: 100%;
 }
 
-.modalWrapperInfo div h1{
+.modalWrapperInfo div h1 {
   border-bottom: solid;
 }
 
-.modalWrapperInfo div p{
+.modalWrapperInfo div p {
   margin-top: 1em;
   font-size: large;
 }
+
 /* ページネーションのサイズと色 */
 .swiper-pagination-bullet {
   background-color: orange;

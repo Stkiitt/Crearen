@@ -53,8 +53,9 @@
       </div>
       <div class="row">
         <div class="col-lg-8 order-lg-1 col-12 order-2">
-          <div class="m-2 p-3 border">
-            <h2 class="my-4" id="ToDo">ToDo</h2>
+          <div class="m-2 px-4 border" id="ToDoBlock">
+            <div id="taskList">
+              <h2 class="my-4" id="ToDo">ToDo</h2>
               <button @click="openAddPopup()" class="button-add">追加</button>
               <select @change="sortTasks(Number($event.target.value))" class="sort_select">
                 <option value="0">新しい順</option>
@@ -373,6 +374,7 @@ export default {
             else return ac - bc;
           });
           break;
+        }
     },
     changeTimetype(time) {
       let change_time = String(time);
@@ -752,8 +754,13 @@ export default {
 #ToDoBlock {
   height: 35em;
   box-shadow: 0px 0px 5px black;
-  /*スクロールの高さ*/
   overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+#ToDoBlock::-webkit-scrollbar{
+  display:none;
 }
 
 #profile {
