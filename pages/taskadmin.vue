@@ -358,10 +358,9 @@ export default {
           break;
         case 2:
           this.tasks.sort((a, b) => {
-            if (a.priority == b.priority) return 0;
-            else if (a.priority == "高") return -1;
-            else if (a.priority == "中") return -1;
-            return 0;
+            const ac = this.getPriorityNum(a.priority);
+            const bc = this.getPriorityNum(b.priority);
+            return bc - ac;
           });
           break;
         case 3:
@@ -375,6 +374,16 @@ export default {
           });
           break;
         }
+    },
+    // 優先度順のソートで使用
+    getPriorityNum(priority) {
+      if(priority == "高") {
+        return 2;
+      } else if(priority == "中") {
+        return 1;
+      } else if(priority == "低") {
+        return 0;
+      }
     },
     changeTimetype(time) {
       let change_time = String(time);
@@ -499,10 +508,10 @@ export default {
       const docSnap = await getDoc(doc(db, "user", this.uid));
       let ad;
       if (docSnap.exists()) ad = docSnap.data();
+      const today = this.getToday();
       switch (mode) {
         case 0:
           if (ad.last_login != today) {
-            const today = this.getToday();
             ad.daily_login++;
             await updateDoc(doc(db, "user", this.uid), {
               last_login: today,
@@ -518,7 +527,6 @@ export default {
           else if (this.priority == "中") ad.completed_middle++;
           else if (this.priority == "低") ad.completed_low++;
           const deadlineChecked = Number(this.deadline.replace(/-/g, ''));  // 期限を過ぎていないか確認
-          const today = this.getToday();
           if (deadlineChecked >= today || deadlineChecked == "") ad.task_success++;
           else ad.task_failure++;
           await updateDoc(doc(db, "user", this.uid), {
@@ -751,6 +759,8 @@ export default {
 
 #Avatar img{
   width: 170px;
+}
+
 #ToDoBlock {
   height: 35em;
   box-shadow: 0px 0px 5px black;
