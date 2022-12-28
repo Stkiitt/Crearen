@@ -374,13 +374,13 @@ export default {
             else return ac - bc;
           });
           break;
-        }
+      }
     },
     changeTimetype(time) {
       let change_time = String(time);
-      let year_type = change_time.slice(0,4);
-      let month_type = change_time.slice(4,6);
-      let day_type = change_time.slice(6,8);
+      let year_type = change_time.slice(0, 4);
+      let month_type = change_time.slice(4, 6);
+      let day_type = change_time.slice(6, 8);
       const time_changed = year_type + "-" + month_type + "-" + day_type;
       return time_changed;
     },
@@ -649,7 +649,7 @@ export default {
   display: inline;
 }
 
-#taskList{
+#taskList {
   position: sticky;
   top: 0;
   background-color: white;
@@ -737,30 +737,39 @@ export default {
   font-size: small;
 }
 
-.P-group {
-  
-}
+.P-group {}
 
-.P-elementgroup {
-
-}
+.P-elementgroup {}
 
 #Avatar {
   text-align: center;
 }
 
-#Avatar img{
+#Avatar img {
   width: 170px;
+}
+
 #ToDoBlock {
   height: 35em;
   box-shadow: 0px 0px 5px black;
   overflow-y: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: #ee5e1c #ccc;
 }
 
-#ToDoBlock::-webkit-scrollbar{
-  display:none;
+#ToDoBlock::-webkit-scrollbar {
+  width: 10px;
+}
+
+#ToDoBlock::-webkit-scrollbar-track {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+#ToDoBlock::-webkit-scrollbar-thumb {
+  background-color: #ee5e1c;
+  border: 2px outset #dc5b1f;
+  border-radius: 10px;
 }
 
 #profile {
