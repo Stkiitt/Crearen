@@ -11,7 +11,7 @@
     <div class="container mt-2 mission">
       <div v-for="achievement in achievements" :key="achievement[2]">
         <div :style="changeAchievementBGC(achievement[5])" id="achievement">
-          <div class="row">
+          <div class="row missionBox">
             <h4 id="taskTitle">
               <span>{{ achievement[2] }}</span>
             </h4>
@@ -311,7 +311,7 @@ export default {
   display: block;
 }
 
-.row {
+.missionBox {
   width: 99%;
 }
 </style>
