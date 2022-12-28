@@ -106,18 +106,18 @@
       </div>
     </div>
 
-    <FooterCopyrightVue />
+    <FooterCopyright />
 
   </div>
 </template>
 
 <script>
-import FooterCopyrightVue from "~/components/FooterCopyright.vue";
+import FooterCopyright from "~/components/FooterCopyright.vue";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 export default {
   components: {
-    FooterCopyrightVue,
+    FooterCopyright,
   },
   head() {
     return {
