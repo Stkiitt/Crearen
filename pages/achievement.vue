@@ -257,6 +257,8 @@ export default {
   background-color: bisque;
   overflow: auto;
   padding: 0 30px;
+  scrollbar-width: thin;
+  scrollbar-color: #f174c1 #ccc;
 }
 
 #achievement {
@@ -265,6 +267,21 @@ export default {
   margin-top: 2em;
   margin-bottom: 2em;
   box-shadow: 5px 3px 5px rgb(130, 130, 130);
+}
+
+.mission::-webkit-scrollbar {
+  width: 10px;
+}
+
+.mission::-webkit-scrollbar-track {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+.mission::-webkit-scrollbar-thumb {
+  background-color: #ee5e1c;
+  border: 2px outset #dc5b1f;
+  border-radius: 10px;
 }
 
 #taskTitle {
