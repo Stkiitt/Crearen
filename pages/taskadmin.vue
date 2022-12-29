@@ -38,7 +38,7 @@ import HistoryButtonPopup from "~/components/HistoryButtonPopup.vue";
 import ToDoTask from "~/components/ToDoTask.vue";
 import ProfileTaskadmin from "~/components/ProfileTaskadmin.vue";
 import FooterCopyright from "~/components/FooterCopyright.vue";
-import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   components: {
