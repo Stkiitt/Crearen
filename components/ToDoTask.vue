@@ -23,27 +23,9 @@
               期限：{{ task.deadline }}</span>
             <span class="task-content">優先度：{{ task.priority }}</span>
           </div>
-          <span class="task-comp">
-            <img @click="openCompPopup(task.name, task.memo, task.priority, task.deadline, task.tid, task.time)"
-              id="complete" src="../assets/check/check.png">
-          </span>
+          <CompImgPopup :task="task" @changeTasks="changeTasks" />
         </div>
         <!-- タスク表示ここまで -->
-
-        <!-- タスク完了ポップアップここから -->
-        <section id="CompTask" class="modalArea">
-          <div @click="closeCompPopup()" class="modalBg"></div>
-          <div class="modalWrapper">
-            <div class="compContents">
-              <p>タスクを完了しますか？</p>
-              <p>
-                <button @click="completeButton(taskid)" class="btn btn-warning">はい</button>
-                <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
-              </p>
-            </div>
-          </div>
-        </section>
-        <!-- タスク完了ポップアップここまで -->
 
         <!-- 編集ポップアップ内容ここから -->
         <section id="editTask" class="modalArea">
@@ -92,10 +74,12 @@
 
 <script>
 import AddButtonPopup from "~/components/AddButtonPopup.vue";
-import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import CompImgPopup from "~/components/CompImgPopup.vue";
+import { doc, getDoc, getDocs, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   components: {
+    CompImgPopup,
     AddButtonPopup,
   },
   data () {
@@ -107,7 +91,6 @@ export default {
       priority: "中",
       deadline: "",
       taskid: "",
-      time_created: 0,
       taskerr: "",
       dateerr: "",
     }
@@ -185,32 +168,6 @@ export default {
         return 0;
       }
     },
-    // タスク完了時の実績カウント
-    async countCompAchievement() {
-      const db = getFirestore(this.$app);
-      const docSnap = await getDoc(doc(db, "user", this.uid));
-      let ad;
-      if (docSnap.exists()) ad = docSnap.data();
-      const today = this.getToday();
-      const timeDiff = this.getNow() - this.time_created;  // 作成してすぐに完了していないか確認（不正してないか）
-      if (timeDiff < 300) ad.completed_quick++;
-      ad.completed_all++;  // タスク完了の合計カウントを増やす
-      if (this.priority == "高") ad.completed_high++;  // 難易度ごとのカウントを増やす
-      else if (this.priority == "中") ad.completed_middle++;
-      else if (this.priority == "低") ad.completed_low++;
-      const deadlineChecked = Number(this.deadline.replace(/-/g, ''));  // 期限を過ぎていないか確認
-      if (deadlineChecked >= today || deadlineChecked == "") ad.task_success++;
-      else ad.task_failure++;
-      await updateDoc(doc(db, "user", this.uid), {
-        completed_all: ad.completed_all,
-        completed_high: ad.completed_high,
-        completed_low: ad.completed_low,
-        completed_middle: ad.completed_middle,
-        completed_quick: ad.completed_quick,
-        task_failure: ad.task_failure,
-        task_success: ad.task_success,
-      });
-    },
     // タスク削除時の実績カウント
     async countDeleteAchievement() {
       const db = getFirestore(this.$app);
@@ -221,18 +178,6 @@ export default {
       await updateDoc(doc(db, "user", this.uid), {
         task_delete: ad.task_delete,
       });
-    },
-    //現在時刻の取得(秒単位まで)
-    getNow() {
-      const todayData = new Date();
-      const year = (todayData.getFullYear()) * 1000000000;
-      const month = (todayData.getMonth() + 1) * 10000000;
-      const date = todayData.getDate() * 100000;
-      const hours = todayData.getHours() * 3600;
-      const minutes = todayData.getMinutes() * 60;
-      const seconds = todayData.getSeconds();
-      const now = year + month + date + hours + minutes + seconds;
-      return now;
     },
     // 今日のYYYYMMDDを取得（日まで）
     getToday() {
@@ -291,22 +236,6 @@ export default {
       this.getTasks();
       this.closeEditPopup();
     },
-    // タスク完了ボタン
-    async completeButton(taskid) {
-      const db = getFirestore(this.$app);
-      await addDoc(collection(db, "task_completed"), {
-        time: this.getNow(),
-        deadline: this.deadline,
-        memo: this.memo,
-        name: this.name,
-        priority: this.priority,
-        uid: this.uid,
-      });
-      await this.countCompAchievement();
-      await deleteDoc(doc(db, "task", taskid));
-      this.getTasks();
-      this.closeCompPopup();
-    },
     // 編集ポップアップを開く
     openEditPopup(name, memo, priority, deadline, taskid) {
       this.name = name;
@@ -326,26 +255,6 @@ export default {
       this.taskid = "";
       this.taskerr = "";
       this.dateerr = "";
-    },
-    //タスク完了ポップアップを開く
-    openCompPopup(name, memo, priority, deadline, taskid, time_created) {
-      this.name = name;
-      this.memo = memo;
-      this.priority = priority;
-      this.deadline = deadline;
-      this.taskid = taskid;
-      this.time_created = time_created;
-      $('#CompTask').fadeIn();
-    },
-    // タスク完了ポップアップを閉じる
-    closeCompPopup() {
-      $('#CompTask').fadeOut();
-      this.name = "";
-      this.memo = "";
-      this.priority = "中";
-      this.deadline = "";
-      this.taskid = "";
-      this.time_created = 0;
     },
     //タスクの枠の色
     changeBorderColor(priority) {
@@ -372,16 +281,6 @@ export default {
 </script>
 
 <style>
-#complete {
-  height: 2em;
-}
-
-#complete:hover {
-  transform: scale(1.4, 1.4);
-  filter: opacity(30%);
-  ;
-}
-
 #ToDo {
   display: inline;
 }
@@ -441,11 +340,6 @@ export default {
 
 .task-content:last-child {
   margin-right: 1em;
-}
-
-.task-comp {
-  padding-left: 1em;
-  margin: auto 1em auto auto;
 }
 
 #ToDoBlock {
@@ -529,16 +423,6 @@ export default {
   top: 0.5rem;
   right: 1rem;
   cursor: pointer;
-}
-
-/* 完了ポップアップ */
-#CompTask .modalWrapper {
-  max-width: 250px;
-}
-
-.compContents {
-  padding: 5px;
-  text-align: center;
 }
 
 /* 編集ポップアップ内 */

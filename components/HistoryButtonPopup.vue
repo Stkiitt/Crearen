@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { getDocs, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   data () {
