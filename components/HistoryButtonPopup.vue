@@ -68,9 +68,9 @@ export default {
     },
     changeTimetype(time) {
       let change_time = String(time);
-      let year_type = change_time.slice(0,4);
-      let month_type = change_time.slice(4,6);
-      let day_type = change_time.slice(6,8);
+      let year_type = change_time.slice(0, 4);
+      let month_type = change_time.slice(4, 6);
+      let day_type = change_time.slice(6, 8);
       const time_changed = year_type + "-" + month_type + "-" + day_type;
       return time_changed;
     },
@@ -129,5 +129,41 @@ export default {
 .history-content-group {
   font-size: 0.8em;
   color: gray;
+}
+
+/* モーダルCSS */
+.modalArea {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  /*サイトによってここの数値は調整 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modalBg {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+.modalWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-width: 500px;
+  padding: 10px 30px;
+  background-color: #fff;
+}
+
+.closeModal {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
 }
 </style>

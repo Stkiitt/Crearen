@@ -1,6 +1,6 @@
 <template>
   <div class="col-lg-4 order-lg-2 col-12 order-1">
-    <div class="m-2 p-3 border">
+    <div class="m-2 p-3 border" id="profileBlock">
       <h2 class="profile">プロフィール</h2>
       <div class="P-group row">
         <div id="Avatar" class="col-lg-12 col-6">
@@ -34,6 +34,11 @@ export default {
 </script>
 
 <style>
+#profileBlock{
+  box-shadow: 0px 0px 5px black;
+  border-radius: 10px;
+}
+
 .P-title {
   font-size: small;
 }
@@ -50,7 +55,7 @@ export default {
   text-align: center;
 }
 
-#Avatar img{
+#Avatar img {
   width: 170px;
 }
 </style>

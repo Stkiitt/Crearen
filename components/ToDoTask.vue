@@ -3,7 +3,7 @@
     <div class="m-2 px-4 border" id="ToDoBlock">
       <div id="taskList">
         <h2 class="my-4" id="ToDo">ToDo</h2>
-        <button @click="openAddPopup()" class="button-add">追加</button>
+        <AddButtonPopup @changeTasks="changeTasks" />
         <select @change="sortTasks(Number($event.target.value))" class="sort_select">
           <option value="0">新しい順</option>
           <option value="1">古い順</option>
@@ -11,44 +11,6 @@
           <option value="3">期限が近い順</option>
         </select>
       </div>
-      <!-- 追加ポップアップここから -->
-      <section id="addTask" class="modalArea">
-        <div @click="closeAddPopup()" class="modalBg"></div>
-        <div class="modalWrapper">
-          <div class="addContents">
-            <h1>タスクの追加</h1>
-            <p>タスク名</p>
-
-            <input type="text" v-model="name" class="addInput">
-            <p class="err">{{ taskerr }}</p>
-
-            <p>メモ</p>
-            <p>
-              <textarea v-model="memo" class="addInput"></textarea>
-            </p>
-            <p>優先度</p>
-            <p>
-              <select v-model="priority" class="addInput">
-                <option value="高">高</option>
-                <option value="中" selected>中</option>
-                <option value="低">低</option>
-              </select>
-            </p>
-            <p>期限</p>
-
-            <input type="date" v-model="deadline" class="addInput">
-            <p class="err">{{ dateerr }}</p>
-
-            <p>
-              <button @click="addData()" class="btn btn-success">タスクを追加する</button>
-            </p>
-          </div>
-          <div @click="closeAddPopup()" class="closeModal">
-            ☓
-          </div>
-        </div>
-      </section>
-      <!-- 追加ポップアップここまで -->
 
       <!-- 繰り返しここから -->
       <section v-for="task in tasks" :key="task.tid">
@@ -129,9 +91,13 @@
 </template>
 
 <script>
+import AddButtonPopup from "~/components/AddButtonPopup.vue";
 import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
+  components: {
+    AddButtonPopup,
+  },
   data () {
     return {
       uid: "",
@@ -150,6 +116,10 @@ export default {
     this.checkLogin();
   },
   methods: {
+    // 子コンポーネント内のtasksの書き換えを検知する
+    changeTasks(newVal){
+      this.tasks = newVal
+    },
     // ログインの確認
     checkLogin() {
       const auth = getAuth(this.$app);
@@ -203,7 +173,7 @@ export default {
             else return ac - bc;
           });
           break;
-        }
+      }
     },
     // 優先度順のソートで使用
     getPriorityNum(priority) {
@@ -296,30 +266,6 @@ export default {
         }
       }
     },
-    async addData() {
-      const db = getFirestore(this.$app);
-      // データの追加
-      // 入力された文字列のチェック
-      const nameJudge = this.dataCheck(0);
-      const dateJudge = this.dataCheck(1);
-      if (nameJudge && dateJudge) {
-        // ユーザidをログイン中のユーザのものにする
-        await addDoc(collection(db, "task"), {
-          deadline: this.deadline,
-          memo: this.memo,
-          name: this.name,
-          priority: this.priority,
-          uid: this.uid,
-          time: this.getNow(),
-        });
-        this.getTasks();
-        this.closeAddPopup();
-        this.deadline = "";
-        this.memo = "";
-        this.name = "";
-        this.priority = "中";
-      }
-    },
     // データの上書き（編集ポップアップ用）
     async updateData(taskid) {
       const nameJudge = this.dataCheck(0);
@@ -360,16 +306,6 @@ export default {
       await deleteDoc(doc(db, "task", taskid));
       this.getTasks();
       this.closeCompPopup();
-    },
-    // 追加ポップアップを開く
-    openAddPopup() {
-      $('#addTask').fadeIn();
-    },
-    // 追加ポップアップを閉じる
-    closeAddPopup() {
-      $('#addTask').fadeOut();
-      this.taskerr = "";
-      this.dateerr = "";
     },
     // 編集ポップアップを開く
     openEditPopup(name, memo, priority, deadline, taskid) {
@@ -450,7 +386,7 @@ export default {
   display: inline;
 }
 
-#taskList{
+#taskList {
   position: sticky;
   top: 0;
   background-color: white;
@@ -462,18 +398,6 @@ export default {
   margin: 10% 0 10% 34%;
   font-size: large;
   font-weight: bold;
-}
-
-.button-add {
-  float: right;
-  margin-left: 20px;
-  padding: 0 20px;
-  height: 2.5em;
-  border-radius: 3em;
-  background-color: greenyellow;
-  color: black;
-  border: none;
-  box-shadow: 1px 2px 1px #777777;
 }
 
 .sort_select {
@@ -528,12 +452,24 @@ export default {
   height: 35em;
   box-shadow: 0px 0px 5px black;
   overflow-y: scroll;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: #ee5e1c #ccc;
+  border-radius: 10px;
 }
 
-#ToDoBlock::-webkit-scrollbar{
-  display:none;
+#ToDoBlock::-webkit-scrollbar {
+  width: 10px;
+}
+
+#ToDoBlock::-webkit-scrollbar-track {
+  background-color: #ccc;
+  border-radius: 5px;
+}
+
+#ToDoBlock::-webkit-scrollbar-thumb {
+  background-color: #ee5e1c;
+  border: 2px outset #dc5b1f;
+  border-radius: 10px;
 }
 
 .err {
@@ -559,13 +495,40 @@ export default {
   color: red;
 }
 
-/* 追加ポップアップ内 */
-.addContents {
-  padding: 2em;
+/* モーダルCSS */
+.modalArea {
+  display: none;
+  position: fixed;
+  z-index: 10;
+  /*サイトによってここの数値は調整 */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.addInput {
-  border: 1px solid gray;
+.modalBg {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(30, 30, 30, 0.9);
+}
+
+.modalWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-width: 500px;
+  padding: 10px 30px;
+  background-color: #fff;
+}
+
+.closeModal {
+  position: absolute;
+  top: 0.5rem;
+  right: 1rem;
+  cursor: pointer;
 }
 
 /* 完了ポップアップ */
