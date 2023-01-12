@@ -14,6 +14,7 @@
           <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
             <button type="button" class="btn btn-dark">ミッション進捗</button>
           </NuxtLink>
+          <ProfileEditPopup />
         </div>
       </div>
     </div>
@@ -21,7 +22,11 @@
 </template>
 
 <script>
+import ProfileEditPopup from '~/components/ProfileEditPopup.vue';
 export default {
+  components:{
+    ProfileEditPopup,
+  },
   data() {
     return {
     }
