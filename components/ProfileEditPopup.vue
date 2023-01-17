@@ -4,7 +4,7 @@
     <!-- プロフィール編集ポップアップここから -->
     <section id="profileEdit" class="modalArea">
       <div @click="closeProfileEditPopup()" class="modalBg"></div>
-      <div class="modalWrapper">
+      <div class="modalWrapper_pe">
         <!-- タブ要素ここから -->
 
         <div id="tab">
@@ -12,13 +12,8 @@
           <label class="tab_class" for="tab1">アバター画像</label>
           <div class="content_class1">
             <div>
-              <p class="title_selected">
-                <span>{{ title_selected_first }}</span>
-                <span>{{ title_selected_second }}</span>
-                <span>{{ title_selected_third }}</span>
-              </p>
               <img :src="avatar_selected_url" class="avatar_selected">
-              <div class="avatar_img_box" style="width: 80%; margin: 0 auto;">
+              <div class="avatar_img_box">
                 <img v-for="avatar in avatars" :key="avatar.img_name" :src="avatar.url"
                   @click="setSelectedAvatar(avatar.url)" :class="changeAvatarOpacity(avatar.get)">
               </div>
@@ -27,11 +22,25 @@
           <input type="radio" name="tab_name" id="tab2" value="1" v-model="profileTab">
           <label class="tab_class" for="tab2">称号・名前</label>
           <div class="content_class2">
-            <p>タブ2のコンテンツを表示します</p>
+            <h3 class="username">ユーザー名</h3>
+            <input type="text" v-model="username" class="editName">
+            <h3 class="degreeTitle">称号</h3>
+            <p class="degree_selected">
+              <span @click="changeEdit(0)" class="degree">{{ degree_selected_first }}</span>
+              <span @click="changeEdit(1)" class="degree">{{ degree_selected_second }}</span>
+              <span @click="changeEdit(2)" class="degree">{{ degree_selected_third }}</span>
+            </p>
+            <div v-if="(editDegree == 0) || (editDegree == 2)" class="degreeOptionsBox">
+              <span v-for="degree in degrees" :key="degree.id" @click="changeDegree(degree)" class="degreeOption">{{
+                degree
+              }}</span>
+            </div>
+            <div v-if="editDegree == 1" class="degreeOptionsBox">
+              <span v-for="ppp in ppps" :key="ppp.id" @click="changeDegree(ppp)" class="degreeOption">{{ ppp }}</span>
+            </div>
           </div>
         </div>
         <div>
-
         </div>
       </div>
     </section>
@@ -45,14 +54,16 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   data() {
     return {
-      uid: "",
+      // uid: "",
       comptasks: [],
       profileTab: "0",
+      username: "",
       uid: "ivAhPE3aHcbJh6fOVhsPbC2rXV42",
       avatar_selected_url: "",
-      title_selected_first: "",
-      title_selected_second: "",
-      title_selected_third: "",
+      degree_selected_first: "",
+      degree_selected_second: "",
+      degree_selected_third: "",
+      editDegree: 2,
       avatars: {
         A_Sample: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2FA_Sample.jpeg?alt=media&token=c5be4652-87ed-4dba-bf19-5b028597627c" },
         alien_grey: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2Falien_grey.png?alt=media&token=a99b2c1d-e3d5-464c-8049-19b4e2db5f5e" },
@@ -108,7 +119,41 @@ export default {
         unchi_character: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2Funchi_character.png?alt=media&token=0f215469-413e-44c3-9edd-d5381f558fef" },
         yuusya_game: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2Fyuusya_game.png?alt=media&token=277d5765-c0e3-4f0a-9705-ced7674886ef" },
         // 45
-      }
+      },
+      degrees: [
+        "ピチピチ",
+        "ギャル",
+        "嵐を呼ぶ",
+        "しり",
+        "魅惑",
+        "マーメイド",
+        "塵",
+        "積もれば山となる",
+        "うんち"
+      ],
+      ppps: [
+        "(なし)",
+        "の",
+        "が",
+        "で",
+        "を",
+        "と",
+        "に",
+        "な",
+        "は",
+        "も",
+        "なる",
+        "での",
+        "的な",
+        "兼",
+        "限定",
+        "in",
+        "of",
+        "から",
+        "からの",
+        "=",
+        "★",
+      ]
     }
   },
   mounted() {
@@ -143,9 +188,9 @@ export default {
         if (doc.id == "avatar") {
           this.avatar_selected_url = this.avatars[doc.data().img_name]["url"];
         } else if (doc.id == "title") {
-          this.title_selected_first = doc.data().first;
-          this.title_selected_second = doc.data().second;
-          this.title_selected_third = doc.data().third;
+          this.degree_selected_first = doc.data().first;
+          this.degree_selected_second = doc.data().second;
+          this.degree_selected_third = doc.data().third;
         }
       });
     },
@@ -169,6 +214,20 @@ export default {
         return "avatar_get";
       } else {
         return "avatar_not_get";
+      }
+    },
+    // 称号の変更箇所の切替
+    changeEdit(num) {
+      this.editDegree = num;
+    },
+    // クリックした称号に変更する
+    changeDegree(degree) {
+      if (this.editDegree == 0) {
+        this.degree_selected_first = degree;
+      } else if (this.editDegree == 1) {
+        this.degree_selected_second = degree;
+      } else if (this.editDegree == 2) {
+        this.degree_selected_third = degree;
       }
     },
   }
@@ -206,12 +265,12 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper {
+.modalWrapper_pe {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70%;
+  width: 50%;
   min-width: 720px;
   max-height: 1000px;
   padding: 10px 30px;
@@ -274,10 +333,31 @@ input:checked+.tab_class+.content_class2 {
   display: block;
 }
 
+.degree {
+  font-size: large;
+  margin: 15px;
+  border-bottom: 2px solid black;
+  padding: 10px 20px;
+}
+
+.username,
+.editName {
+  margin-left: 10%;
+}
+
+.editName {
+  width: 80%;
+}
+
+.degreeTitle {
+  margin-left: 10%;
+  margin-top: 1em;
+}
+
 /*  */
-.title_selected {
+.degree_selected {
   display: block;
-  margin: 40px auto 10px;
+  margin: 20px auto 10px;
   width: fit-content;
 }
 
@@ -292,6 +372,9 @@ input:checked+.tab_class+.content_class2 {
   display: flex;
   flex-wrap: wrap;
   overflow-y: scroll;
+  max-height: 350px;
+  width: 80%;
+  margin: 0 auto;
 }
 
 .avatar_get,
@@ -303,5 +386,20 @@ input:checked+.tab_class+.content_class2 {
 
 .avatar_not_get {
   opacity: 0.2;
+}
+
+/*  */
+.degreeOptionsBox {
+  display: flex;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+  max-height: 350px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.degreeOption {
+  margin-top: 1em;
+  width: 25%;
 }
 </style>
