@@ -4,16 +4,19 @@
     <!-- 履歴ポップアップここから -->
     <section id="taskHistory" class="modalArea">
       <div @click="closeHistoryPopup()" class="modalBg"></div>
-      <div class="modalWrapper">
-        <div v-for="comptask in comptasks" :key="comptask.tid">
-          <div class="historyContents">
-            <div class="history-title">
-              <span class="history-name">名前：{{ comptask.name }}</span>
-              <span class="history-compdate">完了日時：{{ changeTimetype(comptask.time) }}</span>
-            </div>
-            <div class="history-content-group">
-              <p>優先度：{{ comptask.priority }}</p>
-              <p>期限：{{ comptask.deadline }}</p>
+      <div class="modalWrapperHistory">
+        <h4>タスク履歴</h4>
+        <div id="historyList">
+          <div v-for="comptask in comptasks" :key="comptask.tid">
+            <div class="historyContents">
+              <div class="history-title">
+                <span>名前：{{ comptask.name }}</span>
+              </div>
+              <div class="history-content-group">
+                <span v-if="comptask.deadline">期限：{{ comptask.deadline }}</span>
+                <span>完了日時：{{ changeTimetype(comptask.time) }}</span>
+                <span>優先度：{{ comptask.priority }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -25,6 +28,7 @@
         <div @click="closeHistoryPopup()" class="closeModal">
           ☓
         </div>
+
       </div>
     </section>
     <!-- 履歴ポップアップここまで -->
@@ -35,7 +39,7 @@
 import { getDocs, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
-  data () {
+  data() {
     return {
       uid: "",
       comptasks: [],
@@ -109,26 +113,23 @@ export default {
 }
 
 .history-title {
-  display: flex;
-  padding: 2px 0;
-}
-
-.history-name {
-  margin-left: 0.5m;
-  margin-right: 2em;
-}
-
-.history-compdate {
-  font-size: 0.9em;
-  color: gray;
-  padding-bottom: 0;
-  margin-bottom: 0;
+  font-size: 1.2em;
   bottom: 0;
+  left: 0;
+  margin: auto 0.5em 0 0.5em;
+  padding-bottom: 5px;
+  border-bottom: black solid 1px;
 }
 
 .history-content-group {
-  font-size: 0.8em;
+  margin: auto 0.5em;
+  padding: 5px;
   color: gray;
+}
+
+.history-content-group span {
+  display: block;
+  padding: 2px auto;
 }
 
 /* モーダルCSS */
@@ -149,13 +150,12 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper {
+.modalWrapperHistory {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70%;
-  max-width: 500px;
+  width: 600px;
   padding: 10px 30px;
   background-color: #fff;
 }
@@ -166,4 +166,14 @@ export default {
   right: 1rem;
   cursor: pointer;
 }
+
+#historyList {
+  height: 35em;
+  box-shadow: 0px 0px 5px black;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+  scrollbar-color: #ee5e1c #ccc;
+  border-radius: 10px;
+}
+
 </style>
