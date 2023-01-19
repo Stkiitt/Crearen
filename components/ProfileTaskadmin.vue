@@ -14,7 +14,13 @@
           <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
             <button type="button" class="btn btn-dark">ミッション進捗</button>
           </NuxtLink>
-          <ProfileEditPopup />
+          <ProfileEditPopup 
+            @changeAvatarUrl="changeAvatarUrl" 
+            @changeDegreeFirst="changeDegreeFirst" 
+            @changeDegreeSecond="changeDegreeSecond" 
+            @changeDegreeThird="changeDegreeThird" 
+            @changeUserName="changeUserName"
+          />
         </div>
       </div>
     </div>
