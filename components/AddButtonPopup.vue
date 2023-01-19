@@ -52,7 +52,7 @@ export default {
         return [];
       },
       set(newVal){
-        this.$emit("changeTasks", newVal)
+        this.$emit("changeTasks", newVal);
       }
     },
   },
