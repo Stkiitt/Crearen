@@ -183,5 +183,6 @@ export default {
 
 #Avatar img {
   width: 170px;
+  margin: 30px 0;
 }
 </style>

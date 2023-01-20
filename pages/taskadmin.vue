@@ -113,12 +113,27 @@ export default {
       let ad;
       if (docSnap.exists()) ad = docSnap.data();
       const today = this.getToday();
-      if (ad.last_login != today) {
+      if (ad.last_login != today) {  // 最終ログインが今日より前か
         ad.daily_login++;
         await updateDoc(doc(db, "user", this.uid), {
           last_login: today,
           daily_login: ad.daily_login,
         });
+        const check_l = [1, 7, 30, 100, 300].indexOf(ad.daily_login) + 1;  // ログイン合計が区切り目か
+        if (check_l != 0) {
+          alert("アバターと称号を獲得しました。\nアバター：\n称号：");
+          await updateDoc(doc(db, "user", this.uid), {
+            daily_login_step: check_l,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター：\n称号：");
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
       }
     },
   }

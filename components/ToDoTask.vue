@@ -178,6 +178,21 @@ export default {
       await updateDoc(doc(db, "user", this.uid), {
         task_delete: ad.task_delete,
       });
+      const check_d = [30].indexOf(ad.task_delete) + 1;  // 削除回数が区切り目か
+      if (check_d != 0) {
+        alert("アバターと称号を獲得しました。\nアバター：\n称号：");
+        await updateDoc(doc(db, "user", this.uid), {
+          daily_login_step: check_d,
+        });
+        ad.achievement++;
+        const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+        if (check_achi != 0) {
+          alert("アバターと称号を獲得しました。\nアバター：\n称号：");
+          await updateDoc(doc(db, "user", this.uid), {
+            achievement_step: check_achi,
+          });
+        }
+      }
     },
     // 今日のYYYYMMDDを取得（日まで）
     getToday() {

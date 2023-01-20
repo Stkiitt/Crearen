@@ -104,15 +104,130 @@ export default {
       if (docSnap.exists()) ad = docSnap.data();
       const today = this.getToday();
       const timeDiff = this.getNow() - this.time_created;  // 作成してすぐに完了していないか確認（不正してないか）
-      if (timeDiff < 300) ad.completed_quick++;
+      if (timeDiff < 300) {
+        ad.completed_quick++; 
+        const check_q = [10].indexOf(ad.completed_quick) + 1;
+        if (check_q != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"completed_quick"+"\n称号："+check_q);
+          await updateDoc(doc(db, "user", this.uid), {
+            completed_quick_step: check_q,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
+      }
       ad.completed_all++;  // タスク完了の合計カウントを増やす
-      if (this.priority == "高") ad.completed_high++;  // 難易度ごとのカウントを増やす
-      else if (this.priority == "中") ad.completed_middle++;
-      else if (this.priority == "低") ad.completed_low++;
+      const check_all = [30, 50, 100, 200, 300].indexOf(ad.completed_all) + 1;
+      if (check_all != 0) {
+        alert("アバターと称号を獲得しました。\nアバター："+"completed_all"+"\n称号："+check_all);
+        await updateDoc(doc(db, "user", this.uid), {
+          completed_all_step: check_all,
+        });
+        ad.achievement++;
+        const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+        if (check_achi != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+          await updateDoc(doc(db, "user", this.uid), {
+            achievement_step: check_achi,
+          });
+        }
+      }
+      if (this.priority == "高") {  // 高のカウントを増やす
+        ad.completed_high++;
+        const check_h = [1, 5, 10, 50, 100].indexOf(ad.completed_high) + 1;
+        if (check_h != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"completed_high"+"\n称号："+check_h);
+          await updateDoc(doc(db, "user", this.uid), {
+            completed_high_step: check_h,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
+      } else if (this.priority == "中") {  // 中のカウントを増やす
+        ad.completed_middle++;
+        const check_m = [1, 5, 10, 50, 100].indexOf(ad.completed_middle) + 1;
+        if (check_m != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"completed_middle"+"\n称号："+check_m);
+          await updateDoc(doc(db, "user", this.uid), {
+            completed_middle_step: check_m,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
+      } else if (this.priority == "低") {  // 低のカウントを増やす
+        ad.completed_low++;
+        const check_l = [1, 5, 10, 50, 100].indexOf(ad.completed_low) + 1;
+        if (check_l != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"completed_low"+"\n称号："+check_l);
+          await updateDoc(doc(db, "user", this.uid), {
+            completed_low_step: check_l,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
+      }
       const deadlineChecked = Number(this.deadline.replace(/-/g, ''));  // 期限を過ぎていないか確認
-      if (deadlineChecked >= today || deadlineChecked == "") ad.task_success++;
-      else ad.task_failure++;
+      if (deadlineChecked >= today || deadlineChecked == "") {
+        ad.task_success++;
+        const check_s = [30, 50, 100, 200, 300].indexOf(ad.task_success) + 1;
+        if (check_s != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"task_success"+"\n称号："+check_s);
+          await updateDoc(doc(db, "user", this.uid), {
+            task_success_step: check_s,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
+      } else {
+        ad.task_failure++;
+        const check_f = [10, 20, 30].indexOf(ad.task_failure) + 1;
+        if (check_f != 0) {
+          alert("アバターと称号を獲得しました。\nアバター："+"task_failure"+"\n称号："+check_f);
+          await updateDoc(doc(db, "user", this.uid), {
+            task_failure_step: check_f,
+          });
+          ad.achievement++;
+          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
+          if (check_achi != 0) {
+            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
+            await updateDoc(doc(db, "user", this.uid), {
+              achievement_step: check_achi,
+            });
+          }
+        }
+      }
       await updateDoc(doc(db, "user", this.uid), {
+        achievement: ad.achievement,
         completed_all: ad.completed_all,
         completed_high: ad.completed_high,
         completed_low: ad.completed_low,
