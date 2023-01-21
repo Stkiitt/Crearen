@@ -98,6 +98,40 @@ export default {
     },
     // タスク完了時の実績カウント
     async countCompAchievement() {
+      const avatar_degree = {
+        achievement: {
+          avatar: [["mahoutsukai_white_man", "mahoutsukai_white_woman"],["ningyohime"],["fantasy_ryuukishi"],["character_hakase"],["fantasy_dark_elf"],],
+          degree: [["新人", "魔法使い"],["魅惑", "マーメイド"],["最強", "ドラゴンナイト"],["ものしり", "博士"],["憧れ", "タスクマスター"],]
+        },
+        completed_quick: {
+          avatar: [["fantasy_berserker"],],
+          degree: [["タスクキラー"],]
+        },
+        completed_all: {
+          avatar: [["kugakusei"],["busy_man"],["syoninkyu_man"],["mahoutsukai_water"],["mahoutsukai_wind"],],
+          degree: [["働く", "学生"],["忙しい", "社員"],["少ない", "初任給"],["計画的", "実行"],["塵", "積もれば山となる"],]
+        },
+        completed_high: {
+          avatar: [["chibikko_gang"],["alien_grey"],["mahoutsukai_thunder"],["royal_king_gyokuza", "royal_queen_gyokuza"],["kamisama"],],
+          degree: [["生意気", "ギャング", "ベイビー"],["かわいい", "宇宙人"],["ビリビリ", "達人"],["やさしい", "王様"],["最高", "神"],]
+        },
+        completed_middle: {
+          avatar: [["kintarou"],["fantasy_elf2"],["knight"],["mahoutsukai_necromancer"],["fantasy_maou_devil"],],
+          degree: [["元気", "金太郎"],["幻", "エルフ"],["敏腕", "ナイト"],["上手", "玄人"],["最悪", "魔王"],]
+        },
+        completed_low: {
+          avatar: [["yuusya_game"],["mahoutsukai_fire"],["fantasy_dracula2"],["ninja_shinobiashi"],["tantei_boy", "tantei_girl"],],
+          degree: [["駆け出し", "勇者"],["メラメラ", "努力家"],["強力", "ドラキュラ"],["一人前", "忍者"],["すごい", "名探偵"],]
+        },
+        task_success: {
+          avatar: [["tabibito"],["monogatari_robinhood"],["saiyuki_songoku_kintoun"],["fantasy_dragon"],["unchi_character"],],
+          degree: [["さすらい", "旅人"],["百発百中", "アーチャー"],["伝説", "孫悟空"],["恐ろしい", "タスクモンスター"],["嵐を呼ぶ", "しり"],]
+        },
+        task_failure: {
+          avatar: [["character_shimekiri"],["businessman_cry_man"],["speed_slow_turtle"],],
+          degree: [["油断大敵"],["鶴", "千年"],["亀", "万年"],]
+        },
+      };
       const db = getFirestore(this.$app);
       const docSnap = await getDoc(doc(db, "user", this.uid));
       let ad;
@@ -108,86 +142,61 @@ export default {
         ad.completed_quick++; 
         const check_q = [10].indexOf(ad.completed_quick) + 1;
         if (check_q != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"completed_quick"+"\n称号："+check_q);
+          alert("「?」\nミッションを達成しました。");
+          ad.achievement++;
           await updateDoc(doc(db, "user", this.uid), {
             completed_quick_step: check_q,
           });
-          ad.achievement++;
-          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-          if (check_achi != 0) {
-            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-            await updateDoc(doc(db, "user", this.uid), {
-              achievement_step: check_achi,
-            });
-          }
+          this.addAvatarDegree(db, avatar_degree, "completed_quick", check_q);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
         }
       }
       ad.completed_all++;  // タスク完了の合計カウントを増やす
       const check_all = [30, 50, 100, 200, 300].indexOf(ad.completed_all) + 1;
       if (check_all != 0) {
-        alert("アバターと称号を獲得しました。\nアバター："+"completed_all"+"\n称号："+check_all);
+        alert("「タスク完了の合計数」\nミッションを達成しました。");
+        ad.achievement++;
         await updateDoc(doc(db, "user", this.uid), {
           completed_all_step: check_all,
         });
-        ad.achievement++;
-        const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-        if (check_achi != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-          await updateDoc(doc(db, "user", this.uid), {
-            achievement_step: check_achi,
-          });
-        }
+        this.addAvatarDegree(db, avatar_degree, "completed_all", check_all);
+        this.updateAchievement(db, avatar_degree, ad.achievement);
       }
       if (this.priority == "高") {  // 高のカウントを増やす
         ad.completed_high++;
         const check_h = [1, 5, 10, 50, 100].indexOf(ad.completed_high) + 1;
         if (check_h != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"completed_high"+"\n称号："+check_h);
+          alert("「優先度：高」\nミッションを達成しました。");
+          ad.achievement++;
           await updateDoc(doc(db, "user", this.uid), {
             completed_high_step: check_h,
           });
-          ad.achievement++;
-          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-          if (check_achi != 0) {
-            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-            await updateDoc(doc(db, "user", this.uid), {
-              achievement_step: check_achi,
-            });
-          }
+          this.addAvatarDegree(db, avatar_degree, "completed_high", check_h);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
         }
       } else if (this.priority == "中") {  // 中のカウントを増やす
         ad.completed_middle++;
         const check_m = [1, 5, 10, 50, 100].indexOf(ad.completed_middle) + 1;
         if (check_m != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"completed_middle"+"\n称号："+check_m);
+          alert("「優先度：中」\nミッションを達成しました。");
+          ad.achievement++;
           await updateDoc(doc(db, "user", this.uid), {
             completed_middle_step: check_m,
           });
-          ad.achievement++;
-          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-          if (check_achi != 0) {
-            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-            await updateDoc(doc(db, "user", this.uid), {
-              achievement_step: check_achi,
-            });
-          }
+          this.addAvatarDegree(db, avatar_degree, "completed_middle", check_m);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
         }
       } else if (this.priority == "低") {  // 低のカウントを増やす
         ad.completed_low++;
         const check_l = [1, 5, 10, 50, 100].indexOf(ad.completed_low) + 1;
         if (check_l != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"completed_low"+"\n称号："+check_l);
+          alert("「優先度：低」\nミッションを達成しました。");
+          ad.achievement++;
           await updateDoc(doc(db, "user", this.uid), {
             completed_low_step: check_l,
           });
-          ad.achievement++;
-          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-          if (check_achi != 0) {
-            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-            await updateDoc(doc(db, "user", this.uid), {
-              achievement_step: check_achi,
-            });
-          }
+          this.addAvatarDegree(db, avatar_degree, "completed_low", check_l);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
         }
       }
       const deadlineChecked = Number(this.deadline.replace(/-/g, ''));  // 期限を過ぎていないか確認
@@ -195,35 +204,25 @@ export default {
         ad.task_success++;
         const check_s = [30, 50, 100, 200, 300].indexOf(ad.task_success) + 1;
         if (check_s != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"task_success"+"\n称号："+check_s);
+          alert("「期限内にタスクを完了する」\nミッションを達成しました。");
+          ad.achievement++;
           await updateDoc(doc(db, "user", this.uid), {
             task_success_step: check_s,
           });
-          ad.achievement++;
-          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-          if (check_achi != 0) {
-            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-            await updateDoc(doc(db, "user", this.uid), {
-              achievement_step: check_achi,
-            });
-          }
+          this.addAvatarDegree(db, avatar_degree, "task_success", check_s);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
         }
       } else {
         ad.task_failure++;
         const check_f = [10, 20, 30].indexOf(ad.task_failure) + 1;
         if (check_f != 0) {
-          alert("アバターと称号を獲得しました。\nアバター："+"task_failure"+"\n称号："+check_f);
+          alert("「期限を過ぎてタスクを完了する」\nミッションを達成しました。");
+          ad.achievement++;
           await updateDoc(doc(db, "user", this.uid), {
             task_failure_step: check_f,
           });
-          ad.achievement++;
-          const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-          if (check_achi != 0) {
-            alert("アバターと称号を獲得しました。\nアバター："+"achievement"+"\n称号："+check_achi);
-            await updateDoc(doc(db, "user", this.uid), {
-              achievement_step: check_achi,
-            });
-          }
+          this.addAvatarDegree(db, avatar_degree, "task_failure", check_f);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
         }
       }
       await updateDoc(doc(db, "user", this.uid), {
@@ -235,6 +234,30 @@ export default {
         completed_quick: ad.completed_quick,
         task_failure: ad.task_failure,
         task_success: ad.task_success,
+      });
+    },
+    // 実績達成数の更新
+    async updateAchievement(db, a_d, achievement) {
+      const check_achi = [1, 5, 10, 15, 30].indexOf(achievement) + 1;
+      if (check_achi != 0) {
+        alert("「実績解除数」\nミッションを達成しました。");
+        await updateDoc(doc(db, "user", this.uid), {
+          achievement_step: check_achi,
+        });
+        this.addAvatarDegree(db, a_d, "achievement", check_achi);
+      }
+    },
+    // アバター画像と称号の登録（db、avatar_degree、どの種類か、何番目をクリアしたか）
+    async addAvatarDegree(db, a_d, type, num) {
+      a_d[type]["avatar"][num-1].forEach(async (img_name) => {
+        await addDoc(collection(db, "user", this.uid, "Avatar"), {
+          img_name: img_name,
+        });
+      });
+      a_d[type]["degree"][num-1].forEach(async (name) => {
+        await addDoc(collection(db, "user", this.uid, "Degree"), {
+          name: name,
+        });
       });
     },
     //現在時刻の取得(秒単位まで)

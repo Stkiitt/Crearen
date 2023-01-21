@@ -75,7 +75,7 @@
 <script>
 import AddButtonPopup from "~/components/AddButtonPopup.vue";
 import CompImgPopup from "~/components/CompImgPopup.vue";
-import { doc, getDoc, getDocs, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   components: {
@@ -170,6 +170,16 @@ export default {
     },
     // タスク削除時の実績カウント
     async countDeleteAchievement() {
+      const avatar_degree = {
+        achievement: {
+          avatar: [["mahoutsukai_white_man", "mahoutsukai_white_woman"],["ningyohime"],["fantasy_ryuukishi"],["character_hakase"],["fantasy_dark_elf"],],
+          degree: [["新人", "魔法使い"],["魅惑", "マーメイド"],["最強", "ドラゴンナイト"],["ものしり", "博士"],["憧れ", "タスクマスター"],]
+        },
+        task_delete: {
+          avatar: [["shinigami"],],
+          degree: [["タスク界", "死神"],]
+        }
+      };
       const db = getFirestore(this.$app);
       const docSnap = await getDoc(doc(db, "user", this.uid));
       let ad;
@@ -180,19 +190,39 @@ export default {
       });
       const check_d = [30].indexOf(ad.task_delete) + 1;  // 削除回数が区切り目か
       if (check_d != 0) {
-        alert("アバターと称号を獲得しました。\nアバター：\n称号：");
-        await updateDoc(doc(db, "user", this.uid), {
-          daily_login_step: check_d,
-        });
+        alert("「タスク削除数」\nミッションを達成しました。");
         ad.achievement++;
-        const check_achi = [1, 5, 10, 15, 30].indexOf(ad.achievement) + 1;  // 実績達成数の更新
-        if (check_achi != 0) {
-          alert("アバターと称号を獲得しました。\nアバター：\n称号：");
-          await updateDoc(doc(db, "user", this.uid), {
-            achievement_step: check_achi,
-          });
-        }
+        await updateDoc(doc(db, "user", this.uid), {
+          achievement: ad.achievement,
+          task_delete_step: check_d,
+        });
+        this.addAvatarDegree(db, avatar_degree, "task_delete", check_d);
+        this.updateAchievement(db, avatar_degree, ad.achievement);
       }
+    },
+    // 実績達成数の更新
+    async updateAchievement(db, a_d, achievement) {
+      const check_achi = [1, 5, 10, 15, 30].indexOf(achievement) + 1;
+      if (check_achi != 0) {
+        alert("「実績解除数」\nミッションを達成しました。");
+        await updateDoc(doc(db, "user", this.uid), {
+          achievement_step: check_achi,
+        });
+        this.addAvatarDegree(db, a_d, "achievement", check_achi);
+      }
+    },
+    // アバター画像と称号の登録（db、avatar_degree、どの種類か、何番目をクリアしたか）
+    async addAvatarDegree(db, a_d, type, num) {
+      a_d[type]["avatar"][num-1].forEach(async (img_name) => {
+        await addDoc(collection(db, "user", this.uid, "Avatar"), {
+          img_name: img_name,
+        });
+      });
+      a_d[type]["degree"][num-1].forEach(async (name) => {
+        await addDoc(collection(db, "user", this.uid, "Degree"), {
+          name: name,
+        });
+      });
     },
     // 今日のYYYYMMDDを取得（日まで）
     getToday() {
