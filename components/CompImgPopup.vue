@@ -5,13 +5,13 @@
         id="complete" src="../assets/check/check.png">
     </span>
     <!-- タスク完了ポップアップここから -->
-    <section id="CompTask" class="modalArea">
+    <section :id="'CompTask'+task['tid']" class="modalArea">
       <div @click="closeCompPopup()" class="modalBg"></div>
-      <div class="modalWrapper">
+      <div class="modalWrapper_comp">
         <div class="compContents">
           <p>タスクを完了しますか？</p>
           <p>
-            <button @click="completeButton(taskid)" class="btn btn-warning">はい</button>
+            <button @click="completeButton()" class="btn btn-warning">はい</button>
             <button @click="closeCompPopup()" class="btn btn-danger">いいえ</button>
           </p>
         </div>
@@ -81,8 +81,10 @@ export default {
       return tasks;
     },
     // タスク完了ボタン
-    async completeButton(taskid) {
+    async completeButton() {
       const db = getFirestore(this.$app);
+      console.log("完了name："+this.task["name"]); /////////////////
+      console.log("完了taskid："+this.taskid); /////////////////
       await addDoc(collection(db, "task_completed"), {
         time: this.getNow(),
         deadline: this.deadline,
@@ -91,8 +93,10 @@ export default {
         priority: this.priority,
         uid: this.uid,
       });
+      console.log("完了taskid："+this.taskid); /////////////////
       await this.countCompAchievement();
-      await deleteDoc(doc(db, "task", taskid));
+      console.log("完了taskid："+this.taskid); /////////////////
+      await deleteDoc(doc(db, "task", this.taskid));  ///////// この処理ができない、2つ以上登録して一番下を削除するとthis.に代入されてない
       this.tasksChild = await this.getTasks();
       this.closeCompPopup();
     },
@@ -283,23 +287,29 @@ export default {
     },
     //タスク完了ポップアップを開く
     openCompPopup() {
+      console.log("開くname："+this.task["name"]); /////////////////
+      console.log("開くtaskid："+this.taskid); /////////////////
       this.name = this.task["name"];
       this.memo = this.task["memo"];
       this.priority = this.task["priority"];
       this.deadline = this.task["deadline"];
       this.taskid = this.task["tid"];
       this.time_created = this.task["time"];
-      $('#CompTask').fadeIn();
+      $('#CompTask'+this.task["tid"]).fadeIn();
+      console.log("開くtaskid："+this.taskid); /////////////////
     },
     // タスク完了ポップアップを閉じる
     closeCompPopup() {
-      $('#CompTask').fadeOut();
+      console.log("閉じるname："+this.task["name"]); /////////////////
+      console.log("閉じるtaskid："+this.taskid); /////////////////
+      $('#CompTask'+this.task["tid"]).fadeOut();
       this.name = "";
       this.memo = "";
       this.priority = "中";
       this.deadline = "";
       this.taskid = "";
       this.time_created = 0;
+      console.log("閉じるtaskid："+this.taskid); /////////////////
     },
   }
 }
@@ -339,13 +349,13 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper {
+.modalWrapper_comp {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 70%;
-  max-width: 500px;
+  max-width: 250px;
   padding: 10px 30px;
   background-color: #fff;
 }
@@ -355,11 +365,6 @@ export default {
   top: 0.5rem;
   right: 1rem;
   cursor: pointer;
-}
-
-/* 完了ポップアップ */
-#CompTask .modalWrapper {
-  max-width: 250px;
 }
 
 .compContents {

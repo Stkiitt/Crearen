@@ -304,11 +304,11 @@ export default {
     //タスクの枠の色
     changeBorderColor(priority) {
       if (priority == "高") {
-        return "border border-danger high-p my-3";
+        return "high-p my-3";
       } else if (priority == "中") {
-        return "border border-warning middle-p my-3";
+        return "middle-p my-3";
       } else {
-        return "border low-p my-3";
+        return "low-p my-3";
       }
     },
     // 期限の色
@@ -418,17 +418,21 @@ export default {
 
 /* タスク表示 */
 .high-p {
-  border: 1px solid red;
+  border: 1px solid rgb(255, 0, 0);
+  border-radius: 10px;
   background-color: rgba(255, 0, 0, 0.1);
 }
 
 .middle-p {
-  border: 1px solid yellow;
+  border: 1px solid rgb(210, 210, 0);
+  border-radius: 10px;
   background-color: rgba(255, 250, 0, 0.1);
 }
 
-/* .low-p {
-} */
+.low-p {
+  border: 1px solid rgb(199, 199, 199);
+  border-radius: 10px;
+}
 
 .deadline-red {
   color: red;

@@ -155,15 +155,34 @@ export default {
       await setDoc(doc(db, "user", uid), {
         user_name: this.username,
         achievement: 0,
+        achievement_step: 0,
         completed_all: 0,
+        completed_all_step: 0,
         completed_high: 0,
+        completed_high_step: 0,
         completed_low: 0,
+        completed_low_step: 0,
         completed_middle: 0,
+        completed_middle_step: 0,
         completed_quick: 0,
+        completed_quick_step: 0,
         daily_login: 0,
+        daily_login_step: 0,
+        last_login: 0,
         task_delete: 0,
+        task_delete_step: 0,
         task_failure: 0,
+        task_failure_step: 0,
         task_success: 0,
+        task_success_step: 0,
+      });
+      await setDoc(doc(db, "user", uid, "Selected", "avatar"), {
+        img_name: "A_Sample",
+      });
+      await setDoc(doc(db, "user", uid, "Selected", "degree"), {
+        first: "はじめて",
+        second: "の",
+        third: "タスク",
       });
     },
     // 確認ポップアップを開く
