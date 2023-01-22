@@ -81,7 +81,10 @@ export default {
     },
     // 実績データの取得
     async getAchievementData() {
-      const ad = await this.updateCountAchievement();
+      let ad;
+      const db = getFirestore(this.$app);
+      const docSnap = await getDoc(doc(db, "user", this.uid));
+      if (docSnap.exists()) ad = docSnap.data();
       this.achievements = [];
       const al = [
         [
@@ -164,41 +167,6 @@ export default {
         else if (alLength > 4 && al[i][4][1] < al[i][4][0]) this.achievements.push(al[i][4]);
         else this.achievements.push(al[i][alLength - 1]);
       }
-    },
-    // ミッションの達成回数更新
-    async updateCountAchievement() {
-      let countAchievement = 0;
-      let ad;
-      const db = getFirestore(this.$app);
-      const docSnap = await getDoc(doc(db, "user", this.uid));
-      if (docSnap.exists()) ad = docSnap.data();
-      const checkList = [
-        [ad.completed_all, 30, 50, 100, 200, 300],
-        [ad.achievement, 1, 5, 10, 15, 30],
-        [ad.completed_low, 1, 5, 10, 50, 100],
-        [ad.completed_middle, 1, 5, 10, 50, 100],
-        [ad.completed_high, 1, 5, 10, 50, 100],
-        [ad.task_success, 30, 50, 100, 200, 300],
-        [ad.daily_login, 1, 7, 30, 100, 300],
-        [ad.task_failure, 10, 20, 30],
-        [ad.task_delete, 30],
-        [ad.completed_quick, 10],
-      ];
-      checkList.forEach((check) => {
-        let tmpCount = 0;
-        for (let i=1; i<check.length; i++) {
-          if (check[0] < check[i]) {
-            break;
-          }
-          tmpCount = i;
-        }
-        countAchievement += tmpCount;
-      });
-      await updateDoc(doc(db, "user", this.uid), {
-        achievement: countAchievement,
-      });
-      ad.achievement = countAchievement;
-      return ad;
     },
     // プログレスバーの長さ変更
     changeProgressBar(target, now) {

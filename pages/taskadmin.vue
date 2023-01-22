@@ -38,7 +38,7 @@ import HistoryButtonPopup from "~/components/HistoryButtonPopup.vue";
 import ToDoTask from "~/components/ToDoTask.vue";
 import ProfileTaskadmin from "~/components/ProfileTaskadmin.vue";
 import FooterCopyright from "~/components/FooterCopyright.vue";
-import { doc, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import { doc, getDoc, updateDoc, addDoc, collection, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   components: {
@@ -108,19 +108,64 @@ export default {
     },
     // ログイン日数のカウント
     async countDailyLogin() {
+      const avatar_degree = {
+        achievement: {
+          avatar: [["mahoutsukai_white_man", "mahoutsukai_white_woman"],["ningyohime"],["fantasy_ryuukishi"],["character_hakase"],["fantasy_dark_elf"],],
+          degree: [["新人", "魔法使い"],["魅惑", "マーメイド"],["最強", "ドラゴンナイト"],["ものしり", "博士"],["憧れ", "タスクマスター"],]
+        },
+        daily_login: {
+          avatar: [["futon_derenai_woman"],["school_joshikousei_kogyaru_90s"],["hero_man"],["tokusatsu_kyodai_hero"],["fantasy_zombie_man"],],
+          degree: [["ピカピカ", "一年生"],["ピチピチ", "ギャル"],["程よい", "天才"],["高校生", "ヒーロー"],["熟練", "ゾンビ"],]
+        }
+      };
       const db = getFirestore(this.$app);
       const docSnap = await getDoc(doc(db, "user", this.uid));
       let ad;
       if (docSnap.exists()) ad = docSnap.data();
       const today = this.getToday();
-      if (ad.last_login != today) {
+      if (ad.last_login != today) {  // 最終ログインが今日より前か
         ad.daily_login++;
         await updateDoc(doc(db, "user", this.uid), {
           last_login: today,
           daily_login: ad.daily_login,
         });
+        const check_l = [1, 7, 30, 100, 300].indexOf(ad.daily_login) + 1;  // ログイン合計が区切り目か
+        if (check_l != 0) {
+          alert("「ログイン日数」\nミッションを達成しました。");
+          ad.achievement++;
+          await updateDoc(doc(db, "user", this.uid), {
+            achievement: ad.achievement,
+            daily_login_step: check_l,
+          });
+          this.addAvatarDegree(db, avatar_degree, "daily_login", check_l);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
+        }
       }
     },
+    // 実績達成数の更新
+    async updateAchievement(db, a_d, achievement) {
+      const check_achi = [1, 5, 10, 15, 30].indexOf(achievement) + 1;
+      if (check_achi != 0) {
+        alert("「実績解除数」\nミッションを達成しました。");
+        await updateDoc(doc(db, "user", this.uid), {
+          achievement_step: check_achi,
+        });
+        this.addAvatarDegree(db, a_d, "achievement", check_achi);
+      }
+    },
+    // アバター画像と称号の登録（db、avatar_degree、どの種類か、何番目をクリアしたか）
+    async addAvatarDegree(db, a_d, type, num) {
+      a_d[type]["avatar"][num-1].forEach(async (img_name) => {
+        await addDoc(collection(db, "user", this.uid, "Avatar"), {
+          img_name: img_name,
+        });
+      });
+      a_d[type]["degree"][num-1].forEach(async (name) => {
+        await addDoc(collection(db, "user", this.uid, "Degree"), {
+          name: name,
+        });
+      });
+    }
   }
 }
 </script>
