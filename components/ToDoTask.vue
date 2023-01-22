@@ -421,17 +421,20 @@ export default {
   border: 1px solid rgb(255, 0, 0);
   border-radius: 10px;
   background-color: rgba(255, 0, 0, 0.1);
+  box-shadow: 1px 1px 2px #777777;
 }
 
 .middle-p {
   border: 1px solid rgb(210, 210, 0);
   border-radius: 10px;
   background-color: rgba(255, 250, 0, 0.1);
+  box-shadow: 1px 1px 2px #777777;
 }
 
 .low-p {
   border: 1px solid rgb(199, 199, 199);
   border-radius: 10px;
+  box-shadow: 1px 1px 2px #777777;
 }
 
 .deadline-red {
