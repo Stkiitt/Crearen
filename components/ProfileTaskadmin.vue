@@ -10,7 +10,8 @@
           <p class="P-title">称号：{{ degree_selected_first }}{{ degree_selected_second }}{{ degree_selected_third }}</p>
           <p class="P-elements">ユーザー名：{{ username }}</p>
           <p class="P-elements">ログイン日数：{{ daily_login }}日</p>
-          <p class="P-elements">累計タスク達成数：{{ achievement }}個</p>
+          <p class="P-elements">累計ミッション達成数：{{ achievement }}個</p>
+          <p class="P-elements">累計タスク達成数：{{ completed_all }}個</p>
           <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
             <button type="button" class="btn btn-dark">ミッション進捗</button>
           </NuxtLink>
@@ -29,7 +30,7 @@
 
 <script>
 import ProfileEditPopup from '~/components/ProfileEditPopup.vue';
-import { getDocs, doc, collection, query, getDoc, getFirestore } from "firebase/firestore";
+import { getDocs, doc, collection, query, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   components:{
@@ -45,6 +46,7 @@ export default {
       username: "",
       daily_login: 0,
       achievement: 0,
+      completed_all: 0,
       avatars: {
         character_boy_normal: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2Fcharacter_boy_normal.png?alt=media&token=1489efa5-2bb7-4574-bed0-8f78b3fb06e0" },
         character_girl_normal: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2Fcharacter_girl_normal.png?alt=media&token=6d7da292-0197-4011-abd1-bd783976ec14" },
@@ -127,12 +129,83 @@ export default {
     // ログインの確認
     checkLogin() {
       const auth = getAuth(this.$app);
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         if (user) {
           this.uid = user.uid;
+          await this.countDailyLogin();
           this.getUserData();
         }
       });
+    },
+    // ログイン日数のカウント
+    async countDailyLogin() {
+      const avatar_degree = {
+        achievement: {
+          avatar: [["mahoutsukai_white_man", "mahoutsukai_white_woman"],["ningyohime"],["fantasy_ryuukishi"],["character_hakase"],["fantasy_dark_elf"],],
+          degree: [["新人", "魔法使い"],["魅惑", "マーメイド"],["最強", "ドラゴンナイト"],["ものしり", "博士"],["憧れ", "タスクマスター"],]
+        },
+        daily_login: {
+          avatar: [["futon_derenai_woman"],["school_joshikousei_kogyaru_90s"],["hero_man"],["tokusatsu_kyodai_hero"],["fantasy_zombie_man"],],
+          degree: [["ピカピカ", "一年生"],["ピチピチ", "ギャル"],["程よい", "天才"],["高校生", "ヒーロー"],["熟練", "ゾンビ"],]
+        }
+      };
+      const db = getFirestore(this.$app);
+      const docSnap = await getDoc(doc(db, "user", this.uid));
+      let ad;
+      if (docSnap.exists()) ad = docSnap.data();
+      const today = this.getToday();
+      if (ad.last_login != today) {  // 最終ログインが今日より前か
+        ad.daily_login++;
+        this.daily_login = ad.daily_login;
+        await updateDoc(doc(db, "user", this.uid), {
+          last_login: today,
+          daily_login: ad.daily_login,
+        });
+        const check_l = [1, 7, 30, 100, 300].indexOf(ad.daily_login) + 1;  // ログイン合計が区切り目か
+        if (check_l != 0) {
+          alert("「ログイン日数」\nミッションを達成しました。");
+          ad.achievement++;
+          await updateDoc(doc(db, "user", this.uid), {
+            achievement: ad.achievement,
+            daily_login_step: check_l,
+          });
+          this.addAvatarDegree(db, avatar_degree, "daily_login", check_l);
+          this.updateAchievement(db, avatar_degree, ad.achievement);
+        }
+      }
+    },
+    // 実績達成数の更新
+    async updateAchievement(db, a_d, achievement) {
+      const check_achi = [1, 5, 10, 15, 30].indexOf(achievement) + 1;
+      if (check_achi != 0) {
+        alert("「実績解除数」\nミッションを達成しました。");
+        await updateDoc(doc(db, "user", this.uid), {
+          achievement_step: check_achi,
+        });
+        this.addAvatarDegree(db, a_d, "achievement", check_achi);
+      }
+    },
+    // アバター画像と称号の登録（db、avatar_degree、どの種類か、何番目をクリアしたか）
+    async addAvatarDegree(db, a_d, type, num) {
+      a_d[type]["avatar"][num-1].forEach(async (img_name) => {
+        await addDoc(collection(db, "user", this.uid, "Avatar"), {
+          img_name: img_name,
+        });
+      });
+      a_d[type]["degree"][num-1].forEach(async (name) => {
+        await addDoc(collection(db, "user", this.uid, "Degree"), {
+          name: name,
+        });
+      });
+    },
+    // 今日のYYYYMMDDを取得（日まで）
+    getToday() {
+      const todayData = new Date();
+      const year = todayData.getFullYear();
+      const month = todayData.getMonth() + 1;
+      const date = todayData.getDate();
+      const today = year * 10000 + month * 100 + date;
+      return today;
     },
     // ユーザデータを取得
     async getUserData() {
@@ -154,6 +227,7 @@ export default {
       this.username = ud.user_name;
       this.daily_login = ud.daily_login;
       this.achievement = ud.achievement;
+      this.completed_all = ud.completed_all;
     }
   }
 }
@@ -175,6 +249,6 @@ export default {
 
 #Avatar img {
   width: 170px;
-  margin: 30px 0;
+  margin: 20px 0;
 }
 </style>

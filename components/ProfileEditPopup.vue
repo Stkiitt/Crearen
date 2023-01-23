@@ -178,6 +178,7 @@ export default {
     },
     // プロフィール編集ポップアップを開く
     openProfileEditPopup() {
+      this.getUserAvatarDegree();
       $('#profileEdit').fadeIn();
     },
     // プロフィール編集ポップアップを閉じる
