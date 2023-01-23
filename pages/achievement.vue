@@ -7,7 +7,7 @@
       </button>
       <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
     </nav>
-    <h1 class="title mt-5"> 進行中のミッション</h1>
+    <h1 class="title mt-5"> 進行中のミッション<span class="title_username"> {{ username }} さん</span></h1>
     <div class="container mt-2 mission">
       <div v-for="achievement in achievements" :key="achievement[2]">
         <div :style="changeAchievementBGC(achievement[5])" id="achievement">
@@ -60,6 +60,7 @@ export default {
   data() {
     return {
       uid: "",
+      username: "ーーー",
       achievements: [],
     }
   },
@@ -85,6 +86,7 @@ export default {
       const db = getFirestore(this.$app);
       const docSnap = await getDoc(doc(db, "user", this.uid));
       if (docSnap.exists()) ad = docSnap.data();
+      this.username = ad.user_name;
       this.achievements = [];
       const al = [
         [
@@ -216,6 +218,11 @@ export default {
   max-width: 800px;
   margin: 0 auto;
   display: block;
+}
+
+.title_username {
+  font-size: 25px;
+  margin-left: 2em;
 }
 
 .mission {
