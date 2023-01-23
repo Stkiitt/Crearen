@@ -39,6 +39,14 @@ export default {
         this.$emit("changeTasks", newVal);
       }
     },
+    compChild:{
+      get(){
+        return "";
+      },
+      set(newVal){
+        this.$emit("changeComp", newVal);
+      }
+    },
   },
   data () {
     return {
@@ -92,6 +100,7 @@ export default {
         uid: this.uid,
       });
       await this.countCompAchievement();
+      this.compChild = this.taskid;
       await deleteDoc(doc(db, "task", this.taskid));
       this.tasksChild = await this.getTasks();
       this.closeCompPopup();

@@ -25,8 +25,8 @@
         <HistoryButtonPopup />
       </div>
       <div class="row">
-        <ToDoTask />
-        <ProfileTaskadmin />
+        <ToDoTask @changeComp="changeComp" />
+        <ProfileTaskadmin :compParent="compParent" />
       </div>
     </div>
     <FooterCopyright />
@@ -69,12 +69,17 @@ export default {
   data() {
     return {
       uid: "",
+      compParent: "",
     }
   },
   mounted() {
     this.checkLogin();
   },
   methods: {
+    // 子コンポーネント内の書き換えを検知する
+    changeComp(newVal){
+      this.compParent = newVal;
+    },
     // ログインの確認
     checkLogin() {
       const auth = getAuth(this.$app);

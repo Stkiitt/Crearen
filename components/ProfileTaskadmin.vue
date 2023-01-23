@@ -36,6 +36,19 @@ export default {
   components:{
     ProfileEditPopup,
   },
+  props: {
+    compParent: {
+      type: String,
+      default: "",
+    },
+  },
+  watch: {
+    compParent: function(newVal, oldVal) {
+      if(newVal != oldVal) {
+        this.getUserData();
+      }
+    },
+  },
   data() {
     return {
       uid: "",
