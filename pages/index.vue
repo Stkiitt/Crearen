@@ -95,7 +95,7 @@
         <div v-if="loggedIn" class="col-5 text-center">
           <div class="m-2 p-3 border" id="loggedin">
             <div>
-              <h2 class="my-4">ログイン済みです</h2>
+              <h2 class="my-4">{{ username }} さん<br>ログイン済みです</h2>
               <p>
                 <NuxtLink to="/taskadmin" class="btn btn-success w-75" rel="noopener noreferrer">タスク管理画面へ</NuxtLink>
               </p>
@@ -114,7 +114,7 @@
 <script>
 import FooterCopyright from "~/components/FooterCopyright.vue";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDocs, collection, query, getFirestore } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, getFirestore } from "firebase/firestore";
 export default {
   components: {
     FooterCopyright,
@@ -141,6 +141,7 @@ export default {
   },
   data() {
     return {
+      username: "ーーー",
       email: "",
       password: "",
       loggedIn: false,
@@ -178,9 +179,14 @@ export default {
     // ログインの確認
     checkLogin() {
       const auth = getAuth(this.$app);
-      onAuthStateChanged(auth, (user) => {
+      onAuthStateChanged(auth, async (user) => {
         if (user) {
           this.loggedIn = true;
+          const db = getFirestore(this.$app);
+          const docSnap = await getDoc(doc(db, "user", user.uid));
+          let ad;
+          if (docSnap.exists()) ad = docSnap.data();
+          this.username = ad.user_name;
         }
       });
     },
@@ -221,7 +227,6 @@ export default {
         this.infos.sort((a, b) => {
           const ac = Number(a.date.replace(/\u002f/g, ''));
           const bc = Number(b.date.replace(/\u002f/g, ''));
-          console.log(ac);
           return bc - ac;
         })
       });

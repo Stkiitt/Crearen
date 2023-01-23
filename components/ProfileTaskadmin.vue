@@ -169,14 +169,6 @@ export default {
   font-size: small;
 }
 
-/* .P-group {
-  
-}
-
-.P-elementgroup {
-
-} */
-
 #Avatar {
   text-align: center;
 }
