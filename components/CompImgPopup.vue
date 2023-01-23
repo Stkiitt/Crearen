@@ -83,8 +83,6 @@ export default {
     // タスク完了ボタン
     async completeButton() {
       const db = getFirestore(this.$app);
-      console.log("完了name："+this.task["name"]); /////////////////
-      console.log("完了taskid："+this.taskid); /////////////////
       await addDoc(collection(db, "task_completed"), {
         time: this.getNow(),
         deadline: this.deadline,
@@ -93,10 +91,8 @@ export default {
         priority: this.priority,
         uid: this.uid,
       });
-      console.log("完了taskid："+this.taskid); /////////////////
       await this.countCompAchievement();
-      console.log("完了taskid："+this.taskid); /////////////////
-      await deleteDoc(doc(db, "task", this.taskid));  ///////// この処理ができない、2つ以上登録して一番下を削除するとthis.に代入されてない
+      await deleteDoc(doc(db, "task", this.taskid));
       this.tasksChild = await this.getTasks();
       this.closeCompPopup();
     },
@@ -287,8 +283,6 @@ export default {
     },
     //タスク完了ポップアップを開く
     openCompPopup() {
-      console.log("開くname："+this.task["name"]); /////////////////
-      console.log("開くtaskid："+this.taskid); /////////////////
       this.name = this.task["name"];
       this.memo = this.task["memo"];
       this.priority = this.task["priority"];
@@ -296,12 +290,9 @@ export default {
       this.taskid = this.task["tid"];
       this.time_created = this.task["time"];
       $('#CompTask'+this.task["tid"]).fadeIn();
-      console.log("開くtaskid："+this.taskid); /////////////////
     },
     // タスク完了ポップアップを閉じる
     closeCompPopup() {
-      console.log("閉じるname："+this.task["name"]); /////////////////
-      console.log("閉じるtaskid："+this.taskid); /////////////////
       $('#CompTask'+this.task["tid"]).fadeOut();
       this.name = "";
       this.memo = "";
@@ -309,7 +300,6 @@ export default {
       this.deadline = "";
       this.taskid = "";
       this.time_created = 0;
-      console.log("閉じるtaskid："+this.taskid); /////////////////
     },
   }
 }
