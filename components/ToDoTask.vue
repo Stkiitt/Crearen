@@ -23,7 +23,7 @@
               期限：{{ task.deadline }}</span>
             <span class="task-content">優先度：{{ task.priority }}</span>
           </div>
-          <CompImgPopup :task="task" @changeTasks="changeTasks" />
+          <CompImgPopup :task="task" @changeTasks="changeTasks" @changeComp="changeComp" />
         </div>
         <!-- タスク表示ここまで -->
 
@@ -82,6 +82,16 @@ export default {
     CompImgPopup,
     AddButtonPopup,
   },
+  computed: {
+    compChild:{
+      get(){
+        return "";
+      },
+      set(newVal){
+        this.$emit("changeComp", newVal);
+      }
+    },
+  },
   data () {
     return {
       uid: "",
@@ -99,9 +109,12 @@ export default {
     this.checkLogin();
   },
   methods: {
-    // 子コンポーネント内のtasksの書き換えを検知する
+    // 子コンポーネント内の書き換えを検知する
     changeTasks(newVal){
-      this.tasks = newVal
+      this.tasks = newVal;
+    },
+    changeComp(newVal){
+      this.compChild = newVal;
     },
     // ログインの確認
     checkLogin() {

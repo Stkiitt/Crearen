@@ -147,10 +147,7 @@ export default {
         fantasy_berserker: { url: "https://firebasestorage.googleapis.com/v0/b/crearen-a8759.appspot.com/o/Avatar%2Ffantasy_berserker.png?alt=media&token=a5fc0a00-326f-4564-9c90-2e47ce98676a", get: false },
       },
       // 初期で使用できるものを入れておく
-      degrees: [
-        "はじめて",
-        "タスク",
-      ],
+      degrees: [],
       ppps: [
         "(なし)", "の", "が", "で", "を",
         "と", "に", "な", "は", "も",
@@ -178,6 +175,7 @@ export default {
     },
     // プロフィール編集ポップアップを開く
     openProfileEditPopup() {
+      this.getUserAvatarDegree();
       $('#profileEdit').fadeIn();
     },
     // プロフィール編集ポップアップを閉じる
@@ -214,6 +212,7 @@ export default {
       });
       const q_d = query(collection(db, "user", this.uid, "Degree"));
       const querySnapshot_d = await getDocs(q_d);
+      this.degrees = ["はじめて", "タスク"];
       querySnapshot_d.forEach(async (doc) => {
         this.degrees.push(doc.data().name);
       });
