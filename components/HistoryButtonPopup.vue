@@ -4,8 +4,9 @@
     <!-- 履歴ポップアップここから -->
     <section id="taskHistory" class="modalArea">
       <div @click="closeHistoryPopup()" class="modalBg"></div>
-      <div class="modalWrapperHistory">
-        <h4>タスク履歴</h4>
+      <div id="modalWrapperHistory">
+        <span id="historyTitle">タスク履歴</span>
+        <span id="historyAnno">>>最新20件までの履歴を表示します</span>
         <div id="historyList">
           <div v-for="comptask in comptasks" :key="comptask.tid">
             <div class="historyContents">
@@ -19,12 +20,10 @@
               </div>
             </div>
           </div>
+          <div v-if="!comptasks.length" id="noCompTasks">
+            <p>完了したタスクがありません</p>
+          </div>
         </div>
-
-        <div v-if="!comptasks.length">
-          <p>完了したタスクがありません</p>
-        </div>
-
         <div @click="closeHistoryPopup()" class="closeModal">
           ☓
         </div>
@@ -36,7 +35,7 @@
 </template>
 
 <script>
-import { getDocs, collection, query, where, getFirestore } from "firebase/firestore";
+import { getDocs, collection, query, orderBy, limit, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   data() {
@@ -61,13 +60,17 @@ export default {
     // task_completedからデータの取得
     async getCompleteTasks() {
       const db = getFirestore(this.$app);
-      const q = query(collection(db, "task_completed"), where("uid", "==", this.uid));
+      const q = query(collection(db, "task_completed"), where("uid", "==", this.uid),
+        orderBy("time", "desc"), limit(20));
       const querySnapshot = await getDocs(q);
       this.comptasks = [];
       querySnapshot.forEach((doc) => {
         const comptask = doc.data();
         comptask["tid"] = doc.id;
         this.comptasks.push(comptask);
+      })
+      this.comptasks.sort((a, b) => {
+        return b.time - a.time;
       });
     },
     changeTimetype(time) {
@@ -150,7 +153,7 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapperHistory {
+#modalWrapperHistory {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -167,13 +170,35 @@ export default {
   cursor: pointer;
 }
 
+#historyHead {
+  display: flex;
+}
+
+#historyTitle {
+  font-size: 2em;
+}
+
+#historyAnno {
+  height: 1em;
+  color: gray;
+  margin-left: 1em;
+  padding-bottom: 0;
+}
+
+
+/* 完了済タスク表示枠 */
 #historyList {
   height: 35em;
   box-shadow: 0px 0px 5px black;
   overflow-y: scroll;
-  scrollbar-width: thin;
-  scrollbar-color: #ee5e1c #ccc;
   border-radius: 10px;
 }
 
+/* タスク履歴なし表示 */
+#noCompTasks {
+  font-size: 1.5em;
+  text-align: center;
+  margin-top: 45%;
+  margin-bottom: auto;
+}
 </style>
