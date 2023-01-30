@@ -106,7 +106,7 @@ export default {
 }
 
 /* 履歴ポップアップ内 */
-#taskHistory .modalWrapper {
+#taskHistory .modalWrapperHistory {
   padding: 2em;
 }
 

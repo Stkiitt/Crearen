@@ -7,7 +7,7 @@
     <!-- タスク完了ポップアップここから -->
     <section :id="'CompTask'+task['tid']" class="modalArea">
       <div @click="closeCompPopup()" class="modalBg"></div>
-      <div class="modalWrapper_comp">
+      <div class="modalWrapperComp">
         <div class="compContents">
           <p>タスクを完了しますか？</p>
           <p>
@@ -348,7 +348,7 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper_comp {
+.modalWrapperComp {
   position: absolute;
   top: 50%;
   left: 50%;

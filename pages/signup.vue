@@ -39,7 +39,7 @@
     <!--確認ポップアップ内容ここから-->
     <section id="confirmPopup" class="modalArea">
       <div @click="closeConfirmPopup()" class="modalBg"></div>
-      <div class="modalWrapper">
+      <div class="modalWrapperConfirm">
         <div class="confirmContents">
           <div class="container mt-5">
             <div class="border mx-auto">
@@ -224,7 +224,7 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper {
+.modalWrapperConfirm {
   position: absolute;
   top: 50%;
   left: 50%;
