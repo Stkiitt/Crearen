@@ -26,10 +26,10 @@
             <img style="width: 100%;" src="../assets/top/service_start.png" alt="" />
           </div>
           <div class="swiper-slide">
-            <img style="width: 100%;" src="../assets/top/猫.jpg" alt="" />
+            <img style="width: 100%;" src="../assets/top/kantantask.jpg" alt="" />
           </div>
           <div class="swiper-slide">
-            <img style="width: 100%;" src="../assets/top/豚.png" alt="" />
+            <img style="width: 100%;" src="../assets/top/profile.jpg" alt="" />
           </div>
         </div>
         <div class="swiper-pagination"></div>
