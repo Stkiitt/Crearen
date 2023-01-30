@@ -31,7 +31,7 @@
           </ul>
         </div>
 
-        <div class="col-9 border">
+        <div class="col-9 border content-right">
           <h3 id="タスク管理画面の使い方" class="mt-3">タスク管理画面の使い方</h3>
           <hr>
           <div class="container">
@@ -117,7 +117,6 @@
               </div>
             </div>
           </div>
-          <hr>
         </div>
       </div>
     </div>
@@ -160,6 +159,10 @@ export default {
 <style>
 #logo{
   width: 9em;
+}
+
+.content-right {
+  padding-bottom: 50px;
 }
 
 .manual-title {
