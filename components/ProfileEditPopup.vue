@@ -4,7 +4,7 @@
     <!-- プロフィール編集ポップアップここから -->
     <section id="profileEdit" class="modalArea">
       <div @click="closeProfileEditPopup()" class="modalBg"></div>
-      <div class="modalWrapper_pe">
+      <div class="modalWrapperPe">
         <!-- タブ要素ここから -->
 
         <div id="tab">
@@ -324,7 +324,7 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper_pe {
+.modalWrapperPe {
   position: absolute;
   top: 50%;
   left: 50%;

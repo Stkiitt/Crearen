@@ -30,7 +30,7 @@
         <!-- 編集ポップアップ内容ここから -->
         <section id="editTask" class="modalArea">
           <div @click="closeEditPopup()" class="modalBg"></div>
-          <div class="modalWrapper">
+          <div class="modalWrapperEdit">
             <div class="editContents">
               <h1>タスクの編集</h1>
               <p>タスク名</p>
@@ -472,7 +472,7 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper {
+.modalWrapperEdit {
   position: absolute;
   top: 50%;
   left: 50%;

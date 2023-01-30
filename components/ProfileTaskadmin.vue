@@ -13,7 +13,7 @@
           <p class="P-elements">累計ミッション達成数：{{ achievement }}個</p>
           <p class="P-elements">累計タスク達成数：{{ completed_all }}個</p>
           <NuxtLink to="/achievement" target="_blank" rel="noopener noreferrer">
-            <button type="button" class="btn btn-dark">ミッション進捗</button>
+            <button type="button" class="btn btn-dark mission_btn">ミッション進捗</button>
           </NuxtLink>
           <ProfileEditPopup 
             @changeAvatarUrl="changeAvatarUrl" 
@@ -263,5 +263,9 @@ export default {
 #Avatar img {
   width: 170px;
   margin: 20px 0;
+}
+
+.mission_btn {
+  margin-bottom: 1em;
 }
 </style>

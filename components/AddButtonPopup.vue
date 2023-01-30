@@ -4,7 +4,7 @@
     <!-- 追加ポップアップここから -->
     <section id="addTask" class="modalArea">
       <div @click="closeAddPopup()" class="modalBg"></div>
-      <div class="modalWrapper">
+      <div class="modalWrapperAdd">
         <div class="addContents">
           <h1>タスクの追加</h1>
           <p>タスク名</p>
@@ -223,7 +223,7 @@ export default {
   background-color: rgba(30, 30, 30, 0.9);
 }
 
-.modalWrapper {
+.modalWrapperAdd {
   position: absolute;
   top: 50%;
   left: 50%;
