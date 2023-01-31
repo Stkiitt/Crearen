@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "vuejs-datepicker": "^1.6.2"
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
