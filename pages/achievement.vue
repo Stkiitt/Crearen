@@ -76,7 +76,7 @@ export default {
           this.uid = user.uid;
           this.getAchievementData();
         } else {
-          location.href = 'http://localhost:3000';
+          this.$router.push('/');
         }
       });
     },

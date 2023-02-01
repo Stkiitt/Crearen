@@ -7,11 +7,9 @@
       <div class="modalWrapperAdd">
         <div class="addContents">
           <h1>タスクの追加</h1>
-          <p>タスク名</p>
-
+          <p class="required">タスク名</p>
           <input type="text" v-model="name" class="addInput">
           <p class="err">{{ taskerr }}</p>
-
           <p>メモ</p>
           <p>
             <textarea v-model="memo" class="addInput"></textarea>
@@ -25,10 +23,8 @@
             </select>
           </p>
           <p>期限</p>
-
           <input type="date" v-model="deadline" class="addInput">
           <p class="err">{{ dateerr }}</p>
-
           <p>
             <button @click="addData()" class="btn btn-success">タスクを追加する</button>
           </p>
@@ -189,6 +185,11 @@ export default {
   color: black;
   border: none;
   box-shadow: 1px 2px 1px #777777;
+}
+
+.required:after {
+  content: " *";
+  color: red;
 }
 
 .err {

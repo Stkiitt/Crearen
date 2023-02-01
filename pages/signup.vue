@@ -8,7 +8,7 @@
 
       <div class="col-7 border mx-auto">
         <h3 class="text-center">アカウントの作成</h3>
-        <label class="ml-5">ユーザー名</label>
+        <label class="ml-5">ユーザー名　<span class="small-font">(20文字以内、先頭と末尾の空白は不可)</span></label>
         <input type="text" class="form-control mx-auto col-10" v-model="username">
         <p class="err">{{ errName }}</p>
 
@@ -16,7 +16,7 @@
         <input type="email" class="form-control mx-auto col-10" v-model="email">
         <p class="err">{{ errEmail }}</p>
 
-        <label class="ml-5">パスワード (英数6文字以上)</label>
+        <label class="ml-5">パスワード　<span class="small-font">(英数6文字以上)</span></label>
         <input type="password" class="form-control mx-auto col-10" v-model="password">
         <p class="err">{{ errPasswordVaridity }}</p>
 
@@ -100,13 +100,17 @@ export default {
   methods: {
     // 入力データのチェック
     checkData() {
-      const checkName = this.username != "";
+      this.username = this.username.trim();
+      const checkNameEmpty = this.username != "";
+      const checkNameLength = this.username.length < 21 ;
       const checkEmail = this.email != "";
       const checkPasswordValidity = this.password.match(/^([a-zA-Z0-9]{6,})$/);
       const checkPasswordMatch = this.password == this.passwordcheck;
       const checkCheckbox = document.getElementById('termsCheckbox').checked;
-      if (!checkName) {
+      if (!checkNameEmpty) {
         this.errName = "※ 名前を入力してください";
+      } else if (!checkNameLength) {
+        this.errName = "※ 20文字以内で入力してください";
       } else {
         this.errName = "";
       };
@@ -130,7 +134,7 @@ export default {
       } else {
         this.errCheckbox = "";
       };
-      if (checkPasswordValidity && checkPasswordMatch && checkName && checkEmail && checkCheckbox) {
+      if (checkPasswordValidity && checkPasswordMatch && checkNameEmpty && checkNameLength && checkEmail && checkCheckbox) {
         this.openConfirmPopup();
       };
     },
@@ -141,7 +145,7 @@ export default {
         .then((userCredential) => {
           const user = userCredential.user;
           this.registerUserData(user.uid);
-          location.href = 'http://localhost:3000/taskadmin';
+          this.$router.push('/taskadmin');
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -204,6 +208,10 @@ export default {
 
 #confirmBtn {
   color: white;
+}
+
+.small-font {
+  font-size: 0.8em;
 }
 
 /* モーダルCSS */

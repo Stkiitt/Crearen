@@ -33,7 +33,7 @@
           <div class="modalWrapperEdit">
             <div class="editContents">
               <h1>タスクの編集</h1>
-              <p>タスク名</p>
+              <p class="required">タスク名</p>
               <input type="text" v-model="name" class="editInput">
               <p class="err">{{ taskerr }}</p>
               <p>メモ</p>
@@ -427,6 +427,11 @@ export default {
 .err {
   color: red;
   font-size: small;
+}
+
+.required:after {
+  content: " *";
+  color: red;
 }
 
 /* タスク表示 */
