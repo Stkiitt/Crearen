@@ -30,7 +30,7 @@
 
 <script>
 import ProfileEditPopup from './ProfileEditPopup.vue';
-import { getDocs, doc, collection, query, getDoc, updateDoc, getFirestore } from "firebase/firestore";
+import { addDoc, getDocs, doc, collection, query, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {
   components:{
