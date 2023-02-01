@@ -132,17 +132,17 @@ export default {
   head() {
     return {
       title: "使い方",
-      script: [
-        {
-          src: "https://unpkg.com/swiper/swiper-bundle.min.js"
-        },
-      ],
-      link: [
-        {
-          rel: "stylesheet",
-          href: "https://unpkg.com/swiper/swiper-bundle.min.css"
-        },
-      ],
+      // script: [
+      //   {
+      //     src: "https://unpkg.com/swiper/swiper-bundle.min.js"
+      //   },
+      // ],
+      // link: [
+      //   {
+      //     rel: "stylesheet",
+      //     href: "https://unpkg.com/swiper/swiper-bundle.min.css"
+      //   },
+      // ],
     }
   },
   data() {
