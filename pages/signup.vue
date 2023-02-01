@@ -145,7 +145,7 @@ export default {
         .then((userCredential) => {
           const user = userCredential.user;
           this.registerUserData(user.uid);
-          location.href = 'http://localhost:3000/taskadmin';
+          this.$router.push('/taskadmin');
         })
         .catch((error) => {
           const errorCode = error.code;

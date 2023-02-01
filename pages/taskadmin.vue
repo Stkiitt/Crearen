@@ -87,7 +87,7 @@ export default {
         if (user) {
           this.uid = user.uid;
         } else {
-          location.href = 'http://localhost:3000';
+          this.$router.push('/');
         }
       });
     },
@@ -95,7 +95,7 @@ export default {
     logout() {
       const auth = getAuth(this.$app);
       signOut(auth).then(() => {
-        location.href = 'http://localhost:3000';
+        this.$router.push('/');
       }).catch((error) => {
         console.log(error);
       });

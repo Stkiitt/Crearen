@@ -196,7 +196,7 @@ export default {
       signInWithEmailAndPassword(auth, this.email, this.password)
         .then(() => {
           // ログイン
-          location.href = 'http://localhost:3000/taskadmin';
+          this.$router.push('/taskadmin');
         })
         .catch((error) => {
           // ログイン失敗
@@ -209,7 +209,8 @@ export default {
       const auth = getAuth(this.$app);
       signOut(auth)
         .then(() => {
-          location.href = 'http://localhost:3000';
+          this.$router.push('/');
+          location.reload();
         }).catch((error) => {
           console.log(error);
         });
