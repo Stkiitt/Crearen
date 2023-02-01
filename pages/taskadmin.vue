@@ -52,7 +52,7 @@ export default {
       script: [
         {
           type: "text/javascript",
-          src: "//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+          src: "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
         },
         {
           src: "https://unpkg.com/swiper/swiper-bundle.min.js"
