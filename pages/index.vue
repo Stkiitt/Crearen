@@ -122,21 +122,21 @@ export default {
   head() {
     return {
       title: "トップページ",
-      // script: [
-      //   {
-      //     type: "text/javascript",
-      //     src: "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
-      //   },
-      //   {
-      //     src: "https://unpkg.com/swiper/swiper-bundle.min.js"
-      //   },
-      // ],
-      // link: [
-      //   {
-      //     rel: "stylesheet",
-      //     href: "https://unpkg.com/swiper/swiper-bundle.min.css"
-      //   },
-      // ],
+      script: [
+        {
+          type: "text/javascript",
+          src: "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+        },
+        {
+          src: "https://unpkg.com/swiper/swiper-bundle.min.js"
+        },
+      ],
+      link: [
+        {
+          rel: "stylesheet",
+          href: "https://unpkg.com/swiper/swiper-bundle.min.css"
+        },
+      ],
     }
   },
   data() {
