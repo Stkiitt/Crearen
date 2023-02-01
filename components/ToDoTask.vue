@@ -73,8 +73,8 @@
 </template>
 
 <script>
-import AddButtonPopup from "~/components/AddButtonPopup.vue";
-import CompImgPopup from "~/components/CompImgPopup.vue";
+import AddButtonPopup from "./AddButtonPopup.vue";
+import CompImgPopup from "./CompImgPopup.vue";
 import { doc, getDoc, getDocs, addDoc, updateDoc, deleteDoc, collection, query, where, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {

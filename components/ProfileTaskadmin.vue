@@ -4,7 +4,7 @@
       <h2 class="profile">プロフィール</h2>
       <div class="P-group row">
         <div id="Avatar" class="col-lg-12 col-6">
-          <img :src="avatar_selected_url ? avatar_selected_url : require('~/assets/placeholder.png')" alt="アバターを設定しませんか？">
+          <img :src="avatar_selected_url ? avatar_selected_url : require('../assets/placeholder.png')" alt="アバターを設定しませんか？">
         </div>
         <div class="col-lg-12 col-6">
           <p class="P-title">称号：{{ degree_selected_first }}{{ degree_selected_second }}{{ degree_selected_third }}</p>
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import ProfileEditPopup from '~/components/ProfileEditPopup.vue';
+import ProfileEditPopup from './ProfileEditPopup.vue';
 import { getDocs, doc, collection, query, getDoc, updateDoc, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 export default {

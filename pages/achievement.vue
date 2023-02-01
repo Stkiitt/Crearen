@@ -5,7 +5,7 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="../assets/logo/logo.png"></NuxtLink>
     </nav>
     <h1 class="title mt-5"> 進行中のミッション<span class="title_username"> {{ username }} さん</span></h1>
     <div class="container mt-2 mission">
@@ -184,11 +184,11 @@ export default {
     // トロフィーの変更
     changeTrophyImg(img) {
       if(img == 1) {
-        return require("~/assets/trophy/銅.png");
+        return require("../assets/trophy/銅.png");
       }else if(img == 2) {
-        return require("~/assets/trophy/銀.png");
+        return require("../assets/trophy/銀.png");
       }else if(img == 3) {
-        return require("~/assets/trophy/金.png");
+        return require("../assets/trophy/金.png");
       }
     },
     // 実績の背景色変更
