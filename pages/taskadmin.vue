@@ -5,7 +5,7 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="../assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -34,10 +34,10 @@
 </template>
 
 <script>
-import HistoryButtonPopup from "~/components/HistoryButtonPopup.vue";
-import ToDoTask from "~/components/ToDoTask.vue";
-import ProfileTaskadmin from "~/components/ProfileTaskadmin.vue";
-import FooterCopyright from "~/components/FooterCopyright.vue";
+import HistoryButtonPopup from "../components/HistoryButtonPopup.vue";
+import ToDoTask from "../components/ToDoTask.vue";
+import ProfileTaskadmin from "../components/ProfileTaskadmin.vue";
+import FooterCopyright from "../components/FooterCopyright.vue";
 import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 export default {
   components: {

@@ -5,7 +5,7 @@
         aria-controls="navbarNav4" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="~/assets/logo/logo.png"></NuxtLink>
+      <NuxtLink class="navbar-brand" to="/"><img id="logo" src="../assets/logo/logo.png"></NuxtLink>
       <div class="collapse navbar-collapse justify-content-end">
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import FooterCopyright from "~/components/FooterCopyright.vue";
+import FooterCopyright from "../components/FooterCopyright.vue";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc, getDocs, collection, query, getFirestore } from "firebase/firestore";
 export default {
