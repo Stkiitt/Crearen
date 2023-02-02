@@ -1,6 +1,6 @@
 <template>
   <div class="col-lg-8 order-lg-1 col-12 order-2">
-    <div class="m-2 px-4 border" id="ToDoBlock">
+    <div class="m-2 px-3 border" id="ToDoBlock">
       <div id="taskList">
         <h2 class="my-4" id="ToDo">ToDo</h2>
         <AddButtonPopup @changeTasks="changeTasks" />
@@ -15,7 +15,7 @@
       <!-- 繰り返しここから -->
       <section v-for="task in tasks" :key="task.tid">
         <!-- タスク表示ここから -->
-        <div :class="changeBorderColor(task.priority)" class="task">
+        <div :class="changeBorderColor(task.priority)" class="task mx-2">
           <div @click="openEditPopup(task.name, task.memo, task.priority, task.deadline, task.tid)"
             class="task-content-group">
             <h4 class="task-title">{{ task.name }}</h4>
